@@ -1,0 +1,9 @@
+.idle {
+	min-height: 100dvh;
+
+	display: flex;
+	flex-direction: column;
+
+	background: var(--color-bg);
+	color: var(--color-text-primary);
+}

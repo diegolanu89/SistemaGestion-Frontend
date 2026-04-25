@@ -1,0 +1,201 @@
+.sidebar {
+	position: fixed;
+	top: var(--appbar-height, 56px);
+	left: 0;
+
+	width: 260px;
+	height: calc(100vh - var(--appbar-height, 56px));
+
+	background-color: var(--color-surface);
+	border-right: 1px solid var(--color-border);
+
+	display: flex;
+	flex-direction: column;
+
+	padding: 8px;
+
+	transform: translateX(-110%);
+	opacity: 0.95;
+
+	transition:
+		transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 0.25s ease,
+		box-shadow 0.35s ease;
+
+	z-index: 1200;
+
+	color: var(--color-text-primary);
+
+	box-shadow: none;
+	will-change: transform;
+}
+
+/* OPEN STATE */
+.sidebar.is-open {
+	transform: translateX(0);
+	opacity: 1;
+
+	box-shadow: 10px 0 40px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================
+   HEADER
+   ========================= */
+.sidebar__header {
+	padding: 12px 16px;
+}
+
+/* =========================
+   MENU
+   ========================= */
+.sidebar__menu {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+/* =========================
+   PARENT ITEM
+   ========================= */
+.sidebar__parent {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	width: 100%;
+	padding: 10px 14px;
+
+	border: none;
+	background: transparent;
+
+	border-radius: 10px;
+
+	cursor: pointer;
+
+	color: var(--color-text-primary);
+
+	transition:
+		background 0.2s ease,
+		transform 0.15s ease;
+
+	&:hover {
+		background: var(--color-hover);
+	}
+
+	&:active {
+		transform: scale(0.98);
+	}
+
+	.material-icons {
+		color: var(--color-text-primary);
+		font-size: 20px;
+	}
+}
+
+/* =========================
+   CHILDREN (SMOOTH EXPAND)
+   ========================= */
+.sidebar__children {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	padding-left: 8px;
+
+	max-height: 0;
+	opacity: 0;
+
+	overflow: hidden;
+
+	transform: translateY(-4px);
+
+	transition:
+		max-height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 0.25s ease,
+		transform 0.25s ease;
+}
+
+.sidebar__children.is-open {
+	max-height: 400px;
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* =========================
+   ITEM
+   ========================= */
+.sidebar-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+
+	width: 100%;
+	padding: 10px 12px;
+
+	border: none;
+	background: transparent;
+
+	border-radius: 10px;
+
+	cursor: pointer;
+
+	color: var(--color-text-primary);
+
+	transition:
+		background 0.2s ease,
+		transform 0.15s ease;
+
+	&:hover {
+		background: var(--color-hover);
+	}
+
+	&:active {
+		transform: scale(0.98);
+	}
+}
+
+.sidebar-item__icon {
+	font-size: 18px;
+}
+
+.sidebar-item__text {
+	font-size: 14px;
+}
+
+/* =========================
+   HAMBURGER
+   ========================= */
+.sidebar-hamburger {
+	position: fixed;
+	top: 8px;
+	left: 8px;
+
+	width: 42px;
+	height: 42px;
+
+	border-radius: 12px;
+	border: 1px solid var(--color-border);
+
+	background: var(--color-surface);
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	z-index: 1300;
+
+	cursor: pointer;
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+
+	&:hover {
+		transform: scale(1.05);
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+	}
+
+	&:active {
+		transform: scale(0.95);
+	}
+}

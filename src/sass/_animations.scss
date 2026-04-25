@@ -1,0 +1,177 @@
+// ==========================
+// 🎯 EASINGS (tipo Material)
+// ==========================
+:root {
+	--ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+	--ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+	--ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+}
+
+// ==========================
+// 🔥 FADE
+// ==========================
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.fade-in {
+	animation: fade-in 0.3s var(--ease-standard);
+}
+
+@keyframes fade-out {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+.fade-out {
+	animation: fade-out 0.2s var(--ease-accelerate);
+}
+
+// ==========================
+// ⬆️ SLIDE
+// ==========================
+@keyframes slide-down {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.slide-down {
+	animation: slide-down 0.25s var(--ease-decelerate);
+}
+
+@keyframes slide-up {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.slide-up {
+	animation: slide-up 0.25s var(--ease-decelerate);
+}
+
+// ==========================
+// 🔍 SCALE (menus, modals)
+// ==========================
+@keyframes scale-in {
+	from {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.scale-in {
+	animation: scale-in 0.2s var(--ease-standard);
+}
+
+// ==========================
+// 💥 RIPPLE (botones)
+// ==========================
+@keyframes ripple {
+	from {
+		transform: scale(0);
+		opacity: 0.4;
+	}
+	to {
+		transform: scale(4);
+		opacity: 0;
+	}
+}
+
+.ripple {
+	position: relative;
+	overflow: hidden;
+}
+
+.ripple::after {
+	content: '';
+	position: absolute;
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	background: rgba(255, 255, 255, 0.3);
+	transform: scale(0);
+	opacity: 0;
+}
+
+.ripple:active::after {
+	animation: ripple 0.6s ease-out;
+}
+
+// ==========================
+// 🔄 ROTATE (icons toggle)
+// ==========================
+@keyframes rotate-in {
+	from {
+		transform: rotate(-90deg);
+		opacity: 0;
+	}
+	to {
+		transform: rotate(0);
+		opacity: 1;
+	}
+}
+
+.rotate-in {
+	animation: rotate-in 0.3s var(--ease-standard);
+}
+
+// ==========================
+// 🫧 PULSE (lo que ya tenías mejorado)
+// ==========================
+@keyframes pulsar {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.15);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+.pulsar {
+	animation: pulsar 1s infinite;
+}
+
+// ==========================
+// 🧊 SKELETON LOADING
+// ==========================
+@keyframes shimmer {
+	0% {
+		background-position: -200px 0;
+	}
+	100% {
+		background-position: 200px 0;
+	}
+}
+
+.skeleton {
+	background: linear-gradient(90deg, var(--color-border) 25%, var(--color-hover) 50%, var(--color-border) 75%);
+	background-size: 400px 100%;
+	animation: shimmer 1.2s infinite linear;
+}

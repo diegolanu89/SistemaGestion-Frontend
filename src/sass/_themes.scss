@@ -1,0 +1,63 @@
+@import './variables';
+
+// ==========================
+// 🌞 LIGHT THEME
+// ==========================
+:root {
+	--color-primary: #{$color-primary};
+	--color-primary-light: #{$color-primary-light};
+	--color-primary-dark: #{$color-primary-dark};
+
+	--color-secondary: #{$color-secondary};
+	--color-secondary-light: #{$color-secondary-light};
+	--color-secondary-dark: #{$color-secondary-dark};
+
+	--color-success: #{$color-success};
+	--color-warning: #{$color-warning};
+	--color-error: #{$color-error};
+	--color-info: #{$color-info};
+
+	--color-border: #{$color-gray-200};
+	--color-hover: #{$color-gray-100};
+
+	--color-bg: #{$color-bg};
+	--color-bg-alt: #{$color-bg-alt};
+	--color-surface: #ffffff;
+
+	--color-text-primary: #{$color-text-primary};
+	--color-text-secondary: #{$color-text-secondary};
+	--color-text-inverse: #{$color-text-inverse};
+
+	--bg-gradient: radial-gradient(circle at top, rgba(37, 99, 235, 0.18), transparent 60%);
+}
+
+// ==========================
+// 🌙 DARK THEME
+// ==========================
+.theme-dark {
+	--color-primary: #3b82f6;
+	--color-primary-light: #60a5fa;
+	--color-primary-dark: #1d4ed8;
+
+	--color-secondary: #34d399;
+	--color-secondary-light: #6ee7b7;
+	--color-secondary-dark: #059669;
+
+	--color-success: #4ade80;
+	--color-warning: #fbbf24;
+	--color-error: #f87171;
+	--color-info: #38bdf8;
+
+	--color-border: #374151;
+	--color-hover: #1f2937;
+
+	--color-bg: #111827;
+	--color-bg-alt: #1f2937;
+	--color-surface: #1f2937;
+
+	--color-text-primary: #f9fafb;
+	--color-text-secondary: #9ca3af;
+	--color-text-inverse: #111827;
+
+	--bg-gradient: radial-gradient(circle at top, rgba(59, 130, 246, 0.12), transparent 65%);
+}

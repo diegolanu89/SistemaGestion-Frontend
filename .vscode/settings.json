@@ -1,0 +1,113 @@
+{
+	//MAC
+	"terminal.integrated.defaultProfile.osx": "zsh",
+
+	// Formateador predeterminado
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+
+	// Formatear automáticamente al guardar
+	"editor.formatOnSave": true,
+
+	// Habilitar formateo en JavaScript y TypeScript
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+
+	// Excluir archivos innecesarios del buscador
+	"files.exclude": {
+		"node_modules": true,
+		"dist": true
+	},
+
+	// Ignorar archivos grandes para mejorar el rendimiento
+	"files.watcherExclude": {
+		"**/node_modules/**": true,
+		"**/dist/**": true
+	},
+
+	"material-icon-theme.folders.associations": {
+		"aditional": "client",
+		"supervisor": "client",
+		"deviceController": "lib",
+		"soap": "mock",
+		"simulator": "controller"
+	},
+	"material-icon-theme.files.customClones": [
+		{
+			"name": "context",
+			"base": "react",
+			"color": "green",
+			"fileNames": ["react.rs"]
+		},
+		{
+			"name": "controller",
+			"base": "react",
+			"color": "yellow",
+			"fileNames": ["react.rs"]
+		},
+		{
+			"name": "devicecontroller",
+			"base": "react",
+			"color": "#75b300",
+			"fileNames": ["react.rs"]
+		},
+		{
+			"name": "view",
+			"base": "react",
+			"color": "orange",
+			"fileNames": ["react.rs"]
+		},
+		{
+			"name": "model",
+			"base": "typescript",
+			"color": "red",
+			"fileNames": ["typescript.rs"]
+		},
+		{
+			"name": "hooks",
+			"base": "react",
+			"color": "purple",
+			"fileNames": ["react.rs"]
+		},
+		{
+			"name": "main",
+			"base": "react",
+			"color": "red",
+			"fileNames": ["react.rs"]
+		},
+		{
+			"name": "index",
+			"base": "typescript",
+			"color": "blue",
+			"fileNames": ["typescript.rs"]
+		},
+		{
+			"name": "paths",
+			"base": "typescript",
+			"color": "green",
+			"fileNames": ["typescript.rs"]
+		},
+		{
+			"name": "service",
+			"base": "settings",
+			"color": "#4FC3F7",
+			"fileNames": ["settings.rs"]
+		}
+	],
+	"material-icon-theme.files.associations": {
+		"*.Context.tsx": "context",
+		"*.d.ts": "devicecontroller",
+		"*.c.ts": "controller",
+		"*.v.tsx": "view",
+		"*.m.ts": "model",
+		"*.h.tsx": "hooks",
+		"main.tsx": "main",
+		"App.tsx": "main",
+		"index.ts": "index",
+		"paths.ts": "paths",
+		"*.s.ts": "service"
+	}
+}

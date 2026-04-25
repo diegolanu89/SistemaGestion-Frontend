@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"types": ["msw", "vitest/globals", "@testing-library/jest-dom", "google.maps"],
+		"target": "esnext",
+		"module": "esnext",
+		"jsx": "react-jsx",
+		"strict": true,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true
+	},
+	"include": ["src/**/*", "tests", "src"] //"cypress/**/*.ts",
+}

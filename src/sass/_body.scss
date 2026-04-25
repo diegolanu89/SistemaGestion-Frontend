@@ -1,0 +1,129 @@
+// ==========================
+// 🌍 RESET BASE
+// ==========================
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+// ==========================
+// 🧠 HTML / BODY
+// ==========================
+html {
+	font-size: 16px;
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: var(--font-family-base);
+	font-weight: var(--font-weight-regular);
+
+	background: var(--bg-gradient), var(--color-bg);
+	//background: radial-gradient(circle at top, rgba(37, 99, 235, 0.2), transparent);
+	color: var(--color-text-primary);
+
+	line-height: 1.5;
+
+	// 🔥 suavizado tipográfico
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	// 🔥 transición de theme
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease;
+}
+
+// ==========================
+// 🔗 LINKS
+// ==========================
+a {
+	text-decoration: none;
+	color: inherit;
+
+	&:hover {
+		color: var(--color-primary);
+	}
+}
+
+// ==========================
+// 🧱 IMÁGENES
+// ==========================
+img {
+	max-width: 100%;
+	display: block;
+}
+
+// ==========================
+// 🧾 LISTAS
+// ==========================
+ul,
+ol {
+	list-style: none;
+}
+
+// ==========================
+// 🔘 BOTONES
+// ==========================
+button {
+	font-family: inherit;
+	border: none;
+	background: none;
+	cursor: pointer;
+
+	// 🔥 mejora UX
+	&:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+}
+
+// ==========================
+// 📝 INPUTS
+// ==========================
+input,
+textarea,
+select {
+	font-family: inherit;
+	outline: none;
+	border: none;
+}
+
+// ==========================
+// 🎯 FOCUS GLOBAL (accesibilidad)
+// ==========================
+:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+}
+
+// ==========================
+// 📦 SCROLLBAR (opcional)
+// ==========================
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-border);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-primary);
+}
+
+.app-root {
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+}
+
+.app-content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}

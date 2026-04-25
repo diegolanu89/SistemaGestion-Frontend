@@ -1,0 +1,78 @@
+:root {
+	--foreground-color: white;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+/*
+body {
+	overflow: hidden;
+}
+
+main {
+	background: linear-gradient(322deg, #ba4aff, rgba(#ba4aff, 0) 70%), linear-gradient(178deg, #008aff, rgba(#008aff, 0) 70%),
+		linear-gradient(24deg, #00ffc6, rgba(#00ffc6, 0) 35%);
+}*/
+
+.ruler {
+	border-top: 1px solid rgba(white, 0.3);
+	background-color: rgba(white, 0.05);
+
+	position: absolute;
+	top: 50%;
+	height: 50%;
+	left: 0%;
+	right: 0%;
+}
+
+.containerGlass {
+	.brillo:active {
+		transition: 0.7s;
+		filter: brightness(1.25);
+	}
+
+	.brillo:hover {
+		transition: 0.7s;
+		filter: brightness(1.25);
+	}
+
+	.icon {
+		--size: 6rem;
+		--transition-duration: 500ms;
+		--transition-easing: ease-out;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-decoration: none;
+		color: var(--foreground-color);
+		font-size: 2rem;
+		box-shadow: 0px calc(var(--size) / 6) calc(var(--size) / 3) rgba(black, 0.1);
+		transition: transform var(--transition-duration) var(--transition-easing);
+
+		&::before {
+			content: '';
+			background: rgba(white, 0.4);
+			width: 60%;
+			height: 100%;
+			top: 0%;
+			left: -125%;
+
+			transform: skew(45deg);
+
+			position: absolute;
+
+			transition: left var(--transition-duration) var(--transition-easing);
+		}
+
+		&:hover {
+			transform: translateY(0%);
+
+			&::before {
+				left: 150%;
+			}
+		}
+	}
+}

@@ -1,0 +1,6 @@
+{
+	"entryPointStrategy": "expand",
+	"entryPoints": ["src"],
+	"out": "docs",
+	"exclude": ["**/setupTests.ts", "**/*.d.ts", "**/App.tsx"]
+}

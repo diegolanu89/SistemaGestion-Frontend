@@ -1,0 +1,5 @@
+export enum LoginControllerLogEvent {
+	FORM_SUBMIT = 'LOGIN_FORM_SUBMIT',
+	NAVIGATE_HOME = 'LOGIN_NAVIGATE_HOME',
+	ERROR = 'LOGIN_ERROR',
+}

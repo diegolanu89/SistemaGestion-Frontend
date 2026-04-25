@@ -1,0 +1,67 @@
+// src/styles/components/_navigator.scss
+
+.navigator {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+
+	flex: 1;
+
+	// ==========================
+	// Botón volver
+	// ==========================
+	&__back {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		width: 36px;
+		height: 36px;
+
+		background: transparent;
+		border: none;
+		cursor: pointer;
+
+		border-radius: 8px;
+
+		transition: all 0.2s ease;
+
+		color: var(--color-text-primary);
+
+		&:hover {
+			background-color: var(--color-hover);
+		}
+
+		&:active {
+			transform: scale(0.95);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--color-primary);
+			outline-offset: 2px;
+		}
+
+		.material-icons {
+			font-size: 22px;
+			color: inherit;
+		}
+	}
+
+	// ==========================
+	// Título
+	// ==========================
+	&__title {
+		font-size: 14px;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+
+		color: var(--color-text-primary);
+
+		flex: 1;
+
+		// 🔥 mejora UX
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}

@@ -1,0 +1,61 @@
+// ==========================
+// Fonts
+// ==========================
+
+:root {
+	--font-family-base: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+
+	--font-weight-light: 300;
+	--font-weight-regular: 400;
+	--font-weight-medium: 500;
+	--font-weight-bold: 700;
+}
+
+// Base global
+body {
+	font-family: var(--font-family-base);
+	font-weight: var(--font-weight-regular);
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+// ==========================
+// Headings (tipo MUI)
+// ==========================
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-family-base);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-text-primary);
+	margin: 0;
+}
+
+// ==========================
+// Text helpers
+// ==========================
+
+.text-primary {
+	color: var(--color-text-primary);
+}
+
+.text-secondary {
+	color: var(--color-text-secondary);
+}
+
+.text-bold {
+	font-weight: var(--font-weight-bold);
+}
+
+.text-medium {
+	font-weight: var(--font-weight-medium);
+}
+
+.text-light {
+	font-weight: var(--font-weight-light);
+}

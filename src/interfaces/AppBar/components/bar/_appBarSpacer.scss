@@ -1,0 +1,13 @@
+// src/styles/components/_appbar-spacer.scss
+
+.appbar-spacer {
+	width: 100%;
+
+	// altura estándar tipo MUI
+	height: 64px;
+
+	// mobile (igual que MUI)
+	@media (max-width: 600px) {
+		height: 56px;
+	}
+}
