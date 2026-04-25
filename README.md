@@ -16,7 +16,35 @@
 
 ---
 
-## 🔁 Alternancia entre Backends
+## Variables de ambiente
+
+```env
+frontend/
+│
+├── env/
+│   ├── .env.development
+│   └── .env.production
+```
+
+#### ENV development
+
+```env
+VITE_API_URL=http://localhost:3001
+VITE_AUTH_PROVIDER=MOCK
+VITE_APP_MODE=MOCK
+VITE_ENV=development
+```
+
+### ENV production
+
+```env
+VITE_API_URL=http://backend:3001
+VITE_AUTH_PROVIDER=ERS
+VITE_APP_MODE=ERS
+VITE_ENV=production
+```
+
+## 🔁 Alternancia entre Backends/App
 
 ```env
 VITE_AUTH_PROVIDER=MOCK
