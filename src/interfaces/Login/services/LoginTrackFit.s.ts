@@ -24,8 +24,7 @@ export class LoginBDT implements LoginInterface {
 
 		const data = await response.json()
 
-		// 🔐 guardamos token internamente
-		localStorage.setItem(this.storageKey, data.accessToken)
+		localStorage.setItem(this.storageKey, data.token)
 
 		return data.user as IUser
 	}
