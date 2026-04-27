@@ -1,18 +1,17 @@
-version: "3.9"
+version: '3.9'
 
 services:
-  postgres:
-    image: postgres:16
-    container_name: prode_postgres
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL_DOCKER}
+        VITE_APP_MODE: ${VITE_APP_MODE}
+        VITE_AUTH_PROVIDER: ${VITE_AUTH_PROVIDER}
+    container_name: sistema_gestion_frontend
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: prode_user
-      POSTGRES_PASSWORD: prode_password
-      POSTGRES_DB: prode_db
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
+      - '3001:80'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'

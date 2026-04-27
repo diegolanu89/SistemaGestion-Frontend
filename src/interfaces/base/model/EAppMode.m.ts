@@ -1,4 +1,4 @@
 export enum AppMode {
 	ERS = 'ers',
-	MOCK = 'MOCK',
+	MOCK = 'mock',
 }

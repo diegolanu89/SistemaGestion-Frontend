@@ -18,54 +18,65 @@
 
 ## Variables de ambiente
 
-```env
-frontend/
-│
-├── env/
-│   ├── .env.development
-│   └── .env.production
-```
-
-#### ENV development
+El archivo `.env` en la raíz del proyecto controla tanto el comportamiento local como el build de Docker.
 
 ```env
-VITE_API_URL=http://localhost:3001
-VITE_AUTH_PROVIDER=MOCK
-VITE_APP_MODE=MOCK
-VITE_ENV=development
-```
+# URL del backend .NET
+VITE_API_URL=http://localhost:5000/api
 
-### ENV production
+# URL usada por docker compose al buildear
+VITE_API_URL_DOCKER=http://localhost:5000/api
 
-```env
-VITE_API_URL=http://backend:3001
-VITE_AUTH_PROVIDER=ERS
-VITE_APP_MODE=ERS
+# Modo de autenticación: ers (backend real) | MOCK (datos simulados)
+VITE_AUTH_PROVIDER=ers
+VITE_APP_MODE=ers
+
 VITE_ENV=production
 ```
 
-## 🔁 Alternancia entre Backends/App
+> **Importante:** los valores `ers` y `mock` son case-sensitive. El enum interno usa `'ers'` y `'mock'` en minúscula para el modo real y para el simulado.
 
-```env
-VITE_AUTH_PROVIDER=MOCK
-VITE_APP_MODE=MOCK
-# o
-VITE_AUTH_PROVIDER=ERS
-VITE_APP_MODE=ERS
-```
+### Alternancia entre modos
+
+| Modo                | `VITE_APP_MODE` | `VITE_AUTH_PROVIDER` | Descripción                            |
+| ------------------- | --------------- | -------------------- | -------------------------------------- |
+| Real (backend .NET) | `ers`           | `ers`                | Llama a la API en `VITE_API_URL`       |
+| Mock (sin backend)  | `mock`          | `mock`               | Credenciales: `demo@mock.com` / `1234` |
 
 ---
 
 ## 🔁 Instalación Local
 
-```env
+```bash
 yarn install
 yarn dev
 ```
 
 ## Docker
 
-```env
-docker build -t my-frontend .
-docker run -p 8080:80 my-frontend
+El frontend se expone en `localhost:3001` y se comunica con el backend directamente desde el browser en `localhost:5000`.
+
+```bash
+docker compose up --build
 ```
+
+### Arquitectura Docker
+
+```
+Browser → http://localhost:3001  →  nginx (contenedor)  →  sirve archivos estáticos del SPA
+Browser → http://localhost:5000  →  backend .NET (host)  →  API REST
+```
+
+Las variables de entorno se embeben en el build de Vite mediante build args del Dockerfile. Cambiar el `.env` requiere rebuildar la imagen con `--build`.
+
+### Agregar una nueva variable
+
+Cada `VITE_*` nueva requiere tres pasos:
+
+1. **`.env`** — agregar el valor
+2. **`Dockerfile`** — declarar `ARG` (para recibirla de Docker Compose) y `ENV` (para que Vite la lea durante el build)
+3. **`docker-compose.yml`** — pasarla como arg usando `${NOMBRE_VARIABLE}`
+
+> Si la cantidad de variables crece, conviene reemplazar este patrón por un archivo `.env.docker` commiteado que el Dockerfile use directamente, evitando declarar cada variable por separado.
+
+---

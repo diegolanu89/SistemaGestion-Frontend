@@ -1,6 +1,6 @@
 import { resolveCapabilities } from '../../base/model/ResolveCapabilities.m'
 
-const { isDev, apiBaseUrl } = resolveCapabilities()
+const { apiBaseUrl } = resolveCapabilities()
 
 export const Configuration = {
 	MESSAGES: {
@@ -10,7 +10,7 @@ export const Configuration = {
 	},
 
 	API: {
-		BASE_URL: isDev ? apiBaseUrl : 'https://tu-api.com',
+		BASE_URL: apiBaseUrl,
 
 		STORAGE_KEY: 'authUser',
 
