@@ -1,0 +1,130 @@
+.proyect-create-form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* ================= CLOCKIFY ================= */
+
+.proyect-create-clockify {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	padding: 16px 20px;
+	border-radius: 14px;
+
+	background: var(--color-primary-opacity-08);
+	border: 1px solid var(--color-primary-opacity-15);
+
+	h3 {
+		display: flex;
+		align-items: center;
+
+		margin: 0;
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--color-primary);
+
+		.material-icons {
+			margin-right: 16px; // ✅ estándar aplicado
+			font-size: 20px;
+			line-height: 1;
+		}
+	}
+
+	p {
+		margin: 2px 0 0;
+		font-size: 13px;
+		color: var(--color-text-secondary);
+	}
+}
+
+/* ================= GRID ================= */
+
+.proyect-create-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20px;
+}
+
+/* ================= FIELD ================= */
+
+.proyect-create-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.proyect-create-field--full {
+	grid-column: span 2;
+}
+
+/* ================= LABEL ================= */
+
+.proyect-create-label {
+	display: inline-flex;
+	align-items: center;
+
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--color-primary);
+
+	.material-icons {
+		margin-right: 16px; // ✅ pedido cumplido
+		font-size: 18px;
+		line-height: 1;
+	}
+}
+
+/* ================= INPUT / SELECT / TEXTAREA ================= */
+
+.proyect-create-input,
+.proyect-create-select,
+.proyect-create-textarea {
+	width: 100%;
+	height: 56px;
+	padding: 0 16px;
+
+	border-radius: 12px;
+	border: 1px solid var(--color-border);
+
+	background: var(--color-surface);
+	color: var(--color-text-primary);
+
+	font-size: 15px;
+	box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+	transition: all 0.2s ease;
+}
+
+.proyect-create-textarea {
+	height: auto;
+	padding: 12px 16px;
+	resize: vertical;
+}
+
+.proyect-create-input:hover,
+.proyect-create-select:hover,
+.proyect-create-textarea:hover {
+	border-color: var(--color-primary-light);
+}
+
+.proyect-create-input:focus,
+.proyect-create-select:focus,
+.proyect-create-textarea:focus {
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 3px var(--color-primary-opacity-15);
+	outline: none;
+}
+
+/* ================= SELECT ARROW ================= */
+
+.proyect-create-select {
+	appearance: none;
+
+	background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='%239ca3af' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 14px center;
+	background-size: 18px;
+}

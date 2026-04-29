@@ -1,0 +1,41 @@
+[
+	{
+		"Id": 1,
+		"Code": "evm",
+		"Label": "EVM",
+		"Description": "Gestión por valor ganado",
+		"InternalLabel": "EVM",
+		"SecondaryLabel": "EVM Sec",
+		"RegistrationLabel": "Registro EVM",
+		"RequiresBusinessStatusDate": false,
+		"RequiresActualEndDate": false,
+		"RequiresCommercialFields": false,
+		"IsActive": true
+	},
+	{
+		"Id": 2,
+		"Code": "horas",
+		"Label": "Horas",
+		"Description": "Gestión de carga horaria",
+		"InternalLabel": "Horas",
+		"SecondaryLabel": "Horas Sec",
+		"RegistrationLabel": "Registro Horas",
+		"RequiresBusinessStatusDate": false,
+		"RequiresActualEndDate": false,
+		"RequiresCommercialFields": false,
+		"IsActive": true
+	},
+	{
+		"Id": 3,
+		"Code": "mixto",
+		"Label": "Mixto",
+		"Description": "Combinación de EVM y horas",
+		"InternalLabel": "Mixto",
+		"SecondaryLabel": "Mixto Sec",
+		"RegistrationLabel": "Registro Mixto",
+		"RequiresBusinessStatusDate": true,
+		"RequiresActualEndDate": true,
+		"RequiresCommercialFields": true,
+		"IsActive": true
+	}
+]

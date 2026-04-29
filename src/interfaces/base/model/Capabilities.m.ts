@@ -4,7 +4,7 @@ export interface Capabilities {
 	isDev: boolean
 	isProd: boolean
 	apiBaseUrl: string
-	role: 'admin' | 'user'
+	role: string
 }
 
 export const buildCapabilities = (user: IUser | null): Capabilities => {

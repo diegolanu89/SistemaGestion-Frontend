@@ -47,3 +47,18 @@ $color-bg-alt: #f9fafb;
 $color-text-primary: #111827;
 $color-text-secondary: #6b7280;
 $color-text-inverse: #ffffff;
+
+// ==========================
+// 🌫️ OPACIDADES / OVERLAYS
+// ==========================
+
+$color-primary-opacity-08: rgba($color-primary, 0.08);
+$color-primary-opacity-15: rgba($color-primary, 0.15);
+
+$color-error-opacity-08: rgba($color-error, 0.08);
+$color-error-opacity-15: rgba($color-error, 0.15);
+
+$color-shadow-soft: rgba(0, 0, 0, 0.04);
+$color-shadow-medium: rgba(0, 0, 0, 0.15);
+
+$color-border-soft: rgba(0, 0, 0, 0.03);

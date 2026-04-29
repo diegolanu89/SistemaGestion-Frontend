@@ -1,0 +1,224 @@
+/* proyectFilters.scss COMPLETO */
+
+.proyect-filters {
+	display: grid;
+	grid-template-columns: minmax(0, 1.8fr) repeat(4, minmax(0, 1fr));
+	gap: 20px;
+
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+
+	padding: 18px 22px;
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 14px;
+
+	box-shadow: 0 4px 12px var(--color-shadow-soft);
+	box-sizing: border-box;
+
+	align-items: end;
+
+	/* 🔥 TOOLTIP BASE */
+	[data-tooltip] {
+		position: relative;
+	}
+
+	[data-tooltip]::after {
+		content: attr(data-tooltip);
+		position: absolute;
+		bottom: 115%;
+		left: 50%;
+		transform: translateX(-50%) scale(0.95);
+
+		background: var(--color-bg-alt);
+		color: var(--color-text-primary);
+
+		padding: 6px 10px;
+		border-radius: 6px;
+
+		font-size: 12px;
+		white-space: nowrap;
+
+		opacity: 0;
+		pointer-events: none;
+
+		box-shadow: 0 4px 12px var(--color-shadow-medium);
+
+		transition: all 0.2s ease;
+		z-index: 10;
+	}
+
+	[data-tooltip]:hover::after {
+		opacity: 1;
+		transform: translateX(-50%) scale(1);
+	}
+
+	&__field {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		min-width: 0;
+	}
+
+	&__label {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-primary);
+	}
+
+	&__select {
+		width: 100%;
+		height: 56px;
+
+		padding: 0 40px 0 16px;
+		border-radius: 12px;
+		border: 1px solid var(--color-border);
+
+		background: var(--color-surface);
+		color: var(--color-text-primary);
+
+		font-size: 15px;
+
+		outline: none;
+		cursor: pointer;
+
+		appearance: none;
+
+		background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='%239ca3af' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+		background-repeat: no-repeat;
+		background-position: right 14px center;
+		background-size: 18px;
+
+		transition: all 0.2s ease;
+
+		box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+		&:hover {
+			border-color: var(--color-primary-light);
+		}
+
+		&:focus {
+			border-color: var(--color-primary);
+			box-shadow: 0 0 0 3px var(--color-primary-opacity-15);
+		}
+	}
+
+	/* REFRESH */
+	&__refresh {
+		display: flex;
+		align-items: flex-end;
+		height: 100%;
+	}
+
+	&__refresh-btn {
+		width: 56px;
+		height: 56px;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		border-radius: 12px;
+		border: 1px solid var(--color-border);
+
+		background: var(--color-bg-alt);
+		color: var(--color-primary);
+
+		cursor: pointer;
+
+		transition:
+			background 0.2s ease,
+			border 0.2s ease;
+
+		box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+		.material-icons {
+			font-size: 22px;
+			transition: transform 0.3s ease;
+		}
+
+		&:hover {
+			background: var(--color-primary-opacity-08);
+		}
+
+		/* 🔥 SOLO EL ICONO ROTA */
+		&:hover .material-icons {
+			transform: rotate(90deg);
+		}
+	}
+
+	@media (max-width: 900px) {
+		grid-template-columns: 1fr 1fr;
+
+		.proyect-search {
+			grid-column: span 2;
+		}
+	}
+
+	@media (max-width: 600px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* SEARCH */
+
+.proyect-search {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	width: 100%;
+	min-width: 0;
+
+	&__label {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-primary);
+	}
+
+	&__control {
+		display: flex;
+		align-items: center;
+		position: relative;
+	}
+
+	&__icon {
+		position: absolute;
+		left: 16px;
+		font-size: 20px;
+		color: var(--color-text-secondary);
+		pointer-events: none;
+	}
+
+	&__input {
+		width: 100%;
+		height: 56px;
+		padding: 0 16px 0 48px;
+
+		border-radius: 12px;
+		border: 1px solid var(--color-border);
+
+		background: var(--color-surface);
+		color: var(--color-text-primary);
+
+		font-size: 15px;
+
+		transition: all 0.2s ease;
+
+		box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+		&::placeholder {
+			color: var(--color-text-secondary);
+		}
+
+		&:hover {
+			border-color: var(--color-primary-light);
+		}
+
+		&:focus {
+			border-color: var(--color-primary);
+			box-shadow: 0 0 0 3px var(--color-primary-opacity-15);
+			outline: none;
+		}
+	}
+}

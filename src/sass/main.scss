@@ -8,6 +8,7 @@
 @use '_fonts';
 @use '_animations';
 @use '_glass';
+@use '_spinner';
 
 /**BASE APP**/
 @use '../interfaces/base/components/loading/authLoading';
@@ -32,3 +33,10 @@
 /**HOME (Idle)**/
 @use '../interfaces/Idle/views/idle';
 @use '../interfaces/Idle/components/featureGrid';
+
+/**PROYECT**/
+@use '../interfaces/Proyect/components/_proyectFilter';
+@use '../interfaces/Proyect/views/proyect';
+@use '../interfaces/Proyect/components/_proyectTable';
+@use '../interfaces/Proyect/components/proyectCreateModal';
+@use '../interfaces/Proyect/components/proyectCreateForm';

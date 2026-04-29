@@ -1,0 +1,23 @@
+[
+	{
+		"Id": 1,
+		"Code": "interno",
+		"Label": "Interno",
+		"Description": "Proyecto interno de la organización",
+		"IsActive": true
+	},
+	{
+		"Id": 2,
+		"Code": "cliente",
+		"Label": "Cliente",
+		"Description": "Proyecto para cliente externo",
+		"IsActive": true
+	},
+	{
+		"Id": 3,
+		"Code": "innovacion",
+		"Label": "Innovación",
+		"Description": "Proyecto experimental o I+D",
+		"IsActive": true
+	}
+]

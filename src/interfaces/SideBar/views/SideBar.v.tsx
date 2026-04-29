@@ -12,12 +12,10 @@ export const SideBarView: FC = () => {
 
 	return (
 		<>
-			{/* HAMBURGER */}
 			<button className="sidebar-hamburger" onClick={toggleSidebar}>
 				<span className="material-icons">menu</span>
 			</button>
 
-			{/* SIDEBAR */}
 			{isOpen && (
 				<aside className="sidebar is-open">
 					<div className="sidebar__header">
@@ -29,15 +27,13 @@ export const SideBarView: FC = () => {
 							<div key={item.label} className="sidebar__section">
 								<button className="sidebar__parent" onClick={() => toggle(item.label)}>
 									<span className="material-icons">{item.icon}</span>
-
 									<span>{item.label}</span>
-
 									<span className="material-icons">{open[item.label] ? 'expand_less' : 'expand_more'}</span>
 								</button>
 
 								<div className={`sidebar__children ${open[item.label] ? 'is-open' : ''}`}>
 									{item.children?.map((child) => (
-										<SideBarItem key={child.label} label={child.label} icon={child.icon} />
+										<SideBarItem key={child.label} label={child.label} icon={child.icon} path={child.path} />
 									))}
 								</div>
 							</div>
