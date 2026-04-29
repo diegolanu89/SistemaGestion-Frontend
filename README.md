@@ -80,3 +80,12 @@ Cada `VITE_*` nueva requiere tres pasos:
 > Si la cantidad de variables crece, conviene reemplazar este patrón por un archivo `.env.docker` commiteado que el Dockerfile use directamente, evitando declarar cada variable por separado.
 
 ---
+
+> ### ℹ️ **Estilos (SCSS)**
+>
+> Este proyecto utiliza **SCSS** como fuente de estilos.  
+> Los archivos CSS dentro de `src/css` **NO se commitean** porque son **generados automáticamente por Sass** durante el desarrollo y el build.
+>
+> ✅ Editar y versionar solo archivos `.scss`  
+> ❌ No modificar ni commitear CSS generado
+> ``

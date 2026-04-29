@@ -3,7 +3,7 @@ import { LoginMock } from './LoginMock.s'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { resolveCapabilities } from '../../base/model/ResolveCapabilities.m'
-import { LoginBDT } from './LoginTrackFit.s'
+import { LoginBDT } from './LoginBDT'
 
 /**
  * ============================================================================
