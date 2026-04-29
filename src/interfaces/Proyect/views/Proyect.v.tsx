@@ -1,23 +1,25 @@
-// views/Proyect.tsx
 import { FC } from 'react'
 import { ProyectTable } from '../components/ProyectTable'
 import { ProyectFilters } from '../components/ProyectFilter'
 import { ProyectHeader } from '../components/ProyectHeader'
+import { ProyectCreateModal } from '../components/ProyectCreateModal'
+import { useProyectContext } from '../hooks/useProyectContext.h'
 
 export const Proyect: FC = () => {
-	const handleAdd = () => {
-		console.log('add proyect')
-	}
+	const { isCreateOpen } = useProyectContext()
 
 	return (
 		<div className="proyect">
-			<ProyectHeader onAdd={handleAdd} />
+			<ProyectHeader />
 
 			<section className="proyect__filters">
 				<ProyectFilters />
 			</section>
 
 			<ProyectTable />
+
+			{/* 🔥 Modal controlado por Context */}
+			{isCreateOpen && <ProyectCreateModal />}
 		</div>
 	)
 }

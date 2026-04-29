@@ -25,16 +25,16 @@ export const useProyectData = () => {
 				const cached = getCache<ProjectIntakeRecordDto[]>(PROYECT_CONFIG.CACHE.KEYS.PROJECTS)
 
 				if (cached) {
-					logger.infoTag(LogTag.Adapter, `${LogProyectData.CACHE_HIT} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS} count=${cached.length}`)
+					logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_HIT} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS} count=${cached.length}`)
 
 					setData(cached)
 					setLoading(false)
 					return
 				}
 
-				logger.infoTag(LogTag.Adapter, `${LogProyectData.CACHE_MISS} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}`)
+				logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_MISS} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}`)
 			} else {
-				logger.infoTag(LogTag.Adapter, LogProyectData.CACHE_FORCE)
+				logger.infoTag(LogTag.Cache, LogProyectData.CACHE_FORCE)
 			}
 
 			// ==========================
@@ -53,7 +53,7 @@ export const useProyectData = () => {
 			// ==========================
 			setCache<ProjectIntakeRecordDto[]>(PROYECT_CONFIG.CACHE.KEYS.PROJECTS, res, PROYECT_CONFIG.CACHE.TTL)
 
-			logger.infoTag(LogTag.Adapter, `${LogProyectData.CACHE_SET} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}`)
+			logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_SET} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}`)
 		} catch (error: unknown) {
 			const err = error instanceof Error ? error : new Error(LogProyectData.ERROR_UNKNOWN)
 

@@ -40,9 +40,10 @@ const AppClient = () => {
 
 										{LoginPublicRoutes()}
 
-										{ProyectPublicRoutes()}
-
-										<Route element={<ProtectedRoute redirectTo={LOGIN_PATHS.LOGIN} />}>{IdleProtectedRoutes()}</Route>
+										<Route element={<ProtectedRoute redirectTo={LOGIN_PATHS.LOGIN} />}>
+											{IdleProtectedRoutes()}
+											{ProyectPublicRoutes()}
+										</Route>
 									</Routes>
 								</main>
 							</ModalProvider>

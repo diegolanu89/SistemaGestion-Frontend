@@ -1,5 +1,3 @@
-// models/ProyectConfig.m.ts
-
 export const PROYECT_CONFIG = {
 	// ==========================
 	// 🔹 TEXTOS
@@ -67,6 +65,75 @@ export const PROYECT_CONFIG = {
 
 		REFRESH_ICON: 'refresh',
 		REFRESH_TOOLTIP: 'Actualizar proyectos',
+
+		// ✅ AGREGADO (para modal create)
+		CANCEL: {
+			LABEL: 'Cancelar',
+			TOOLTIP: 'Cerrar el formulario sin guardar',
+		},
+		CONFIRM: {
+			LABEL: 'Crear proyecto',
+			TOOLTIP: 'Crear el proyecto con los datos ingresados',
+		},
+	},
+
+	// ==========================
+	// 🔹 CREATE PROJECT (MODAL + FORM)
+	// ==========================
+	CREATE: {
+		CLOCKIFY: {
+			TITLE: 'Clockify',
+			DESCRIPTION: 'Crear automáticamente el proyecto en Clockify',
+			ICON: 'schedule',
+			TOOLTIP: 'Si está activo, el proyecto se creará también en Clockify',
+		},
+
+		FIELDS: {
+			PROJECT_TYPE: {
+				LABEL: 'Tipo de proyecto',
+				ICON: 'tune',
+				REQUIRED: true,
+			},
+			PROJECT_NAME: {
+				LABEL: 'Nombre del proyecto',
+				ICON: 'work',
+				REQUIRED: true,
+			},
+			SECONDARY_NUMBER: {
+				LABEL: 'N° Proyecto comercial',
+				ICON: 'badge',
+			},
+			REGISTRATION_DATE: {
+				LABEL: 'Fecha de alta',
+				ICON: 'event',
+			},
+			CATEGORY: {
+				LABEL: 'Categoría',
+				ICON: 'category',
+			},
+			STATUS: {
+				LABEL: 'Estado',
+				ICON: 'flag',
+			},
+			OBSERVATIONS: {
+				LABEL: 'Observaciones',
+				ICON: 'notes',
+			},
+		},
+
+		PLACEHOLDERS: {
+			SELECT: 'Seleccionar…',
+			EMPTY: '—',
+		},
+
+		MODAL: {
+			TITLE: 'Nuevo Proyecto',
+			ICON: 'add_box',
+
+			// ✅ AGREGADOS
+			CLOSE_ARIA_LABEL: 'Cerrar modal de creación de proyecto',
+			CLOSE_TOOLTIP: 'Cerrar',
+		},
 	},
 
 	// ==========================

@@ -1,13 +1,28 @@
-// src/common/logger/LogTags.ts
 export enum LogTag {
-	Adapter = 'Adapter',
-	UseBiometricStatus = 'useBiometricStatus',
-	LogFoodSearch = 'LogFoodSearch',
+	// =========================
+	//RA
+	// =========================
+	Adapter = 'Service API',
 	SessionSocket = 'SessionSocket',
 	AuthSession = 'AuthSession',
-	EditProfileState = 'EditProfileState',
+
+	// =========================
+	// BIOMETRIC / SECURITY
+	// =========================
+	UseBiometricStatus = 'UseBiometricStatus',
 	Biometric = 'Biometric',
-	Features = 'Features',
-	maps = 'Maps',
+
+	// =========================
+	// STATE / UI
+	// =========================
+	EditProfileState = 'EditProfileState',
+
+	// =========================
+	// MAP / TRAVEL
+	// =========================
+	Maps = 'Maps',
 	TravelTimeline = 'TravelTimeline',
+	Provider = 'Provider',
+	Cache = 'Cache',
+	AdapterERROR = 'Service Error',
 }

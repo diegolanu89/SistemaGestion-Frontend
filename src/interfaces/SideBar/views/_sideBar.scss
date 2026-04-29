@@ -161,7 +161,6 @@
 .sidebar-item__text {
 	font-size: 14px;
 }
-
 /* =========================
    HAMBURGER
    ========================= */
@@ -173,29 +172,45 @@
 	width: 42px;
 	height: 42px;
 
-	border-radius: 12px;
-	border: 1px solid var(--color-border);
-
-	background: var(--color-surface);
-
 	display: flex;
 	align-items: center;
 	justify-content: center;
 
-	z-index: 1300;
+	border-radius: 12px;
+	border: 1px solid var(--color-primary-opacity-30); // 🔥 más contraste
 
+	background: var(--color-surface);
+	color: var(--color-primary); // 🔥 icono en primario
+
+	z-index: 1300;
 	cursor: pointer;
+
+	box-shadow: 0 4px 12px var(--color-shadow-soft);
 
 	transition:
 		transform 0.2s ease,
-		box-shadow 0.2s ease;
+		box-shadow 0.2s ease,
+		background-color 0.2s ease;
+
+	.material-icons {
+		font-size: 22px;
+		line-height: 1;
+	}
 
 	&:hover {
-		transform: scale(1.05);
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+		background-color: var(--color-primary-opacity-10);
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+		transform: translateY(-1px) scale(1.05);
 	}
 
 	&:active {
+		background-color: var(--color-primary-opacity-18);
 		transform: scale(0.95);
+		box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px var(--color-primary-opacity-35);
 	}
 }

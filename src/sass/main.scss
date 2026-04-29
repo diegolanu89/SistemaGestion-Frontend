@@ -8,6 +8,7 @@
 @use '_fonts';
 @use '_animations';
 @use '_glass';
+@use '_spinner';
 
 /**BASE APP**/
 @use '../interfaces/base/components/loading/authLoading';
@@ -37,3 +38,5 @@
 @use '../interfaces/Proyect/components/_proyectFilter';
 @use '../interfaces/Proyect/views/proyect';
 @use '../interfaces/Proyect/components/_proyectTable';
+@use '../interfaces/Proyect/components/proyectCreateModal';
+@use '../interfaces/Proyect/components/proyectCreateForm';

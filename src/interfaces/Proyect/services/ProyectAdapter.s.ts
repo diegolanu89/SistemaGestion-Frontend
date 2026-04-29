@@ -11,7 +11,7 @@ export class ProyectAdapterFactory {
 	static getAdapter(): ProyectInterface {
 		const { provider } = resolveCapabilities()
 
-		logger.infoTag(LogTag.Adapter, `Using proyect provider: ${provider}`)
+		logger.infoTag(LogTag.Provider, `Using proyect provider: ${provider}`)
 
 		switch (provider) {
 			case 'ers':

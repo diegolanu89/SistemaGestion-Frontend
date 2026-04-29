@@ -23,16 +23,16 @@ export const useProyectRefs = () => {
 				const cached = getCache<ProyectRefs>(PROYECT_CONFIG.CACHE.KEYS.REFS)
 
 				if (cached) {
-					logger.infoTag(LogTag.Adapter, `${LogProyectRefs.CACHE_HIT}`)
+					logger.infoTag(LogTag.Cache, `${LogProyectRefs.CACHE_HIT}`)
 
 					setRefs(cached)
 					setLoading(false)
 					return
 				}
 
-				logger.infoTag(LogTag.Adapter, `${LogProyectRefs.CACHE_MISS}`)
+				logger.infoTag(LogTag.Cache, `${LogProyectRefs.CACHE_MISS}`)
 			} else {
-				logger.infoTag(LogTag.Adapter, LogProyectRefs.CACHE_FORCE)
+				logger.infoTag(LogTag.Cache, LogProyectRefs.CACHE_FORCE)
 			}
 
 			// ==========================
@@ -61,7 +61,7 @@ export const useProyectRefs = () => {
 		} catch (error: unknown) {
 			const err = error instanceof Error ? error : new Error(LogProyectRefs.ERROR_UNKNOWN)
 
-			logger.errorTag(LogTag.Adapter, err)
+			logger.errorTag(LogTag.AdapterERROR, err)
 		} finally {
 			setLoading(false)
 		}

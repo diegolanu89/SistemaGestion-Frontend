@@ -26,7 +26,7 @@ export class AuthAdapterFactory {
 	 */
 	static getAdapter(): LoginInterface {
 		const { provider } = resolveCapabilities()
-		logger.infoTag(LogTag.Adapter, `Using auth provider: ${provider}`)
+		logger.infoTag(LogTag.Provider, `Using auth provider: ${provider}`)
 
 		switch (provider) {
 			case 'ers':

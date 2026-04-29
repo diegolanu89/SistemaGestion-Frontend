@@ -1,0 +1,273 @@
+// ===========================================
+// 🧩 PROJECT CREATE MODAL (Material-like)
+// ===========================================
+
+// ==========================
+// OVERLAY
+// ==========================
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 24px; // aire en pantallas chicas
+
+	background-color: rgba(0, 0, 0, 0.35);
+	backdrop-filter: blur(4px);
+
+	animation: modal-fade-in 0.25s ease;
+}
+
+// ==========================
+// MODAL CONTAINER
+// ==========================
+.modal {
+	width: 100%;
+	max-width: 860px; // ✅ MÁS ANCHO PARA WEB
+	max-height: 100%;
+
+	display: flex;
+	flex-direction: column;
+
+	background-color: var(--color-bg);
+	border-radius: 14px;
+
+	box-shadow:
+		0 10px 25px var(--color-shadow-medium),
+		0 4px 10px var(--color-shadow-soft);
+
+	overflow: hidden; // ✅ SIN overflow acá
+
+	animation: modal-scale-in 0.25s ease;
+}
+
+// ==========================
+// HEADER
+// ==========================
+.modal__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	padding: 16px 20px;
+
+	background-color: var(--color-bg-alt);
+	border-bottom: 1px solid var(--color-border-soft);
+
+	h2 {
+		margin: 0;
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: var(--color-text-primary);
+	}
+
+	button {
+		width: 32px;
+		height: 32px;
+
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		border: none;
+		border-radius: 50%;
+		background: transparent;
+
+		cursor: pointer;
+
+		font-size: 18px;
+		color: var(--color-text-secondary);
+
+		transition: all 0.2s ease;
+
+		&:hover {
+			background-color: var(--color-primary-opacity-08);
+			color: var(--color-primary);
+		}
+
+		&:active {
+			transform: scale(0.9);
+		}
+	}
+}
+
+// ==========================
+// BODY (SCROLL CONTROLADO)
+// ==========================
+.modal__body {
+	position: relative;
+	flex: 1; // ✅ ocupa todo el espacio posible
+	padding: 20px;
+
+	overflow-y: auto;
+	overflow-x: hidden;
+
+	color: var(--color-text-primary);
+	font-size: 0.95rem;
+}
+
+// ==========================
+// ACTIONS (FOOTER)
+// ==========================
+.modal__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+
+	padding: 16px 20px;
+
+	border-top: 1px solid var(--color-border-soft);
+	background-color: var(--color-bg-alt);
+}
+
+// ==========================
+// BOTONES – ESTÁNDAR SUBMIT
+// ==========================
+.proyect-create-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	height: 44px;
+	padding: 0 16px;
+
+	border-radius: 10px;
+	border: none;
+
+	font-size: 14px;
+	font-weight: 600;
+
+	cursor: pointer;
+	transition: all 0.2s ease;
+
+	position: relative;
+
+	box-shadow: 0 4px 12px var(--color-shadow-soft);
+
+	&:active {
+		transform: scale(0.96);
+	}
+
+	&:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	// Tooltip reutilizable
+	&::after {
+		content: attr(data-tooltip);
+		position: absolute;
+		bottom: -36px;
+		left: 50%;
+		transform: translateX(-50%) scale(0.9);
+
+		background: var(--color-bg-alt);
+		color: var(--color-text-primary);
+
+		padding: 6px 10px;
+		border-radius: 6px;
+
+		font-size: 12px;
+		white-space: nowrap;
+
+		opacity: 0;
+		pointer-events: none;
+
+		box-shadow: 0 2px 6px var(--color-shadow-medium);
+		transition: all 0.2s ease;
+	}
+
+	&:hover::after {
+		opacity: 1;
+		transform: translateX(-50%) scale(1);
+	}
+}
+
+// ✅ BOTÓN PRINCIPAL (CREAR / ACEPTAR)
+.proyect-create-btn--confirm {
+	background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+	color: var(--color-text-inverse);
+
+	&:hover {
+		filter: brightness(1.05);
+	}
+}
+
+// ✅ BOTÓN SECUNDARIO (CANCELAR)
+.proyect-create-btn--cancel {
+	background: var(--color-bg-alt);
+	color: var(--color-primary);
+
+	border: 1px solid var(--color-border);
+	box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+	&:hover {
+		background: var(--color-primary-opacity-08);
+	}
+}
+
+// ==========================
+// RESPONSIVE
+// ==========================
+@media (max-width: 900px) {
+	.modal {
+		max-width: 720px;
+		border-radius: 12px;
+	}
+}
+
+@media (max-width: 600px) {
+	.modal-overlay {
+		padding: 0;
+	}
+
+	.modal {
+		max-width: 100%;
+		height: 100vh;
+		border-radius: 0;
+	}
+}
+
+// ==========================
+// ANIMATIONS
+// ==========================
+@keyframes modal-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes modal-scale-in {
+	from {
+		transform: scale(0.96);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+.modal-loading {
+	position: absolute;
+	inset: 0;
+	z-index: 20;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+
+	background: rgba(255, 255, 255, 0.75);
+	backdrop-filter: blur(2px);
+
+	font-weight: 600;
+	color: var(--color-primary);
+}

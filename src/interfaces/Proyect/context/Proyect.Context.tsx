@@ -11,7 +11,23 @@ interface IProviderProps {
 	children: ReactNode
 }
 
+type CreateStatus = 'idle' | 'loading' | 'success' | 'error'
+
 export const ProyectProvider = ({ children }: IProviderProps) => {
+	// ==========================
+	// 🔹 MODAL STATE
+	// ==========================
+	const [isCreateOpen, setIsCreateOpen] = useState(false)
+
+	const openCreate = () => setIsCreateOpen(true)
+	const closeCreate = () => setIsCreateOpen(false)
+
+	// ==========================
+	// 🔹 CREATE UX STATE (GLOBAL)
+	// ==========================
+	const [createStatus, setCreateStatus] = useState<CreateStatus>('idle')
+	const [createMessage, setCreateMessage] = useState<string | null>(null)
+
 	// ==========================
 	// 🔹 DATA
 	// ==========================
@@ -23,7 +39,7 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 	const { refs, loading: loadingRefs, refetch: refetchRefs } = useProyectRefs()
 
 	// ==========================
-	// 🔹 UI STATE
+	// 🔹 FILTER STATE
 	// ==========================
 	const [search, setSearch] = useState<string>('')
 	const [status, setStatus] = useState<Status | 'all'>('all')
@@ -31,7 +47,7 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 	const [type, setType] = useState<Type | 'all'>('all')
 
 	// ==========================
-	// 🔹 FILTER
+	// 🔹 FILTERED DATA
 	// ==========================
 	const filtered = useMemo(() => {
 		const searchLower = search.toLowerCase()
@@ -60,7 +76,7 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 	}
 
 	// ==========================
-	// 🔹 LOADING GLOBAL
+	// 🔹 GLOBAL LOADING
 	// ==========================
 	const loading = loadingData || loadingRefs
 
@@ -69,6 +85,7 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 	// ==========================
 	const contextValue = useMemo<IProyectContext>(
 		() => ({
+			// filtros
 			search,
 			status,
 			category,
@@ -80,12 +97,23 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 			setType,
 
 			filtered,
-			refs, // 🔥 clave para filtros dinámicos
+			refs,
 
 			loading,
 			refetch,
+
+			// modal create
+			isCreateOpen,
+			openCreate,
+			closeCreate,
+
+			// ✅ create UX
+			createStatus,
+			createMessage,
+			setCreateStatus,
+			setCreateMessage,
 		}),
-		[search, status, category, type, filtered, refs, loading]
+		[search, status, category, type, filtered, refs, loading, isCreateOpen, createStatus, createMessage]
 	)
 
 	return <proyectContext.Provider value={contextValue}>{children}</proyectContext.Provider>
