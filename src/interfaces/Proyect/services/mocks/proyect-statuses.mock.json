@@ -1,0 +1,23 @@
+[
+	{
+		"Id": 1,
+		"Code": "activo",
+		"Label": "Activo",
+		"Description": "Proyecto en ejecución",
+		"IsActive": true
+	},
+	{
+		"Id": 2,
+		"Code": "pausado",
+		"Label": "Pausado",
+		"Description": "Proyecto temporalmente detenido",
+		"IsActive": true
+	},
+	{
+		"Id": 3,
+		"Code": "finalizado",
+		"Label": "Finalizado",
+		"Description": "Proyecto completado",
+		"IsActive": true
+	}
+]

@@ -1,0 +1,11 @@
+export enum LogProyectRefs {
+	CACHE_HIT = '[PROYECT][REFS][CACHE] HIT',
+	CACHE_MISS = '[PROYECT][REFS][CACHE] MISS',
+	CACHE_SET = '[PROYECT][REFS][CACHE] SET',
+	CACHE_FORCE = '[PROYECT][REFS][CACHE] FORCE REFRESH',
+
+	FETCH_START = '[PROYECT][REFS] Fetching refs...',
+	FETCH_SUCCESS = '[PROYECT][REFS] Fetch success',
+
+	ERROR_UNKNOWN = '[PROYECT][REFS] Unknown error',
+}

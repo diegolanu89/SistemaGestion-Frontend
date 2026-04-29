@@ -1,9 +1,10 @@
-@import './variables';
+@use './variables' as *;
 
 // ==========================
 // 🌞 LIGHT THEME
 // ==========================
 :root {
+	/* BASE */
 	--color-primary: #{$color-primary};
 	--color-primary-light: #{$color-primary-light};
 	--color-primary-dark: #{$color-primary-dark};
@@ -12,11 +13,13 @@
 	--color-secondary-light: #{$color-secondary-light};
 	--color-secondary-dark: #{$color-secondary-dark};
 
+	/* STATUS */
 	--color-success: #{$color-success};
 	--color-warning: #{$color-warning};
 	--color-error: #{$color-error};
 	--color-info: #{$color-info};
 
+	/* UI */
 	--color-border: #{$color-gray-200};
 	--color-hover: #{$color-gray-100};
 
@@ -24,10 +27,24 @@
 	--color-bg-alt: #{$color-bg-alt};
 	--color-surface: #ffffff;
 
+	/* TEXT */
 	--color-text-primary: #{$color-text-primary};
 	--color-text-secondary: #{$color-text-secondary};
 	--color-text-inverse: #{$color-text-inverse};
 
+	/* 🔥 TOKENS DERIVADOS (DESDE SCSS) */
+	--color-primary-opacity-08: #{$color-primary-opacity-08};
+	--color-primary-opacity-15: #{$color-primary-opacity-15};
+
+	--color-error-opacity-08: #{$color-error-opacity-08};
+	--color-error-opacity-15: #{$color-error-opacity-15};
+
+	--color-shadow-soft: #{$color-shadow-soft};
+	--color-shadow-medium: #{$color-shadow-medium};
+
+	--color-border-soft: #{$color-border-soft};
+
+	/* GRADIENT */
 	--bg-gradient: radial-gradient(circle at top, rgba(37, 99, 235, 0.18), transparent 60%);
 }
 
@@ -35,6 +52,7 @@
 // 🌙 DARK THEME
 // ==========================
 .theme-dark {
+	/* BASE */
 	--color-primary: #3b82f6;
 	--color-primary-light: #60a5fa;
 	--color-primary-dark: #1d4ed8;
@@ -43,11 +61,13 @@
 	--color-secondary-light: #6ee7b7;
 	--color-secondary-dark: #059669;
 
+	/* STATUS */
 	--color-success: #4ade80;
 	--color-warning: #fbbf24;
 	--color-error: #f87171;
 	--color-info: #38bdf8;
 
+	/* UI */
 	--color-border: #374151;
 	--color-hover: #1f2937;
 
@@ -55,9 +75,23 @@
 	--color-bg-alt: #1f2937;
 	--color-surface: #1f2937;
 
+	/* TEXT */
 	--color-text-primary: #f9fafb;
 	--color-text-secondary: #9ca3af;
 	--color-text-inverse: #111827;
 
+	/* 🔥 TOKENS DERIVADOS (AJUSTADOS PARA DARK) */
+	--color-primary-opacity-08: rgba(59, 130, 246, 0.08);
+	--color-primary-opacity-15: rgba(59, 130, 246, 0.15);
+
+	--color-error-opacity-08: rgba(248, 113, 113, 0.08);
+	--color-error-opacity-15: rgba(248, 113, 113, 0.15);
+
+	--color-shadow-soft: rgba(0, 0, 0, 0.25);
+	--color-shadow-medium: rgba(0, 0, 0, 0.4);
+
+	--color-border-soft: rgba(255, 255, 255, 0.06);
+
+	/* GRADIENT */
 	--bg-gradient: radial-gradient(circle at top, rgba(59, 130, 246, 0.12), transparent 65%);
 }

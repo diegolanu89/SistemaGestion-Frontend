@@ -32,3 +32,8 @@
 /**HOME (Idle)**/
 @use '../interfaces/Idle/views/idle';
 @use '../interfaces/Idle/components/featureGrid';
+
+/**PROYECT**/
+@use '../interfaces/Proyect/components/_proyectFilter';
+@use '../interfaces/Proyect/views/proyect';
+@use '../interfaces/Proyect/components/_proyectTable';

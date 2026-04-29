@@ -11,6 +11,7 @@ import RedirectHome from './interfaces/base/components/redirect/RedirectHome'
 
 import { IdleProtectedRoutes } from './interfaces/Idle/routes/routes'
 import { LoginPublicRoutes } from './interfaces/Login/routes/routes'
+import { ProyectPublicRoutes } from './interfaces/Proyect/routes/routes'
 
 import { IDLE_PATHS } from './interfaces/Idle/routes/paths'
 import { LOGIN_PATHS } from './interfaces/Login/routes/paths'
@@ -38,6 +39,8 @@ const AppClient = () => {
 										<Route path="/" element={<RedirectHome authenticatedPath={IDLE_PATHS.HOME} unauthenticatedPath={LOGIN_PATHS.LOGIN} />} />
 
 										{LoginPublicRoutes()}
+
+										{ProyectPublicRoutes()}
 
 										<Route element={<ProtectedRoute redirectTo={LOGIN_PATHS.LOGIN} />}>{IdleProtectedRoutes()}</Route>
 									</Routes>
