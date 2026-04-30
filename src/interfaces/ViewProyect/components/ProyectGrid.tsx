@@ -2,9 +2,11 @@
 
 import { FC, useMemo } from 'react'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
+import { useNavigate } from 'react-router-dom'
 
 export const ProyectGrid: FC = () => {
 	const { projects, filters, loading, error } = useProyectViewContext()
+	const navigate = useNavigate()
 
 	const filteredProjects = useMemo(() => {
 		return projects.filter((p) => {
@@ -37,7 +39,7 @@ export const ProyectGrid: FC = () => {
 				const progress = p.hourlyRate ?? 0
 
 				return (
-					<div className="card card--project" key={p.id}>
+					<div className="card card--project" key={p.id} onClick={() => navigate(`/projects/${p.id}`)}>
 						{/* HEADER */}
 						<div className="card__header">
 							<div className="card__title">
@@ -89,17 +91,18 @@ export const ProyectGrid: FC = () => {
 								<span className="metric__label">BAC</span>
 								<span className="metric__value">${p.bacTotalCost}</span>
 							</button>
-
 							<button className="metric metric--secondary" data-tooltip="Horas totales del proyecto">
 								<span className="metric__label">Horas</span>
 								<span className="metric__value">{p.bacTotalHours}h</span>
 							</button>
-
+							<button className="metric metric--etc" data-tooltip="Estimación restante del proyecto">
+								<span className="metric__label">ETC</span>
+								<span className="metric__value">{p.etcHours ?? 0}h</span>
+							</button>
 							<button className="metric metric--success" data-tooltip="Costo base inicial">
 								<span className="metric__label">Base $</span>
 								<span className="metric__value">${p.bacBaseCost}</span>
 							</button>
-
 							<button className="metric metric--warning" data-tooltip="Horas base iniciales">
 								<span className="metric__label">Base Hs</span>
 								<span className="metric__value">{p.bacBaseHours}h</span>

@@ -27,6 +27,8 @@ export interface ProjectDto {
 	updatedAt?: string | null
 
 	filter?: unknown | null
+
+	etcHours?: number
 }
 
 export interface UpdateBacDto {

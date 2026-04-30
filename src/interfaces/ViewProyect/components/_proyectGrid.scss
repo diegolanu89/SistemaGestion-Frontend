@@ -77,6 +77,7 @@
 }
 
 /* STATUS */
+
 .card__status {
 	padding: 4px 10px;
 	border-radius: 999px;
@@ -117,7 +118,7 @@
 
 .card__metrics {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(5, 1fr); /* 🔥 ahora 5 métricas */
 	gap: 8px;
 	margin-top: 10px;
 }
@@ -189,7 +190,7 @@
 	}
 }
 
-/* VARIANTES (SOLO PALETA + TRANSPARENCIA) */
+/* VARIANTES BASE */
 
 .metric--primary {
 	background: var(--color-primary-opacity-10);
@@ -211,6 +212,35 @@
 	color: var(--color-warning);
 }
 
+/* 🔥 ETC DESTACADO (CLAVE) */
+
+.metric--etc {
+	background: linear-gradient(135deg, var(--color-primary-opacity-20), var(--color-primary-opacity-10));
+
+	color: var(--color-primary);
+
+	border: 1px solid var(--color-primary);
+
+	transform: scale(1.08);
+
+	box-shadow: 0 6px 16px var(--color-shadow-soft);
+	z-index: 1;
+}
+
+.metric--etc .metric__label {
+	font-size: 11px;
+	font-weight: 700;
+	opacity: 1;
+	letter-spacing: 0.5px;
+}
+
+.metric--etc .metric__value {
+	font-size: 16px;
+	font-weight: 700;
+}
+
+/* PROGRESS */
+
 .card__progress-wrapper {
 	display: flex;
 	align-items: center;
@@ -218,7 +248,6 @@
 	width: 100%;
 }
 
-/* BARRA */
 .card__progress {
 	flex: 1;
 	height: 10px;
@@ -238,7 +267,6 @@
 		background 0.3s ease;
 }
 
-/* LABEL A LA DERECHA */
 .card__progress-label {
 	min-width: 40px;
 	text-align: right;

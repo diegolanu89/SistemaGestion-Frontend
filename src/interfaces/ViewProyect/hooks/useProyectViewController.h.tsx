@@ -6,14 +6,21 @@ import { proyectViewAdapter } from '../services/ProyectViewAdapter.s'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import type { ProjectDto } from '../models/ProyectViewDTO.m'
+import { etcAdapter } from '../../Etc/service/EtcAdapter'
+
+type ProjectWithEtc = ProjectDto & {
+	etcHours?: number
+}
 
 type CacheEntry = {
-	data: ProjectDto[]
+	data: ProjectWithEtc[]
 	total: number
 	timestamp: number
 }
 
 const CACHE_KEY = 'projects_cache'
+const ETC_CACHE_KEY = 'projects_etc_cache'
+
 const CACHE_TTL = 1000 * 60 * 5
 
 export const useProyectViewController = () => {
@@ -23,6 +30,10 @@ export const useProyectViewController = () => {
 	const didFetchRef = useRef(false)
 
 	const getKey = () => `${page}-${perPage}`
+
+	// =========================
+	// CACHE HELPERS
+	// =========================
 
 	const getCache = (key: string): CacheEntry | null => {
 		try {
@@ -65,6 +76,29 @@ export const useProyectViewController = () => {
 		} catch {}
 	}
 
+	// =========================
+	// ETC CACHE (por projectId)
+	// =========================
+
+	const getEtcCache = (): Record<number, number> => {
+		try {
+			const raw = localStorage.getItem(ETC_CACHE_KEY)
+			return raw ? JSON.parse(raw) : {}
+		} catch {
+			return {}
+		}
+	}
+
+	const setEtcCache = (cache: Record<number, number>) => {
+		try {
+			localStorage.setItem(ETC_CACHE_KEY, JSON.stringify(cache))
+		} catch {}
+	}
+
+	// =========================
+	// FETCH
+	// =========================
+
 	const fetchProjects = useCallback(
 		async (force = false) => {
 			const key = getKey()
@@ -96,29 +130,66 @@ export const useProyectViewController = () => {
 			inFlightRef.current = true
 
 			try {
-				logger.infoTag(LogTag.Adapter, '[PROJECT] Fetch start', { key })
-
 				setLoading(true)
 				setError(null)
+
+				logger.infoTag(LogTag.Adapter, '[PROJECT] Fetch start', { key })
 
 				const res = await proyectViewAdapter.getAll({
 					page,
 					per_page: perPage,
 				})
 
+				// =========================
+				// ETC ORQUESTACIÓN
+				// =========================
+
+				const etcCache = getEtcCache()
+
+				const enriched: ProjectWithEtc[] = await Promise.all(
+					res.data.map(async (p) => {
+						if (!force && etcCache[p.id]) {
+							return {
+								...p,
+								etcHours: etcCache[p.id],
+							}
+						}
+
+						try {
+							const etc = await etcAdapter.getByProject(p.id)
+
+							const totalEtc = etc.records.reduce((acc, r) => acc + Number(r.hours), 0)
+
+							etcCache[p.id] = totalEtc
+
+							return {
+								...p,
+								etcHours: totalEtc,
+							}
+						} catch {
+							return {
+								...p,
+								etcHours: 0,
+							}
+						}
+					})
+				)
+
+				setEtcCache(etcCache)
+
 				logger.infoTag(LogTag.Adapter, '[PROJECT] Fetch success', {
 					key,
-					count: res.data.length,
+					count: enriched.length,
 					total: res.total,
 				})
 
 				setCache(key, {
-					data: res.data,
+					data: enriched,
 					total: res.total,
 					timestamp: Date.now(),
 				})
 
-				setProjects(res.data)
+				setProjects(enriched)
 				setTotal(res.total)
 			} catch (e: unknown) {
 				logger.errorTag(LogTag.Adapter, '[PROJECT] Fetch error', e)
@@ -132,6 +203,10 @@ export const useProyectViewController = () => {
 		},
 		[page, perPage]
 	)
+
+	// =========================
+	// EFFECTS
+	// =========================
 
 	useEffect(() => {
 		setRefetch(() => fetchProjects(true))

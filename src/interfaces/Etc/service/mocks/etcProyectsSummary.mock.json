@@ -1,0 +1,16 @@
+[
+	{
+		"id": 1,
+		"name": "Proyecto Alpha",
+		"code": "30.001",
+		"client_id": 10,
+		"client_name": "Cliente A"
+	},
+	{
+		"id": 2,
+		"name": "Proyecto Beta",
+		"code": "30.002",
+		"client_id": 20,
+		"client_name": "Cliente B"
+	}
+]
