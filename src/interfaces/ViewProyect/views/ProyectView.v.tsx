@@ -13,10 +13,11 @@ export const ProyectView: FC = () => {
 		<div className="proyect-container">
 			<ProyectViewAlert />
 
-			<ProyectViewFilters />
-
 			<div className="proyect-view__body">
-				<ProyectGrid />
+				<div className="proyect-view__content">
+					<ProyectViewFilters />
+					<ProyectGrid />
+				</div>
 
 				{loading && <SectionLoader text="Cargando proyectos…" />}
 			</div>
