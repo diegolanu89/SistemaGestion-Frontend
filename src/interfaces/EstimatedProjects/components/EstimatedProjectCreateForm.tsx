@@ -4,6 +4,8 @@ import { useEstimatedProjectContext } from '../hooks/useEstimatedProjectContext.
 import { ESTIMATED_PROJECT_CONFIG } from '../models/EstimatedProjectConfig.m'
 import { ESTIMATED_PROJECT_PATHS } from '../routes/paths'
 import { UserRefDto } from '../models/EstimatedProjectDTO.m'
+import { getMonthsFromNow } from '../utils/months'
+import { EstimatedProjectMonthlyGrid, MonthlyHoursState } from './EstimatedProjectMonthlyGrid'
 
 interface FormState {
 	clientId: string
@@ -11,6 +13,8 @@ interface FormState {
 	projectName: string
 	code: string
 	selectedUserIds: Set<number>
+	monthCount: number
+	monthlyHours: MonthlyHoursState
 }
 
 const initialForm: FormState = {
@@ -19,6 +23,8 @@ const initialForm: FormState = {
 	projectName: '',
 	code: '',
 	selectedUserIds: new Set(),
+	monthCount: 3,
+	monthlyHours: {},
 }
 
 export const EstimatedProjectCreateForm: FC = () => {
@@ -38,43 +44,78 @@ export const EstimatedProjectCreateForm: FC = () => {
 		return active.filter((u) => u.FullName.toLowerCase().includes(term) || u.Username.toLowerCase().includes(term))
 	}, [refs, userSearch])
 
+	const selectedUsers = useMemo<UserRefDto[]>(() => {
+		if (!refs?.users) return []
+		return refs.users.filter((u) => form.selectedUserIds.has(u.Id))
+	}, [refs, form.selectedUserIds])
+
+	const months = useMemo(() => getMonthsFromNow(form.monthCount), [form.monthCount])
+
 	const toggleUser = (userId: number) => {
 		setForm((prev) => {
 			const next = new Set(prev.selectedUserIds)
-			if (next.has(userId)) next.delete(userId)
-			else next.add(userId)
-			return { ...prev, selectedUserIds: next }
+			let nextHours = prev.monthlyHours
+			if (next.has(userId)) {
+				next.delete(userId)
+				if (nextHours[userId]) {
+					const { [userId]: _drop, ...rest } = nextHours
+					nextHours = rest
+				}
+			} else {
+				next.add(userId)
+			}
+			return { ...prev, selectedUserIds: next, monthlyHours: nextHours }
 		})
 	}
 
-	const selectAllVisible = () => {
+	const toggleAllVisible = () => {
 		setForm((prev) => {
+			if (prev.selectedUserIds.size > 0) {
+				return { ...prev, selectedUserIds: new Set(), monthlyHours: {} }
+			}
 			const next = new Set(prev.selectedUserIds)
 			filteredUsers.forEach((u) => next.add(u.Id))
 			return { ...prev, selectedUserIds: next }
 		})
 	}
 
-	const clearAll = () => {
-		setForm((prev) => ({ ...prev, selectedUserIds: new Set() }))
+	const updateHours = (userId: number, monthKey: string, hours: number) => {
+		setForm((prev) => {
+			const userBucket = { ...(prev.monthlyHours[userId] ?? {}), [monthKey]: hours }
+			return { ...prev, monthlyHours: { ...prev.monthlyHours, [userId]: userBucket } }
+		})
 	}
+
+	const setMonthCount = (count: number) => setForm((prev) => ({ ...prev, monthCount: count }))
 
 	const handleBack = () => navigate(ESTIMATED_PROJECT_PATHS.LIST)
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault()
+
+		const resources = selectedUsers.map((u) => {
+			const userBucket = form.monthlyHours[u.Id] ?? {}
+			const monthly: Record<string, number> = {}
+			for (const [k, v] of Object.entries(userBucket)) {
+				if (v > 0) monthly[k] = v
+			}
+			return { UserId: u.Id, UserName: u.FullName, MonthlyHours: monthly }
+		})
+
 		// 🔥 mock-only: solo log y volvemos al listado
 		console.log('[ESTIMATED-PROYECT] submit', {
 			clientId: form.clientId ? Number(form.clientId) : null,
 			newClientName: form.newClientName.trim() || null,
 			projectName: form.projectName.trim(),
 			code: form.code.trim() || null,
-			userIds: [...form.selectedUserIds],
+			resources,
 		})
 		navigate(ESTIMATED_PROJECT_PATHS.LIST)
 	}
 
 	const canSubmit = (form.clientId !== '' || form.newClientName.trim() !== '') && form.projectName.trim() !== '' && form.selectedUserIds.size > 0
+
+	const toggleAllLabel = form.selectedUserIds.size > 0 ? 'Deseleccionar todos' : FORM.FIELDS.RESOURCES.SELECT_ALL
 
 	return (
 		<form className="estimated-project-form" onSubmit={handleSubmit}>
@@ -88,9 +129,7 @@ export const EstimatedProjectCreateForm: FC = () => {
 			<div className="estimated-project-form__grid">
 				{/* CLIENTE */}
 				<div className="estimated-project-form__field">
-					<label className="estimated-project-form__label">
-						{FORM.FIELDS.CLIENT.LABEL} *
-					</label>
+					<label className="estimated-project-form__label">{FORM.FIELDS.CLIENT.LABEL} *</label>
 
 					<select
 						className="estimated-project-form__select"
@@ -118,9 +157,7 @@ export const EstimatedProjectCreateForm: FC = () => {
 
 				{/* PROYECTO */}
 				<div className="estimated-project-form__field">
-					<label className="estimated-project-form__label">
-						{FORM.FIELDS.PROJECT_NAME.LABEL} *
-					</label>
+					<label className="estimated-project-form__label">{FORM.FIELDS.PROJECT_NAME.LABEL} *</label>
 					<input
 						className="estimated-project-form__input"
 						placeholder={FORM.FIELDS.PROJECT_NAME.PLACEHOLDER}
@@ -157,14 +194,9 @@ export const EstimatedProjectCreateForm: FC = () => {
 				</div>
 
 				<div className="estimated-project-form__resources-actions">
-					<button type="button" className="estimated-project-form__btn-ghost" onClick={selectAllVisible}>
-						{FORM.FIELDS.RESOURCES.SELECT_ALL}
+					<button type="button" className="estimated-project-form__btn-ghost" onClick={toggleAllVisible}>
+						{toggleAllLabel}
 					</button>
-					{form.selectedUserIds.size > 0 && (
-						<button type="button" className="estimated-project-form__btn-ghost" onClick={clearAll}>
-							{FORM.FIELDS.RESOURCES.CLEAR_ALL}
-						</button>
-					)}
 					<span className="estimated-project-form__count">{form.selectedUserIds.size} seleccionados</span>
 				</div>
 
@@ -182,6 +214,16 @@ export const EstimatedProjectCreateForm: FC = () => {
 					{filteredUsers.length === 0 && <div className="estimated-project-form__empty">Sin resultados</div>}
 				</div>
 			</section>
+
+			{/* GRILLA MENSUAL DE HORAS (RF-09) */}
+			<EstimatedProjectMonthlyGrid
+				months={months}
+				monthCount={form.monthCount}
+				onMonthCountChange={setMonthCount}
+				selectedUsers={selectedUsers}
+				values={form.monthlyHours}
+				onChange={updateHours}
+			/>
 
 			{/* ACTIONS */}
 			<footer className="estimated-project-form__actions">

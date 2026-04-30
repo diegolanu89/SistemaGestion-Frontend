@@ -82,6 +82,18 @@ export const ESTIMATED_PROJECT_CONFIG = {
 			CANCEL: { LABEL: 'Cancelar', TOOLTIP: 'Cancelar y volver al listado' },
 			CONFIRM: { LABEL: 'Guardar', TOOLTIP: 'Guardar proyecto estimado' },
 		},
+
+		MONTHLY_GRID: {
+			TITLE: 'Horas por mes',
+			MONTH_COUNT_LABEL: 'Cantidad de meses',
+			MONTH_COUNT_HINT: 'Desde el mes actual hacia adelante',
+			RULE_HINT: 'Máx. por celda = capacidad del mes − horas en ETC − horas en otros proyectos estimados. No se puede superar ese valor.',
+			USER_COL_HEADER: 'Usuario',
+			TOTAL_USER_HEADER: 'Total usuario',
+			TOTAL_MONTH_HEADER: 'Total por mes',
+			MAX_PREFIX: 'Máx.',
+			HOUR_SUFFIX: 'h',
+		},
 	},
 
 	// ==========================

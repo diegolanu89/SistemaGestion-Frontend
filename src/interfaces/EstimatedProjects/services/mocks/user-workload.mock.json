@@ -1,0 +1,28 @@
+[
+	{
+		"UserId": 25,
+		"MonthKey": "2026-04",
+		"Assignments": [
+			{ "Kind": "R", "ProjectCode": "30.103", "ProjectLabel": "Sudameris - Ainsurance", "Hours": 40 },
+			{ "Kind": "R", "ProjectCode": "30.099", "ProjectLabel": "ZU CHILE - Generador de PDF", "Hours": 16 },
+			{ "Kind": "E", "ProjectCode": null, "ProjectLabel": "Clasificacion Siniestros", "Hours": 130 },
+			{ "Kind": "E", "ProjectCode": null, "ProjectLabel": "FSAT", "Hours": 80 }
+		]
+	},
+	{
+		"UserId": 25,
+		"MonthKey": "2026-05",
+		"Assignments": [
+			{ "Kind": "R", "ProjectCode": null, "ProjectLabel": "FSAT", "Hours": 80 },
+			{ "Kind": "E", "ProjectCode": null, "ProjectLabel": "Clasificacion Siniestros", "Hours": 70 }
+		]
+	},
+	{
+		"UserId": 26,
+		"MonthKey": "2026-04",
+		"Assignments": [
+			{ "Kind": "R", "ProjectCode": "30.103", "ProjectLabel": "Sudameris - Ainsurance", "Hours": 60 },
+			{ "Kind": "R", "ProjectCode": "30.099", "ProjectLabel": "ZU CHILE - Generador de PDF", "Hours": 4 }
+		]
+	}
+]

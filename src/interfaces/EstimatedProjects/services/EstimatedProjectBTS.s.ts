@@ -7,6 +7,8 @@ import {
 	UpdateEstimatedProjectDto,
 	ClientRefDto,
 	UserRefDto,
+	MonthlyCapacityDto,
+	UserMonthWorkloadDto,
 } from '../models/EstimatedProjectDTO.m'
 
 import logger from '../../base/controllers/Logger.c'
@@ -115,6 +117,42 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 			const res = await fetch(`${BASE_URL}/users`)
 			if (!res.ok) throw new Error(`Error fetching users (status=${res.status})`)
 			return (await res.json()) as UserRefDto[]
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+			logger.errorTag(LogTag.Adapter, err)
+			throw err
+		}
+	}
+
+	// ==========================
+	// 🔹 CAPACITY (RF-09)
+	// ==========================
+	async getMonthlyCapacities(monthKeys: string[]): Promise<MonthlyCapacityDto[]> {
+		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] getMonthlyCapacities -> ${monthKeys.length} meses`)
+
+		try {
+			const qs = monthKeys.map((m) => `months=${encodeURIComponent(m)}`).join('&')
+			const res = await fetch(`${BASE_URL}/capacity/monthly?${qs}`)
+			if (!res.ok) throw new Error(`Error fetching monthly capacities (status=${res.status})`)
+			return (await res.json()) as MonthlyCapacityDto[]
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+			logger.errorTag(LogTag.Adapter, err)
+			throw err
+		}
+	}
+
+	async getUserWorkload(userIds: number[], monthKeys: string[]): Promise<UserMonthWorkloadDto[]> {
+		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] getUserWorkload -> users=${userIds.length} months=${monthKeys.length}`)
+
+		try {
+			const res = await fetch(`${BASE_URL}/capacity/workload`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ userIds, monthKeys }),
+			})
+			if (!res.ok) throw new Error(`Error fetching user workload (status=${res.status})`)
+			return (await res.json()) as UserMonthWorkloadDto[]
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)

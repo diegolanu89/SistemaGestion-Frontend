@@ -6,6 +6,8 @@ import {
 	UpdateEstimatedProjectDto,
 	ClientRefDto,
 	UserRefDto,
+	MonthlyCapacityDto,
+	UserMonthWorkloadDto,
 } from './EstimatedProjectDTO.m'
 
 export interface EstimatedProjectInterface {
@@ -28,4 +30,11 @@ export interface EstimatedProjectInterface {
 	getClients(): Promise<ClientRefDto[]>
 
 	getUsers(): Promise<UserRefDto[]>
+
+	// ==========================
+	// CAPACITY (RF-09)
+	// ==========================
+	getMonthlyCapacities(monthKeys: string[]): Promise<MonthlyCapacityDto[]>
+
+	getUserWorkload(userIds: number[], monthKeys: string[]): Promise<UserMonthWorkloadDto[]>
 }

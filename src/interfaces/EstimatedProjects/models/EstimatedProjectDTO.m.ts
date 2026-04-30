@@ -18,6 +18,31 @@ export interface UserRefDto {
 }
 
 // ==========================
+// 🔹 CAPACITY (RF-09)
+// ==========================
+
+/** R = Proyecto real (operativo) | E = Proyecto estimado (potencial) */
+export type AssignmentKind = 'R' | 'E'
+
+export interface UserAssignmentDto {
+	Kind: AssignmentKind
+	ProjectCode: string | null
+	ProjectLabel: string
+	Hours: number
+}
+
+export interface UserMonthWorkloadDto {
+	UserId: number
+	MonthKey: string
+	Assignments: UserAssignmentDto[]
+}
+
+export interface MonthlyCapacityDto {
+	MonthKey: string
+	AvailableHours: number
+}
+
+// ==========================
 // 🔹 RESOURCE ASSIGNMENT
 // ==========================
 

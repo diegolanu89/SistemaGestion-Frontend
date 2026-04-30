@@ -1,0 +1,254 @@
+/* estimatedProjectGrid.scss — RF-09 grilla de capacity */
+
+.estimated-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+
+	&__header {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	&__title {
+		font-size: 15px;
+		font-weight: 600;
+		margin: 0;
+		color: var(--color-text-primary);
+	}
+
+	&__count {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		label {
+			font-size: 13px;
+			color: var(--color-text-primary);
+		}
+
+		input {
+			width: 70px;
+			height: 32px;
+			padding: 0 8px;
+			border: 1px solid var(--color-border);
+			border-radius: 6px;
+			background: var(--color-surface);
+			color: var(--color-text-primary);
+			font-size: 14px;
+
+			&:focus {
+				outline: none;
+				border-color: var(--color-primary);
+			}
+		}
+	}
+
+	&__hint {
+		font-size: 12px;
+		color: var(--color-text-secondary);
+		font-style: italic;
+	}
+
+	&__rule {
+		margin: 0;
+		font-size: 12px;
+		color: var(--color-primary);
+		font-style: italic;
+	}
+
+	&__table-wrapper {
+		border: 1px solid var(--color-border);
+		border-radius: 10px;
+		background: var(--color-surface);
+		overflow-x: auto;
+	}
+
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 13px;
+
+		thead th {
+			text-align: left;
+			padding: 10px 12px;
+			font-weight: 600;
+			color: var(--color-text-secondary);
+			border-bottom: 1px solid var(--color-border);
+			background: var(--color-bg-alt);
+			vertical-align: top;
+		}
+
+		tbody td,
+		tfoot td {
+			padding: 10px 12px;
+			border-bottom: 1px solid var(--color-border);
+			color: var(--color-text-primary);
+			vertical-align: top;
+		}
+
+		tbody tr:last-child td {
+			border-bottom: 1px solid var(--color-border);
+		}
+
+		tfoot td {
+			background: var(--color-bg-alt);
+			font-weight: 600;
+			border-bottom: none;
+		}
+	}
+
+	&__col-user {
+		width: 200px;
+	}
+
+	&__col-month {
+		min-width: 220px;
+	}
+
+	&__col-total {
+		width: 100px;
+		background: var(--color-primary-opacity-08);
+		color: var(--color-text-primary);
+		text-align: center;
+	}
+
+	&__month-name {
+		font-size: 13px;
+		color: var(--color-text-primary);
+		font-weight: 600;
+	}
+
+	&__month-cap {
+		font-size: 12px;
+		color: var(--color-text-secondary);
+		font-weight: 400;
+	}
+
+	&__user {
+		font-weight: 500;
+		color: var(--color-text-primary);
+	}
+
+	&__cell {
+		/* keep default table-cell display so columns align correctly */
+		vertical-align: top;
+	}
+
+	&__cell-inner {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+
+		input {
+			width: 80px;
+			height: 30px;
+			padding: 0 8px;
+			border: 1px solid var(--color-border);
+			border-radius: 6px;
+			background: var(--color-surface);
+			color: var(--color-text-primary);
+			font-size: 13px;
+
+			&:focus {
+				outline: none;
+				border-color: var(--color-primary);
+			}
+
+			&:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+		}
+	}
+
+	&__max {
+		font-size: 11px;
+		color: var(--color-text-secondary);
+	}
+
+	&__chips {
+		list-style: none;
+		margin: 4px 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	&__total {
+		text-align: center;
+
+		&--user {
+			background: var(--color-primary-opacity-08);
+			color: var(--color-text-primary);
+			font-weight: 600;
+		}
+
+		&--month {
+			color: var(--color-text-primary);
+		}
+
+		&--grand {
+			background: var(--color-primary-opacity-15);
+			color: var(--color-text-primary);
+			font-weight: 700;
+		}
+	}
+
+	&__empty {
+		text-align: center;
+		padding: 24px;
+		color: var(--color-text-secondary);
+		font-size: 13px;
+	}
+}
+
+/* CHIPS R / E */
+.estimated-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+
+	font-size: 11px;
+	line-height: 1.3;
+	color: var(--color-text-primary);
+
+	&__kind {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		width: 16px;
+		height: 16px;
+
+		font-size: 10px;
+		font-weight: 700;
+		color: #fff;
+		border-radius: 3px;
+		flex: 0 0 auto;
+	}
+
+	&__label {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&__hours {
+		font-weight: 700;
+		color: var(--color-text-primary);
+		flex: 0 0 auto;
+	}
+
+	&--real .estimated-chip__kind {
+		background: #d97706;
+	}
+
+	&--estimado .estimated-chip__kind {
+		background: #f5a623;
+	}
+}

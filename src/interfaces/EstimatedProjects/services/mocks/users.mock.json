@@ -22,5 +22,7 @@
 	{ "Id": 21, "Username": "carla.gomez", "FullName": "Carla Gomez", "IsActive": true },
 	{ "Id": 22, "Username": "carlos.perez", "FullName": "Carlos Perez", "IsActive": true },
 	{ "Id": 23, "Username": "diego.lanu", "FullName": "Diego Lanu", "IsActive": true },
-	{ "Id": 24, "Username": "santiago.guerci", "FullName": "Santiago Guerci", "IsActive": true }
+	{ "Id": 24, "Username": "santiago.guerci", "FullName": "Santiago Guerci", "IsActive": true },
+	{ "Id": 25, "Username": "pablo.vallejos", "FullName": "Pablo Nicolás Vallejos", "IsActive": true },
+	{ "Id": 26, "Username": "ignacio.commisso", "FullName": "Ignacio Martin Commisso", "IsActive": true }
 ]
