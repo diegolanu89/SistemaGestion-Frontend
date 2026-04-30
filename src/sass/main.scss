@@ -40,3 +40,7 @@
 @use '../interfaces/Proyect/components/_proyectTable';
 @use '../interfaces/Proyect/components/proyectCreateModal';
 @use '../interfaces/Proyect/components/proyectCreateForm';
+
+/**PROYECTVIEWS**/
+@use '../interfaces/ViewProyect/views/proyectView';
+@use '../interfaces/ViewProyect/components/proyectViewFilter';

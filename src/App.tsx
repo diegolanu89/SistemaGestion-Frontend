@@ -20,6 +20,7 @@ import { SideBarView } from './interfaces/SideBar/views/SideBar.v'
 
 import ThemeContext from './interfaces/base/context/Theme.Context'
 import { useAppTheme } from './interfaces/base/hooks/useAppTheme.h'
+import { ProyectViewPublicRoutes } from './interfaces/ViewProyect/routes/routes'
 
 const AppClient = () => {
 	const { toggleTheme, mode } = useAppTheme()
@@ -43,6 +44,7 @@ const AppClient = () => {
 										<Route element={<ProtectedRoute redirectTo={LOGIN_PATHS.LOGIN} />}>
 											{IdleProtectedRoutes()}
 											{ProyectPublicRoutes()}
+											{ProyectViewPublicRoutes()}
 										</Route>
 									</Routes>
 								</main>

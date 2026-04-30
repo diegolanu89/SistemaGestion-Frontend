@@ -1,0 +1,146 @@
+/* =========================
+   CONTAINER
+   ========================= */
+.proyect-container {
+	padding: 20px;
+	background: var(--color-bg);
+	min-height: 100vh;
+}
+
+/* =========================
+	 GRID
+	 ========================= */
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+	gap: 16px;
+}
+
+/* =========================
+	 CARD
+	 ========================= */
+.card {
+	position: relative;
+
+	padding: 14px;
+	border-radius: 14px;
+
+	background: var(--color-surface);
+	border: 1px solid var(--color-border-soft);
+
+	color: var(--color-text-primary);
+
+	box-shadow: 0 6px 16px var(--color-shadow-soft);
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.25s ease,
+		border-color 0.25s ease;
+}
+
+.card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 14px 30px var(--color-shadow-medium);
+	border-color: var(--color-primary-opacity-15);
+}
+
+/* =========================
+	 HEADER
+	 ========================= */
+.card h3 {
+	margin: 0 0 10px 0;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+/* =========================
+	 TEXT
+	 ========================= */
+.card p {
+	margin: 4px 0;
+	font-size: 13px;
+	color: var(--color-text-secondary);
+}
+
+/* =========================
+	 STATUS TAG
+	 ========================= */
+.card__status {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+
+	padding: 4px 8px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 500;
+
+	background: var(--color-primary-opacity-08);
+	color: var(--color-primary);
+}
+
+/* =========================
+	 LOADER
+	 ========================= */
+.loader {
+	margin-bottom: 12px;
+	color: var(--color-text-secondary);
+}
+
+/* =========================
+	 ERROR
+	 ========================= */
+.error {
+	margin-bottom: 12px;
+	color: var(--color-error);
+}
+
+/* =========================
+	 EMPTY STATE
+	 ========================= */
+.empty {
+	text-align: center;
+	padding: 40px;
+	color: var(--color-text-secondary);
+}
+
+/* =========================
+	 PAGINATION
+	 ========================= */
+.pagination {
+	margin-top: 24px;
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+}
+
+.pagination button {
+	padding: 6px 12px;
+	border-radius: 8px;
+	border: 1px solid var(--color-border);
+
+	background: var(--color-surface);
+	color: var(--color-text-primary);
+
+	cursor: pointer;
+
+	transition:
+		background 0.2s ease,
+		transform 0.15s ease,
+		box-shadow 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+	background: var(--color-primary-opacity-08);
+	transform: translateY(-1px);
+	box-shadow: 0 6px 14px var(--color-shadow-soft);
+}
+
+.pagination button:active:not(:disabled) {
+	transform: scale(0.95);
+}
+
+.pagination button:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}

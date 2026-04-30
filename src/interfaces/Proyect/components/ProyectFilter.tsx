@@ -8,20 +8,7 @@ import { ProyectSearch } from './ProyectSearch'
 import { SelectOption, mapStatusOptions, mapCategoryOptions, mapTypeOptions } from '../models/ProyectMapper.m'
 
 export const ProyectFilters: FC = () => {
-	const {
-		status,
-		setStatus,
-		category,
-		setCategory,
-		type,
-		setType,
-		refetch,
-		refs, // 🔥 ahora viene del context
-	} = useProyectContext()
-
-	// ==========================
-	// 🔹 OPTIONS DINÁMICOS
-	// ==========================
+	const { status, setStatus, category, setCategory, type, setType, refetch, refs } = useProyectContext()
 
 	const statusOptions: SelectOption[] = useMemo(() => {
 		if (!refs) return [{ value: 'all', label: 'Todos' }]
@@ -40,10 +27,6 @@ export const ProyectFilters: FC = () => {
 
 		return [{ value: 'all', label: 'Todos' }, ...mapTypeOptions(refs.types)]
 	}, [refs])
-
-	// ==========================
-	// 🔹 UI
-	// ==========================
 
 	return (
 		<div className="proyect-filters">
