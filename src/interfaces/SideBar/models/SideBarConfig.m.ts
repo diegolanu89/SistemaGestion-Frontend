@@ -1,4 +1,5 @@
 import { PROYECT_PATHS } from '../../Proyect/routes/paths'
+import { ESTIMATED_PROJECT_PATHS } from '../../EstimatedProjects/routes/paths'
 import { SideBarItem as SideBarItemType } from './SideBar.m'
 
 export const SIDEBAR = {
@@ -56,7 +57,7 @@ export const SIDEBAR = {
 				{
 					label: 'Alta de Proyectos Estimados',
 					icon: 'post_add',
-					path: '/operaciones/proyectos-estimados',
+					path: ESTIMATED_PROJECT_PATHS.LIST,
 				},
 			],
 		},

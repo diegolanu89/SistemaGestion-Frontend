@@ -40,3 +40,8 @@
 @use '../interfaces/Proyect/components/_proyectTable';
 @use '../interfaces/Proyect/components/proyectCreateModal';
 @use '../interfaces/Proyect/components/proyectCreateForm';
+
+/**ESTIMATED PROJECTS**/
+@use '../interfaces/EstimatedProjects/views/estimatedProject';
+@use '../interfaces/EstimatedProjects/components/estimatedProjectTable';
+@use '../interfaces/EstimatedProjects/components/estimatedProjectForm';

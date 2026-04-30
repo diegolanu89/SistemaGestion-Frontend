@@ -62,3 +62,6 @@ env
 
 # CSS generado por Sass (no versionar)
 src/css/*
+
+#carpeta local en la que se guardan los archivos de claude, no versionar
+/.claude
