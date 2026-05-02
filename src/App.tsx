@@ -12,6 +12,7 @@ import RedirectHome from './interfaces/base/components/redirect/RedirectHome'
 import { IdleProtectedRoutes } from './interfaces/Idle/routes/routes'
 import { LoginPublicRoutes } from './interfaces/Login/routes/routes'
 import { ProyectPublicRoutes } from './interfaces/Proyect/routes/routes'
+import { EstimatedProjectRoutes } from './interfaces/EstimatedProjects/routes/routes'
 
 import { IDLE_PATHS } from './interfaces/Idle/routes/paths'
 import { LOGIN_PATHS } from './interfaces/Login/routes/paths'
@@ -45,6 +46,7 @@ const AppClient = () => {
 											{IdleProtectedRoutes()}
 											{ProyectPublicRoutes()}
 											{ProyectViewPublicRoutes()}
+											{EstimatedProjectRoutes()}
 										</Route>
 									</Routes>
 								</main>

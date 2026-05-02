@@ -12,6 +12,7 @@
 
 /**BASE APP**/
 @use '../interfaces/base/components/loading/authLoading';
+@use '../interfaces/base/components/RefreshButton/refreshButton';
 
 /**APP_BAR**/
 @use '../interfaces/AppBar/components/bar/_appBarSpacer';
@@ -53,3 +54,9 @@
 @use '../interfaces/Etc/components/etcToolBar';
 @use '../interfaces/Etc/components/etcSummary';
 @use '../interfaces/Etc/components/etcTable';
+
+/**ESTIMATED PROJECTS**/
+@use '../interfaces/EstimatedProjects/views/estimatedProject';
+@use '../interfaces/EstimatedProjects/components/estimatedProjectTable';
+@use '../interfaces/EstimatedProjects/components/estimatedProjectForm';
+@use '../interfaces/EstimatedProjects/components/estimatedProjectGrid';

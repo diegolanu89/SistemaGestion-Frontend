@@ -1,0 +1,7 @@
+[
+	{ "Id": 1001, "Name": "Boton de Pago", "Code": null, "ClientId": 1, "ClientName": "Augustar Seguros" },
+	{ "Id": 1002, "Name": "Clasificacion Siniestros", "Code": null, "ClientId": 2, "ClientName": "Reale" },
+	{ "Id": 1003, "Name": "FSAT", "Code": null, "ClientId": 3, "ClientName": "Zurich" },
+	{ "Id": 1004, "Name": "Funcionalidad WEB-Seguridad", "Code": null, "ClientId": 1, "ClientName": "Augustar Seguros" },
+	{ "Id": 1005, "Name": "Sistema de Prestamos", "Code": null, "ClientId": 1, "ClientName": "Augustar Seguros" }
+]
