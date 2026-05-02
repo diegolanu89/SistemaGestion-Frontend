@@ -4,6 +4,7 @@ import { ESTIMATED_PROJECT_CONFIG } from '../models/EstimatedProjectConfig.m'
 import { ESTIMATED_PROJECT_PATHS } from '../routes/paths'
 import { useEstimatedProjectContext } from '../hooks/useEstimatedProjectContext.h'
 import { removeCache } from '../utils/getCache'
+import { RefreshButton } from '../../base/components/RefreshButton/RefreshButton'
 
 export const EstimatedProjectHeader: FC = () => {
 	const navigate = useNavigate()
@@ -24,15 +25,7 @@ export const EstimatedProjectHeader: FC = () => {
 			</div>
 
 			<div className="estimated-project__header-actions">
-				<button
-					className="estimated-project__refresh-btn"
-					onClick={handleRefresh}
-					data-tooltip={ACTIONS.REFRESH_TOOLTIP}
-					type="button"
-					aria-label={ACTIONS.REFRESH_TOOLTIP}
-				>
-					<span className="material-icons">{ACTIONS.REFRESH_ICON}</span>
-				</button>
+				<RefreshButton onClick={handleRefresh} tooltip={ACTIONS.REFRESH_TOOLTIP} />
 
 				<button
 					className="estimated-project__add-btn"

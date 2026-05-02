@@ -12,6 +12,7 @@
 
 /**BASE APP**/
 @use '../interfaces/base/components/loading/authLoading';
+@use '../interfaces/base/components/RefreshButton/refreshButton';
 
 /**APP_BAR**/
 @use '../interfaces/AppBar/components/bar/_appBarSpacer';
