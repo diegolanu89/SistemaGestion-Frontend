@@ -1,5 +1,4 @@
-// components/ProyectViewFilter.tsx
-
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useMemo, useCallback } from 'react'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 import logger from '../../base/controllers/Logger.c'
@@ -27,6 +26,10 @@ export const ProyectViewFilters: FC = () => {
 		},
 		[filters]
 	)
+
+	// =========================
+	// OPTIONS
+	// =========================
 
 	const clientOptions: SelectOption[] = useMemo(() => {
 		const values = Array.from(new Set(projects.map((p) => p.clientName).filter(Boolean)))
@@ -66,6 +69,7 @@ export const ProyectViewFilters: FC = () => {
 
 	return (
 		<div className="proyect-view-filters">
+			{/* SEARCH */}
 			<div className="proyect-view-search">
 				<label className="proyect-view-search__label">Buscar por nombre</label>
 
@@ -81,6 +85,7 @@ export const ProyectViewFilters: FC = () => {
 				</div>
 			</div>
 
+			{/* CLIENT */}
 			<div className="proyect-view-filters__field">
 				<label className="proyect-view-filters__label">Cliente</label>
 
@@ -93,6 +98,7 @@ export const ProyectViewFilters: FC = () => {
 				</select>
 			</div>
 
+			{/* STATUS */}
 			<div className="proyect-view-filters__field">
 				<label className="proyect-view-filters__label">Estado</label>
 
@@ -105,6 +111,7 @@ export const ProyectViewFilters: FC = () => {
 				</select>
 			</div>
 
+			{/* CODE */}
 			<div className="proyect-view-filters__field">
 				<label className="proyect-view-filters__label">Código</label>
 
@@ -117,6 +124,7 @@ export const ProyectViewFilters: FC = () => {
 				</select>
 			</div>
 
+			{/* ACTIONS */}
 			<div className="proyect-view-filters__refresh">
 				<button
 					className="proyect-view-filters__refresh-btn"
@@ -124,6 +132,7 @@ export const ProyectViewFilters: FC = () => {
 						logger.infoTag(LogTag.Adapter, '[PROJECT] Manual refetch trigger')
 						refetch()
 					}}
+					data-tooltip="Actualizar proyectos"
 				>
 					<span className="material-icons">refresh</span>
 				</button>

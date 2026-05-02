@@ -3,6 +3,7 @@
 import { FC, useMemo } from 'react'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 import { useNavigate } from 'react-router-dom'
+import { PROYECT_PATHS_VIEWS } from '../routes/paths'
 
 export const ProyectGrid: FC = () => {
 	const { projects, filters, loading, error } = useProyectViewContext()
@@ -39,7 +40,7 @@ export const ProyectGrid: FC = () => {
 				const progress = p.hourlyRate ?? 0
 
 				return (
-					<div className="card card--project" key={p.id} onClick={() => navigate(`/projects/${p.id}`)}>
+					<div className="card card--project" key={p.id} onClick={() => navigate(PROYECT_PATHS_VIEWS.PROYECT_ITEM.replace(':id', String(p.id)))}>
 						{/* HEADER */}
 						<div className="card__header">
 							<div className="card__title">

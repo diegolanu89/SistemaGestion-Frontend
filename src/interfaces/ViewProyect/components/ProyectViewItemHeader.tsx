@@ -2,6 +2,8 @@ import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ProjectDto } from '../models/ProyectViewDTO.m'
 import { PROYECT_PATHS_VIEWS } from '../routes/paths'
+import logger from '../../base/controllers/Logger.c'
+import { LogTag } from '../../base/model/LogTag.m'
 
 interface Props {
 	project: ProjectDto
@@ -9,6 +11,16 @@ interface Props {
 
 export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 	const navigate = useNavigate()
+
+	const goToEtc = () => {
+		logger.infoTag(LogTag.Navigation, '[PROJECT] Navigate to ETC', {
+			projectId: project.id,
+		})
+
+		navigate('/operaciones/etc', {
+			state: { projectId: project.id },
+		})
+	}
 
 	return (
 		<header className="project-detail-header">
@@ -44,7 +56,8 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 						<span>Recalcular horas</span>
 					</button>
 
-					<button data-tooltip="Abrir carga de estimación ETC">
+					{/* 🔥 BOTÓN ACTUALIZADO */}
+					<button onClick={goToEtc} data-tooltip="Abrir carga de estimación ETC">
 						<span className="material-icons">edit_calendar</span>
 						<span>Carga ETC</span>
 					</button>

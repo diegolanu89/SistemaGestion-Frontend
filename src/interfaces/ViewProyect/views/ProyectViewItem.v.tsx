@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { useParams } from 'react-router-dom'
+import { Outlet, useParams } from 'react-router-dom'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 
 import { ProyectViewItemHeader } from '../components/ProyectViewItemHeader'
@@ -21,6 +21,7 @@ export const ProyectViewItem: FC = () => {
 			<ProyectViewItemHeader project={project} />
 			<ProyectViewItemMetrics project={project} />
 			<ProyectViewItemAccordions project={project} />
+			<Outlet />
 		</div>
 	)
 }
