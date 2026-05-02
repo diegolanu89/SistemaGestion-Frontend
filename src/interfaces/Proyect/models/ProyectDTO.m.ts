@@ -5,33 +5,33 @@
 // ==========================
 
 export interface ProjectIntakeTypeRefDto {
-	Id: number
-	Code: string
-	Label: string
-	Description?: string
-	InternalLabel: string
-	SecondaryLabel: string
-	RegistrationLabel: string
-	RequiresBusinessStatusDate: boolean
-	RequiresActualEndDate: boolean
-	RequiresCommercialFields: boolean
-	IsActive: boolean
+	id: number
+	code: string
+	label: string
+	description?: string
+	internalLabel: string
+	secondaryLabel: string
+	registrationLabel: string
+	requiresBusinessStatusDate: boolean
+	requiresActualEndDate: boolean
+	requiresCommercialFields: boolean
+	isActive: boolean
 }
 
 export interface ProjectIntakeCategoryRefDto {
-	Id: number
-	Code: string
-	Label: string
-	Description?: string
-	IsActive: boolean
+	id: number
+	code: string
+	label: string
+	description?: string
+	isActive: boolean
 }
 
 export interface ProjectIntakeStatusRefDto {
-	Id: number
-	Code: string
-	Label: string
-	Description?: string
-	IsActive: boolean
+	id: number
+	code: string
+	label: string
+	description?: string
+	isActive: boolean
 }
 
 // ==========================
@@ -39,70 +39,69 @@ export interface ProjectIntakeStatusRefDto {
 // ==========================
 
 export interface ProjectIntakeRecordDto {
-	Id: number
-	ProjectType?: string | null
-	InternalProjectNumber?: string | null
-	SecondaryProjectNumber?: string | null
-	RegistrationDate?: string | null
-	ClientId?: number | null
-	ClientName?: string | null
-	ProjectName?: string | null
-	CategoryCode?: string | null
-	ProjectStatusCode?: string | null
-	BusinessStatusDate?: string | null
-	EstimatedEndDate?: string | null
-	ActualEndDate?: string | null
-	CommercialStatus?: string | null
-	LeaderName?: string | null
-	Observations?: string | null
-	RequiresClockifyCreation: boolean
-	ClockifyRecordId?: number | null
-	IsActive: boolean
-	CreatedBy?: number | null
-	UpdatedBy?: number | null
-	CreatedAt?: string | null
-	UpdatedAt?: string | null
+	id: number
+	projectType?: string | null
+	internalProjectNumber?: string | null
+	secondaryProjectNumber?: string | null
+	registrationDate?: string | null
+	clientId?: number | null
+	clientName?: string | null
+	projectName?: string | null
+	categoryCode?: string | null
+	projectStatusCode?: string | null
+	businessStatusDate?: string | null
+	estimatedEndDate?: string | null
+	actualEndDate?: string | null
+	commercialStatus?: string | null
+	leaderName?: string | null
+	observations?: string | null
+	requiresClockifyCreation: boolean
+	clockifyRecordId?: number | null
+	isActive: boolean
+	createdBy?: number | null
+	updatedBy?: number | null
+	createdAt?: string | null
+	updatedAt?: string | null
 
-	// 🔥 REF EXPANDIDOS (TIPADOS BIEN)
-	TypeRef?: ProjectIntakeTypeRefDto | null
-	CategoryRef?: ProjectIntakeCategoryRefDto | null
-	StatusRef?: ProjectIntakeStatusRefDto | null
+	typeRef?: ProjectIntakeTypeRefDto | null
+	categoryRef?: ProjectIntakeCategoryRefDto | null
+	statusRef?: ProjectIntakeStatusRefDto | null
 
-	ClockifyProjectName?: string | null
+	clockifyProjectName?: string | null
 }
 
 // ==========================
-// 🔹 REQUEST DTOs (🔥 CLAVE)
+// 🔹 REQUEST DTOs
 // ==========================
 
 export interface CreateProjectIntakeDto {
-	ProjectType: string
-	SecondaryProjectNumber?: string
-	RegistrationDate?: string
-	ClientId?: number
-	ProjectName: string
-	CategoryCode?: string
-	ProjectStatusCode?: string
-	BusinessStatusDate?: string
-	EstimatedEndDate?: string
-	ActualEndDate?: string
-	CommercialStatus?: string
-	LeaderName?: string
-	Observations?: string
-	RequiresClockifyCreation?: boolean
+	projectType: string
+	secondaryProjectNumber?: string
+	registrationDate?: string
+	clientId?: number
+	projectName: string
+	categoryCode?: string
+	projectStatusCode?: string
+	businessStatusDate?: string
+	estimatedEndDate?: string
+	actualEndDate?: string
+	commercialStatus?: string
+	leaderName?: string
+	observations?: string
+	requiresClockifyCreation?: boolean
 }
 
 export interface UpdateProjectIntakeDto {
-	SecondaryProjectNumber?: string
-	RegistrationDate?: string
-	ClientId?: number
-	ProjectName?: string
-	CategoryCode?: string
-	ProjectStatusCode?: string
-	BusinessStatusDate?: string
-	EstimatedEndDate?: string
-	ActualEndDate?: string
-	CommercialStatus?: string
-	LeaderName?: string
-	Observations?: string
+	secondaryProjectNumber?: string
+	registrationDate?: string
+	clientId?: number
+	projectName?: string
+	categoryCode?: string
+	projectStatusCode?: string
+	businessStatusDate?: string
+	estimatedEndDate?: string
+	actualEndDate?: string
+	commercialStatus?: string
+	leaderName?: string
+	observations?: string
 }

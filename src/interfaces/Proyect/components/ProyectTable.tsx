@@ -3,14 +3,14 @@ import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { ProjectIntakeRecordDto } from '../models/ProyectDTO.m'
 
-type ColumnKey = 'ProjectName' | 'Observations' | 'ProjectStatusCode' | 'CategoryCode' | 'ProjectType'
+type ColumnKey = 'projectName' | 'observations' | 'projectStatusCode' | 'categoryCode' | 'projectType'
 
 const INITIAL_COLUMNS: { key: ColumnKey; label: string }[] = [
-	{ key: 'ProjectName', label: PROYECT_CONFIG.TABLE.HEADERS[0] },
-	{ key: 'Observations', label: PROYECT_CONFIG.TABLE.HEADERS[1] },
-	{ key: 'ProjectStatusCode', label: PROYECT_CONFIG.TABLE.HEADERS[2] },
-	{ key: 'CategoryCode', label: PROYECT_CONFIG.TABLE.HEADERS[3] },
-	{ key: 'ProjectType', label: PROYECT_CONFIG.TABLE.HEADERS[4] },
+	{ key: 'projectName', label: PROYECT_CONFIG.TABLE.HEADERS[0] },
+	{ key: 'observations', label: PROYECT_CONFIG.TABLE.HEADERS[1] },
+	{ key: 'projectStatusCode', label: PROYECT_CONFIG.TABLE.HEADERS[2] },
+	{ key: 'categoryCode', label: PROYECT_CONFIG.TABLE.HEADERS[3] },
+	{ key: 'projectType', label: PROYECT_CONFIG.TABLE.HEADERS[4] },
 ]
 
 export const ProyectTable = () => {
@@ -80,7 +80,7 @@ export const ProyectTable = () => {
 
 			<tbody>
 				{filtered.map((p) => (
-					<tr key={p.Id}>
+					<tr key={p.id}>
 						{columns.map((col) => (
 							<td key={col.key}>{renderCell(p, col.key)}</td>
 						))}
@@ -88,7 +88,7 @@ export const ProyectTable = () => {
 						<td className="proyect-table__actions">
 							<button
 								className="proyect-table__action proyect-table__action--edit"
-								onClick={() => handleEdit(p.Id)}
+								onClick={() => handleEdit(p.id)}
 								data-tooltip={PROYECT_CONFIG.TABLE.ACTIONS.EDIT_TOOLTIP}
 							>
 								<span className="material-icons">{PROYECT_CONFIG.TABLE.ACTIONS.EDIT_ICON}</span>
@@ -96,7 +96,7 @@ export const ProyectTable = () => {
 
 							<button
 								className="proyect-table__action proyect-table__action--delete"
-								onClick={() => handleDelete(p.Id)}
+								onClick={() => handleDelete(p.id)}
 								data-tooltip={PROYECT_CONFIG.TABLE.ACTIONS.DELETE_TOOLTIP}
 							>
 								<span className="material-icons">{PROYECT_CONFIG.TABLE.ACTIONS.DELETE_ICON}</span>
