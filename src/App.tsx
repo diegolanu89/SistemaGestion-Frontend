@@ -34,22 +34,25 @@ const AppClient = () => {
 						<CapabilitiesProvider>
 							<ModalProvider>
 								<AppBarHeader />
-								<SideBarView />
 
-								<main className="app-content">
-									<Routes>
-										<Route path="/" element={<RedirectHome authenticatedPath={IDLE_PATHS.HOME} unauthenticatedPath={LOGIN_PATHS.LOGIN} />} />
+								<div className="app-layout">
+									<SideBarView />
 
-										{LoginPublicRoutes()}
+									<main className="app-content">
+										<Routes>
+											<Route path="/" element={<RedirectHome authenticatedPath={IDLE_PATHS.HOME} unauthenticatedPath={LOGIN_PATHS.LOGIN} />} />
 
-										<Route element={<ProtectedRoute redirectTo={LOGIN_PATHS.LOGIN} />}>
-											{IdleProtectedRoutes()}
-											{ProyectPublicRoutes()}
-											{ProyectViewPublicRoutes()}
-											{EstimatedProjectRoutes()}
-										</Route>
-									</Routes>
-								</main>
+											{LoginPublicRoutes()}
+
+											<Route element={<ProtectedRoute redirectTo={LOGIN_PATHS.LOGIN} />}>
+												{IdleProtectedRoutes()}
+												{ProyectPublicRoutes()}
+												{ProyectViewPublicRoutes()}
+												{EstimatedProjectRoutes()}
+											</Route>
+										</Routes>
+									</main>
+								</div>
 							</ModalProvider>
 						</CapabilitiesProvider>
 					</AuthProvider>

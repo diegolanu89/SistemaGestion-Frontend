@@ -6,4 +6,22 @@
 
 	background: var(--color-bg);
 	color: var(--color-text-primary);
+
+	padding: 24px 0;
+}
+
+.idle > *:first-child {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+}
+
+.idle__footer {
+	margin-top: auto;
+	padding: 20px;
+	font-size: 12px;
+	text-align: center;
+	color: var(--color-text-secondary);
+	border-top: 1px solid var(--color-border);
+	opacity: 0.7;
 }

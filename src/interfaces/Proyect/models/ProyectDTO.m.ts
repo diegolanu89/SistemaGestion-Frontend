@@ -1,37 +1,34 @@
-// models/ProyectDTO.m.ts
-
-// ==========================
-// 🔹 REF DTOs
-// ==========================
-
 export interface ProjectIntakeTypeRefDto {
-	id: number
-	code: string
-	label: string
-	description?: string
-	internalLabel: string
-	secondaryLabel: string
-	registrationLabel: string
-	requiresBusinessStatusDate: boolean
-	requiresActualEndDate: boolean
-	requiresCommercialFields: boolean
-	isActive: boolean
+	Id: number
+	Code: string
+	Label: string
+	Description?: string
+
+	InternalLabel: string
+	SecondaryLabel: string
+	RegistrationLabel: string
+
+	RequiresBusinessStatusDate: boolean
+	RequiresActualEndDate: boolean
+	RequiresCommercialFields: boolean
+
+	IsActive: boolean
 }
 
 export interface ProjectIntakeCategoryRefDto {
-	id: number
-	code: string
-	label: string
-	description?: string
-	isActive: boolean
+	Id: number
+	Code: string
+	Label: string
+	Description?: string
+	IsActive: boolean
 }
 
 export interface ProjectIntakeStatusRefDto {
-	id: number
-	code: string
-	label: string
-	description?: string
-	isActive: boolean
+	Id: number
+	Code: string
+	Label: string
+	Description?: string
+	IsActive: boolean
 }
 
 // ==========================
@@ -39,35 +36,45 @@ export interface ProjectIntakeStatusRefDto {
 // ==========================
 
 export interface ProjectIntakeRecordDto {
-	id: number
-	projectType?: string | null
-	internalProjectNumber?: string | null
-	secondaryProjectNumber?: string | null
-	registrationDate?: string | null
-	clientId?: number | null
-	clientName?: string | null
-	projectName?: string | null
-	categoryCode?: string | null
-	projectStatusCode?: string | null
-	businessStatusDate?: string | null
-	estimatedEndDate?: string | null
-	actualEndDate?: string | null
-	commercialStatus?: string | null
-	leaderName?: string | null
-	observations?: string | null
-	requiresClockifyCreation: boolean
-	clockifyRecordId?: number | null
-	isActive: boolean
-	createdBy?: number | null
-	updatedBy?: number | null
-	createdAt?: string | null
-	updatedAt?: string | null
+	Id: number
 
-	typeRef?: ProjectIntakeTypeRefDto | null
-	categoryRef?: ProjectIntakeCategoryRefDto | null
-	statusRef?: ProjectIntakeStatusRefDto | null
+	ProjectType?: string | null
+	InternalProjectNumber?: string | null
+	SecondaryProjectNumber?: string | null
 
-	clockifyProjectName?: string | null
+	RegistrationDate?: string | null
+	ClientId?: number | null
+	ClientName?: string | null
+
+	ProjectName?: string | null
+	CategoryCode?: string | null
+	ProjectStatusCode?: string | null
+
+	BusinessStatusDate?: string | null
+	EstimatedEndDate?: string | null
+	ActualEndDate?: string | null
+
+	CommercialStatus?: string | null
+	LeaderName?: string | null
+	Observations?: string | null
+
+	RequiresClockifyCreation: boolean
+	ClockifyRecordId?: number | null
+
+	IsActive: boolean
+
+	CreatedBy?: number | null
+	UpdatedBy?: number | null
+
+	CreatedAt?: string | null
+	UpdatedAt?: string | null
+
+	// 🔥 EXPANDIDOS
+	TypeRef?: ProjectIntakeTypeRefDto | null
+	CategoryRef?: ProjectIntakeCategoryRefDto | null
+	StatusRef?: ProjectIntakeStatusRefDto | null
+
+	ClockifyProjectName?: string | null
 }
 
 // ==========================
@@ -75,33 +82,42 @@ export interface ProjectIntakeRecordDto {
 // ==========================
 
 export interface CreateProjectIntakeDto {
-	projectType: string
-	secondaryProjectNumber?: string
-	registrationDate?: string
-	clientId?: number
-	projectName: string
-	categoryCode?: string
-	projectStatusCode?: string
-	businessStatusDate?: string
-	estimatedEndDate?: string
-	actualEndDate?: string
-	commercialStatus?: string
-	leaderName?: string
-	observations?: string
-	requiresClockifyCreation?: boolean
+	ProjectType: string
+	SecondaryProjectNumber?: string
+	RegistrationDate?: string
+
+	ClientId?: number
+
+	ProjectName: string
+	CategoryCode?: string
+	ProjectStatusCode?: string
+
+	BusinessStatusDate?: string
+	EstimatedEndDate?: string
+	ActualEndDate?: string
+
+	CommercialStatus?: string
+	LeaderName?: string
+	Observations?: string
+
+	RequiresClockifyCreation?: boolean
 }
 
 export interface UpdateProjectIntakeDto {
-	secondaryProjectNumber?: string
-	registrationDate?: string
-	clientId?: number
-	projectName?: string
-	categoryCode?: string
-	projectStatusCode?: string
-	businessStatusDate?: string
-	estimatedEndDate?: string
-	actualEndDate?: string
-	commercialStatus?: string
-	leaderName?: string
-	observations?: string
+	SecondaryProjectNumber?: string
+	RegistrationDate?: string
+
+	ClientId?: number
+
+	ProjectName?: string
+	CategoryCode?: string
+	ProjectStatusCode?: string
+
+	BusinessStatusDate?: string
+	EstimatedEndDate?: string
+	ActualEndDate?: string
+
+	CommercialStatus?: string
+	LeaderName?: string
+	Observations?: string
 }

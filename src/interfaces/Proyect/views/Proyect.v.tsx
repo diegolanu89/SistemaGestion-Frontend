@@ -3,10 +3,12 @@ import { ProyectTable } from '../components/ProyectTable'
 import { ProyectFilters } from '../components/ProyectFilter'
 import { ProyectHeader } from '../components/ProyectHeader'
 import { ProyectCreateModal } from '../components/ProyectCreateModal'
+import { ProyectEditModal } from '../components/ProyectEditModal'
+import { ProyectDeleteModal } from '../components/ProyectDeleteModal'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 
 export const Proyect: FC = () => {
-	const { isCreateOpen } = useProyectContext()
+	const { isCreateOpen, isEditOpen, isDeleteOpen } = useProyectContext()
 
 	return (
 		<div className="proyect">
@@ -18,8 +20,9 @@ export const Proyect: FC = () => {
 
 			<ProyectTable />
 
-			{/* 🔥 Modal controlado por Context */}
 			{isCreateOpen && <ProyectCreateModal />}
+			{isEditOpen && <ProyectEditModal />}
+			{isDeleteOpen && <ProyectDeleteModal />}
 		</div>
 	)
 }

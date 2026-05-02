@@ -1,6 +1,3 @@
-// ==========================
-// 🌍 RESET BASE
-// ==========================
 *,
 *::before,
 *::after {
@@ -14,9 +11,6 @@
 	line-height: 1;
 }
 
-// ==========================
-// 🧠 HTML / BODY
-// ==========================
 html {
 	font-size: 16px;
 	scroll-behavior: smooth;
@@ -25,26 +19,16 @@ html {
 body {
 	font-family: var(--font-family-base);
 	font-weight: var(--font-weight-regular);
-
 	background: var(--bg-gradient), var(--color-bg);
-	//background: radial-gradient(circle at top, rgba(37, 99, 235, 0.2), transparent);
 	color: var(--color-text-primary);
-
 	line-height: 1.5;
-
-	// 🔥 suavizado tipográfico
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-
-	// 🔥 transición de theme
 	transition:
 		background-color 0.25s ease,
 		color 0.25s ease;
 }
 
-// ==========================
-// 🔗 LINKS
-// ==========================
 a {
 	text-decoration: none;
 	color: inherit;
@@ -54,41 +38,28 @@ a {
 	}
 }
 
-// ==========================
-// 🧱 IMÁGENES
-// ==========================
 img {
 	max-width: 100%;
 	display: block;
 }
 
-// ==========================
-// 🧾 LISTAS
-// ==========================
 ul,
 ol {
 	list-style: none;
 }
 
-// ==========================
-// 🔘 BOTONES
-// ==========================
 button {
 	font-family: inherit;
 	border: none;
 	background: none;
 	cursor: pointer;
 
-	// 🔥 mejora UX
 	&:disabled {
 		opacity: 0.6;
 		cursor: not-allowed;
 	}
 }
 
-// ==========================
-// 📝 INPUTS
-// ==========================
 input,
 textarea,
 select {
@@ -97,17 +68,11 @@ select {
 	border: none;
 }
 
-// ==========================
-// 🎯 FOCUS GLOBAL (accesibilidad)
-// ==========================
 :focus-visible {
 	outline: 2px solid var(--color-primary);
 	outline-offset: 2px;
 }
 
-// ==========================
-// 📦 SCROLLBAR (opcional)
-// ==========================
 ::-webkit-scrollbar {
 	width: 8px;
 }
@@ -127,8 +92,16 @@ select {
 	flex-direction: column;
 }
 
+.app-layout {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+	margin-top: -8px;
+}
+
 .app-content {
 	flex: 1;
+	min-width: 0;
 	display: flex;
 	flex-direction: column;
 }

@@ -1,5 +1,3 @@
-// services/ProyectMock.s.ts
-
 import { ProyectInterface } from '../models/IProyect.m'
 import {
 	ProjectIntakeRecordDto,
@@ -18,9 +16,6 @@ import typesJson from './mocks/proyect-types.mock.json'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 
-// ==========================
-// 🔥 NORMALIZACIÓN SEGURA
-// ==========================
 const initialData = mockData as unknown as ProjectIntakeRecordDto[]
 const statusesData = statusesJson as unknown as ProjectIntakeStatusRefDto[]
 const categoriesData = categoriesJson as unknown as ProjectIntakeCategoryRefDto[]
@@ -29,82 +24,72 @@ const typesData = typesJson as unknown as ProjectIntakeTypeRefDto[]
 export class ProyectMock implements ProyectInterface {
 	private data: ProjectIntakeRecordDto[] = [...initialData]
 
-	// ==========================
-	// 🔹 LIST
-	// ==========================
 	async list(): Promise<ProjectIntakeRecordDto[]> {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] list()')
 		return [...this.data]
 	}
 
-	// ==========================
-	// 🔹 GET BY ID
-	// ==========================
 	async getById(id: number): Promise<ProjectIntakeRecordDto | null> {
 		logger.infoTag(LogTag.Adapter, `[PROYECT][MOCK] getById -> id=${id}`)
-		return this.data.find((p) => p.id === id) ?? null
+		return this.data.find((p) => Number(p.Id) === id) ?? null
 	}
 
-	// ==========================
-	// 🔹 CREATE
-	// ==========================
 	async create(data: CreateProjectIntakeDto): Promise<ProjectIntakeRecordDto> {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] create', data)
 
+		const now = new Date().toISOString()
+
 		const newItem: ProjectIntakeRecordDto = {
-			id: Date.now(),
+			Id: Date.now(),
 
-			projectType: data.projectType,
-			projectName: data.projectName,
+			ProjectType: data.ProjectType,
+			ProjectName: data.ProjectName,
 
-			secondaryProjectNumber: data.secondaryProjectNumber ?? null,
-			registrationDate: data.registrationDate ?? null,
-			clientId: data.clientId ?? null,
+			SecondaryProjectNumber: data.SecondaryProjectNumber ?? null,
+			RegistrationDate: data.RegistrationDate ?? null,
+			ClientId: data.ClientId ?? null,
 
-			categoryCode: data.categoryCode ?? null,
-			projectStatusCode: data.projectStatusCode ?? null,
+			CategoryCode: data.CategoryCode ?? null,
+			ProjectStatusCode: data.ProjectStatusCode ?? null,
 
-			businessStatusDate: data.businessStatusDate ?? null,
-			estimatedEndDate: data.estimatedEndDate ?? null,
-			actualEndDate: data.actualEndDate ?? null,
+			BusinessStatusDate: data.BusinessStatusDate ?? null,
+			EstimatedEndDate: data.EstimatedEndDate ?? null,
+			ActualEndDate: data.ActualEndDate ?? null,
 
-			commercialStatus: data.commercialStatus ?? null,
-			leaderName: data.leaderName ?? null,
-			observations: data.observations ?? null,
+			CommercialStatus: data.CommercialStatus ?? null,
+			LeaderName: data.LeaderName ?? null,
+			Observations: data.Observations ?? null,
 
-			requiresClockifyCreation: data.requiresClockifyCreation ?? false,
-			isActive: true,
+			RequiresClockifyCreation: data.RequiresClockifyCreation ?? false,
+			IsActive: true,
 
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
+			CreatedAt: now,
+			UpdatedAt: now,
 
-			internalProjectNumber: null,
-			clientName: null,
-			clockifyRecordId: null,
-			createdBy: null,
-			updatedBy: null,
+			InternalProjectNumber: null,
+			ClientName: null,
+			ClockifyRecordId: null,
+			CreatedBy: null,
+			UpdatedBy: null,
 
-			typeRef: null,
-			categoryRef: null,
-			statusRef: null,
+			TypeRef: null,
+			CategoryRef: null,
+			StatusRef: null,
 
-			clockifyProjectName: null,
+			ClockifyProjectName: null,
 		}
 
 		this.data.push(newItem)
 
-		logger.infoTag(LogTag.Adapter, `[PROYECT][MOCK] created -> id=${newItem.id}`)
+		logger.infoTag(LogTag.Adapter, `[PROYECT][MOCK] created -> id=${newItem.Id}`)
 
 		return newItem
 	}
 
-	// ==========================
-	// 🔹 UPDATE
-	// ==========================
 	async update(id: number, data: UpdateProjectIntakeDto): Promise<ProjectIntakeRecordDto> {
 		logger.infoTag(LogTag.Adapter, `[PROYECT][MOCK] update -> id=${id}`, data)
 
-		const index = this.data.findIndex((p) => p.id === id)
+		const index = this.data.findIndex((p) => Number(p.Id) === id)
 
 		if (index === -1) {
 			const err = new Error(`Project not found -> id=${id}`)
@@ -112,26 +97,28 @@ export class ProyectMock implements ProyectInterface {
 			throw err
 		}
 
+		const prev = this.data[index]
+
 		const updated: ProjectIntakeRecordDto = {
-			...this.data[index],
+			...prev,
 
-			secondaryProjectNumber: data.secondaryProjectNumber ?? this.data[index].secondaryProjectNumber,
-			registrationDate: data.registrationDate ?? this.data[index].registrationDate,
-			clientId: data.clientId ?? this.data[index].clientId,
+			SecondaryProjectNumber: data.SecondaryProjectNumber ?? prev.SecondaryProjectNumber,
+			RegistrationDate: data.RegistrationDate ?? prev.RegistrationDate,
+			ClientId: data.ClientId ?? prev.ClientId,
 
-			projectName: data.projectName ?? this.data[index].projectName,
-			categoryCode: data.categoryCode ?? this.data[index].categoryCode,
-			projectStatusCode: data.projectStatusCode ?? this.data[index].projectStatusCode,
+			ProjectName: data.ProjectName ?? prev.ProjectName,
+			CategoryCode: data.CategoryCode ?? prev.CategoryCode,
+			ProjectStatusCode: data.ProjectStatusCode ?? prev.ProjectStatusCode,
 
-			businessStatusDate: data.businessStatusDate ?? this.data[index].businessStatusDate,
-			estimatedEndDate: data.estimatedEndDate ?? this.data[index].estimatedEndDate,
-			actualEndDate: data.actualEndDate ?? this.data[index].actualEndDate,
+			BusinessStatusDate: data.BusinessStatusDate ?? prev.BusinessStatusDate,
+			EstimatedEndDate: data.EstimatedEndDate ?? prev.EstimatedEndDate,
+			ActualEndDate: data.ActualEndDate ?? prev.ActualEndDate,
 
-			commercialStatus: data.commercialStatus ?? this.data[index].commercialStatus,
-			leaderName: data.leaderName ?? this.data[index].leaderName,
-			observations: data.observations ?? this.data[index].observations,
+			CommercialStatus: data.CommercialStatus ?? prev.CommercialStatus,
+			LeaderName: data.LeaderName ?? prev.LeaderName,
+			Observations: data.Observations ?? prev.Observations,
 
-			updatedAt: new Date().toISOString(),
+			UpdatedAt: new Date().toISOString(),
 		}
 
 		this.data[index] = updated
@@ -141,20 +128,14 @@ export class ProyectMock implements ProyectInterface {
 		return updated
 	}
 
-	// ==========================
-	// 🔹 DELETE
-	// ==========================
 	async delete(id: number): Promise<void> {
 		logger.infoTag(LogTag.Adapter, `[PROYECT][MOCK] delete -> id=${id}`)
 
-		this.data = this.data.filter((p) => p.id !== id)
+		this.data = this.data.filter((p) => Number(p.Id) !== id)
 
 		logger.infoTag(LogTag.Adapter, `[PROYECT][MOCK] deleted -> id=${id}`)
 	}
 
-	// ==========================
-	// 🔹 REFS (DESDE JSON 🔥)
-	// ==========================
 	async getStatuses(): Promise<ProjectIntakeStatusRefDto[]> {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] getStatuses()')
 		return statusesData

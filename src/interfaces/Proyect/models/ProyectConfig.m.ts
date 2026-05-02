@@ -18,10 +18,11 @@ export const PROYECT_CONFIG = {
 		STATUS: 'flag',
 		CATEGORY: 'category',
 		TYPE: 'tune',
+		CLOCKIFY: 'schedule',
 	},
 
 	// ==========================
-	// 🔹 FILTERS (SOLO UI 🔥)
+	// 🔹 FILTERS
 	// ==========================
 	FILTERS: {
 		STATUS: {
@@ -45,7 +46,14 @@ export const PROYECT_CONFIG = {
 	// 🔹 TABLE
 	// ==========================
 	TABLE: {
-		HEADERS: ['Título', 'Descripción', 'Estado', 'Categoría', 'Tipo'],
+		HEADERS_CLOCKIFY: '',
+
+		HEADERS: ['Título', 'Cliente', 'Descripción', 'Estado', 'Categoría', 'Tipo'],
+
+		CLOCKIFY: {
+			TOOLTIP_ON: 'En Clockify',
+			TOOLTIP_OFF: 'No vinculado a Clockify',
+		},
 
 		ACTIONS: {
 			EDIT_ICON: 'edit',
@@ -66,7 +74,6 @@ export const PROYECT_CONFIG = {
 		REFRESH_ICON: 'refresh',
 		REFRESH_TOOLTIP: 'Actualizar proyectos',
 
-		// ✅ AGREGADO (para modal create)
 		CANCEL: {
 			LABEL: 'Cancelar',
 			TOOLTIP: 'Cerrar el formulario sin guardar',
@@ -78,7 +85,7 @@ export const PROYECT_CONFIG = {
 	},
 
 	// ==========================
-	// 🔹 CREATE PROJECT (MODAL + FORM)
+	// 🔹 CREATE PROJECT
 	// ==========================
 	CREATE: {
 		CLOCKIFY: {
@@ -129,8 +136,6 @@ export const PROYECT_CONFIG = {
 		MODAL: {
 			TITLE: 'Nuevo Proyecto',
 			ICON: 'add_box',
-
-			// ✅ AGREGADOS
 			CLOSE_ARIA_LABEL: 'Cerrar modal de creación de proyecto',
 			CLOSE_TOOLTIP: 'Cerrar',
 		},
@@ -151,6 +156,6 @@ export const PROYECT_CONFIG = {
 			PROJECTS: 'proyects_cache',
 			REFS: 'proyect_refs_cache',
 		},
-		TTL: 1000 * 60 * 5, // 5 min
+		TTL: 1000 * 60 * 5,
 	},
 }

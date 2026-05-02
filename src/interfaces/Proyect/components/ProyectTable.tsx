@@ -1,31 +1,96 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { ProjectIntakeRecordDto } from '../models/ProyectDTO.m'
 
-type ColumnKey = 'projectName' | 'observations' | 'projectStatusCode' | 'categoryCode' | 'projectType'
+type SortDirection = 'asc' | 'desc'
 
-const INITIAL_COLUMNS: { key: ColumnKey; label: string }[] = [
-	{ key: 'projectName', label: PROYECT_CONFIG.TABLE.HEADERS[0] },
-	{ key: 'observations', label: PROYECT_CONFIG.TABLE.HEADERS[1] },
-	{ key: 'projectStatusCode', label: PROYECT_CONFIG.TABLE.HEADERS[2] },
-	{ key: 'categoryCode', label: PROYECT_CONFIG.TABLE.HEADERS[3] },
-	{ key: 'projectType', label: PROYECT_CONFIG.TABLE.HEADERS[4] },
+type ColumnConfig = {
+	key: string
+	label: string
+	getValue: (p: ProjectIntakeRecordDto) => string
+}
+
+const INITIAL_COLUMNS: ColumnConfig[] = [
+	{
+		key: 'clockify',
+		label: PROYECT_CONFIG.TABLE.HEADERS_CLOCKIFY ?? 'Clockify',
+		getValue: (p) => (p.ClockifyRecordId ? '1' : '0'),
+	},
+	{
+		key: 'projectName',
+		label: PROYECT_CONFIG.TABLE.HEADERS[0],
+		getValue: (p) => p.ProjectName ?? '',
+	},
+	{
+		key: 'clientName',
+		label: PROYECT_CONFIG.TABLE.HEADERS[1],
+		getValue: (p) => p.ClientName ?? 'Sin cliente',
+	},
+	{
+		key: 'observations',
+		label: PROYECT_CONFIG.TABLE.HEADERS[2],
+		getValue: (p) => p.Observations ?? '',
+	},
+	{
+		key: 'projectStatusCode',
+		label: PROYECT_CONFIG.TABLE.HEADERS[3],
+		getValue: (p) => p.StatusRef?.Label ?? p.ProjectStatusCode ?? '',
+	},
+	{
+		key: 'categoryCode',
+		label: PROYECT_CONFIG.TABLE.HEADERS[4],
+		getValue: (p) => p.CategoryRef?.Label ?? p.CategoryCode ?? '',
+	},
+	{
+		key: 'projectType',
+		label: PROYECT_CONFIG.TABLE.HEADERS[5],
+		getValue: (p) => p.TypeRef?.Label ?? p.ProjectType ?? '',
+	},
 ]
 
 export const ProyectTable = () => {
-	const { filtered, loading } = useProyectContext()
+	const { filtered, loading, openEdit, openDelete } = useProyectContext()
 
 	const [columns, setColumns] = useState(INITIAL_COLUMNS)
 	const [dragIndex, setDragIndex] = useState<number | null>(null)
+	const [hoveredColumn, setHoveredColumn] = useState<number | null>(null)
 
-	const handleDragStart = (index: number) => {
-		setDragIndex(index)
+	const [sortKey, setSortKey] = useState<string | null>(null)
+	const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
+
+	const handleSort = (key: string) => {
+		if (sortKey === key) {
+			setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
+		} else {
+			setSortKey(key)
+			setSortDirection('asc')
+		}
 	}
 
-	const handleDragOver = (e: React.DragEvent) => {
-		e.preventDefault()
+	const handleDelete = (project: ProjectIntakeRecordDto) => {
+		openDelete(project)
 	}
+
+	const sortedData = useMemo(() => {
+		if (!sortKey) return filtered
+
+		const column = columns.find((c) => c.key === sortKey)
+		if (!column) return filtered
+
+		return [...filtered].sort((a, b) => {
+			const aVal = column.getValue(a).toLowerCase()
+			const bVal = column.getValue(b).toLowerCase()
+
+			if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1
+			if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1
+			return 0
+		})
+	}, [filtered, sortKey, sortDirection, columns])
+
+	const handleDragStart = (index: number) => setDragIndex(index)
+
+	const handleDragOver = (e: React.DragEvent) => e.preventDefault()
 
 	const handleDrop = (index: number) => {
 		if (dragIndex === null) return
@@ -38,25 +103,32 @@ export const ProyectTable = () => {
 		setDragIndex(null)
 	}
 
-	const handleEdit = (id: number) => {
-		console.log('edit', id)
+	const handleEdit = (project: ProjectIntakeRecordDto) => openEdit(project)
+
+	const renderCell = (p: ProjectIntakeRecordDto, col: ColumnConfig) => {
+		if (col.key === 'clockify') {
+			const isInClockify = !!p.ClockifyRecordId
+
+			return (
+				<span className="proyect-table__clockify" data-tooltip={isInClockify ? 'En Clockify' : 'No vinculado a Clockify'}>
+					<span
+						className="material-icons"
+						style={{
+							color: isInClockify ? '#22c55e' : '#9ca3af',
+							fontSize: '18px',
+						}}
+					>
+						schedule
+					</span>
+				</span>
+			)
+		}
+
+		const value = col.getValue(p)
+		return value || '-'
 	}
 
-	const handleDelete = (id: number) => {
-		console.log('delete', id)
-	}
-
-	const renderCell = (p: ProjectIntakeRecordDto, key: ColumnKey) => {
-		const value = p[key]
-
-		if (value === null || value === undefined) return '-'
-
-		return value
-	}
-
-	if (loading) {
-		return <div className="proyect-table__empty">Cargando...</div>
-	}
+	if (loading) return <div className="proyect-table__empty">Cargando...</div>
 
 	return (
 		<table className="proyect-table">
@@ -66,29 +138,35 @@ export const ProyectTable = () => {
 						<th
 							key={col.key}
 							draggable
+							onClick={() => handleSort(col.key)}
 							onDragStart={() => handleDragStart(index)}
 							onDragOver={handleDragOver}
 							onDrop={() => handleDrop(index)}
-							className="proyect-table__draggable"
+							onMouseEnter={() => setHoveredColumn(index)}
+							onMouseLeave={() => setHoveredColumn(null)}
+							className={hoveredColumn === index ? 'is-hovered' : ''}
 						>
 							{col.label}
+							{sortKey === col.key && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
 						</th>
 					))}
-					<th className="proyect-table__actions-header"></th>
+					<th className="proyect-table__actions-header" />
 				</tr>
 			</thead>
 
 			<tbody>
-				{filtered.map((p) => (
-					<tr key={p.id}>
-						{columns.map((col) => (
-							<td key={col.key}>{renderCell(p, col.key)}</td>
+				{sortedData.map((p) => (
+					<tr key={p.Id}>
+						{columns.map((col, index) => (
+							<td key={col.key} className={hoveredColumn === index ? 'is-hovered' : ''}>
+								{renderCell(p, col)}
+							</td>
 						))}
 
 						<td className="proyect-table__actions">
 							<button
 								className="proyect-table__action proyect-table__action--edit"
-								onClick={() => handleEdit(p.id)}
+								onClick={() => handleEdit(p)}
 								data-tooltip={PROYECT_CONFIG.TABLE.ACTIONS.EDIT_TOOLTIP}
 							>
 								<span className="material-icons">{PROYECT_CONFIG.TABLE.ACTIONS.EDIT_ICON}</span>
@@ -96,7 +174,7 @@ export const ProyectTable = () => {
 
 							<button
 								className="proyect-table__action proyect-table__action--delete"
-								onClick={() => handleDelete(p.id)}
+								onClick={() => handleDelete(p)}
 								data-tooltip={PROYECT_CONFIG.TABLE.ACTIONS.DELETE_TOOLTIP}
 							>
 								<span className="material-icons">{PROYECT_CONFIG.TABLE.ACTIONS.DELETE_ICON}</span>
@@ -105,7 +183,7 @@ export const ProyectTable = () => {
 					</tr>
 				))}
 
-				{filtered.length === 0 && (
+				{sortedData.length === 0 && (
 					<tr>
 						<td colSpan={columns.length + 1}>{PROYECT_CONFIG.TEXTS.EMPTY}</td>
 					</tr>
