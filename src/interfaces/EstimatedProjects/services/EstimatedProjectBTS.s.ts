@@ -26,6 +26,17 @@ import { LogTag } from '../../base/model/LogTag.m'
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
+/** Misma key que usa LoginBDT (Login/models/Configuration.m.ts → STORAGE_KEY). */
+const TOKEN_STORAGE_KEY = 'authUser'
+
+/** fetch envuelto que mete `Authorization: Bearer <token>` cuando hay token guardado. */
+const authFetch = (input: RequestInfo, init?: RequestInit): Promise<Response> => {
+	const token = localStorage.getItem(TOKEN_STORAGE_KEY)
+	const headers = new Headers(init?.headers ?? {})
+	if (token) headers.set('Authorization', `Bearer ${token}`)
+	return fetch(input, { ...init, headers })
+}
+
 const normalizeError = (error: unknown): Error => (error instanceof Error ? error : new Error(String(error)))
 
 // ==========================
@@ -91,7 +102,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, '[ESTIMATED-PROYECT][BDT] list()')
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-projects`)
+			const res = await authFetch(`${BASE_URL}/potencial-projects`)
 			if (!res.ok) throw new Error(`Error fetching potencial-projects (status=${res.status})`)
 			const wireProjects = (await res.json()) as PotencialProjectWire[]
 
@@ -114,7 +125,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] getById -> id=${id}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-projects/${id}`)
+			const res = await authFetch(`${BASE_URL}/potencial-projects/${id}`)
 			if (res.status === 404) return null
 			if (!res.ok) throw new Error(`Error fetching potencial-project (status=${res.status})`)
 			const wireProject = (await res.json()) as PotencialProjectWire
@@ -143,7 +154,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 			if (!clientId) throw new Error('PotencialClientId es obligatorio')
 
 			// 2. crear proyecto
-			const projectRes = await fetch(`${BASE_URL}/potencial-projects`, {
+			const projectRes = await authFetch(`${BASE_URL}/potencial-projects`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ name: data.Name, code: data.Code ?? null, potencialClientId: clientId }),
@@ -178,7 +189,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 			if (data.Code !== undefined) body.code = data.Code
 			if (clientId !== null) body.potencialClientId = clientId
 
-			const res = await fetch(`${BASE_URL}/potencial-projects/${id}`, {
+			const res = await authFetch(`${BASE_URL}/potencial-projects/${id}`, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(body),
@@ -206,7 +217,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] delete (físico) -> id=${id}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-projects/${id}`, { method: 'DELETE' })
+			const res = await authFetch(`${BASE_URL}/potencial-projects/${id}`, { method: 'DELETE' })
 			if (!res.ok) throw new Error(`Error deleting potencial-project (status=${res.status})`)
 		} catch (error: unknown) {
 			const err = normalizeError(error)
@@ -222,7 +233,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] getAllocations -> id=${projectId}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-projects/${projectId}/allocations`)
+			const res = await authFetch(`${BASE_URL}/potencial-projects/${projectId}/allocations`)
 			if (!res.ok) throw new Error(`Error fetching allocations (status=${res.status})`)
 			const json = (await res.json()) as { allocations: AllocationWireDto[] }
 			return json.allocations
@@ -237,7 +248,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] saveAllocations -> id=${projectId} entries=${entries.length}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-projects/${projectId}/allocations`, {
+			const res = await authFetch(`${BASE_URL}/potencial-projects/${projectId}/allocations`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ entries }),
@@ -259,7 +270,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] validateCapacity -> entries=${req.entries.length}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-projects/validate-capacity`, {
+			const res = await authFetch(`${BASE_URL}/potencial-projects/validate-capacity`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(req),
@@ -283,7 +294,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		)
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-projects/capacity-limits`, {
+			const res = await authFetch(`${BASE_URL}/potencial-projects/capacity-limits`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(req),
@@ -304,7 +315,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, '[ESTIMATED-PROYECT][BDT] getClients()')
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-clients`)
+			const res = await authFetch(`${BASE_URL}/potencial-clients`)
 			if (!res.ok) throw new Error(`Error fetching potencial-clients (status=${res.status})`)
 			const wire = (await res.json()) as PotencialClientWire[]
 			return wire.map(mapClient)
@@ -319,7 +330,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] createClient -> ${name}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/potencial-clients`, {
+			const res = await authFetch(`${BASE_URL}/potencial-clients`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ name }),
@@ -338,10 +349,12 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, '[ESTIMATED-PROYECT][BDT] getUsers()')
 
 		try {
-			// TODO: confirmar endpoint exacto contra ClockifyUsersListController.cs
-			const res = await fetch(`${BASE_URL}/clockify-users`)
-			if (!res.ok) throw new Error(`Error fetching clockify-users (status=${res.status})`)
-			return (await res.json()) as UserRefDto[]
+			const res = await authFetch(`${BASE_URL}/users`)
+			if (!res.ok) throw new Error(`Error fetching users (status=${res.status})`)
+			const wire = (await res.json()) as Array<{ id: number; name: string; email: string }>
+			// El back filtra por Active = true del lado server (ClockifyUsersListController),
+			// así que asumimos IsActive = true para todos los que vienen.
+			return wire.map((u) => ({ Id: u.id, Username: u.email, FullName: u.name, IsActive: true }))
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)

@@ -41,6 +41,9 @@ export const ESTIMATED_PROJECT_CONFIG = {
 		ADD_ICON: 'add',
 		ADD_LABEL: 'Agregar Proyecto',
 		ADD_TOOLTIP: 'Crear nuevo proyecto estimado',
+
+		REFRESH_ICON: 'refresh',
+		REFRESH_TOOLTIP: 'Actualizar proyectos estimados (limpia cache)',
 	},
 
 	// ==========================

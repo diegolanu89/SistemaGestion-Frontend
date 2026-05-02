@@ -31,3 +31,7 @@ export const setCache = <T>(key: string, data: T, ttl: number): void => {
 
 	localStorage.setItem(key, JSON.stringify(payload))
 }
+
+export const removeCache = (key: string): void => {
+	localStorage.removeItem(key)
+}
