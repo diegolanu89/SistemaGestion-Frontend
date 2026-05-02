@@ -16,12 +16,10 @@ import {
 	EtcSnapshotDto,
 } from '../model/IEtcApi.m'
 
-// 🔥 MOCKS (SOURCE OF TRUTH)
 import recordsMock from './mocks/etcRecords.mock.json'
 import snapshotMock from './mocks/etcSnapshot.mock.json'
 import projectsSummaryMock from './mocks/etcProyectsSummary.mock.json'
 
-// 🔥 STATE EN MEMORIA (NO CACHE)
 let records: EtcRecordDto[] = [...(recordsMock as EtcRecordDto[])]
 let snapshot: EtcSnapshotDto | null = snapshotMock as EtcSnapshotDto | null
 let ID = 1000

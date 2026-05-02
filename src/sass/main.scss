@@ -50,3 +50,6 @@
 /**ETC**/
 @use '../interfaces/Etc/views/etcLoadView';
 @use '../interfaces/Etc/components/etcHeader';
+@use '../interfaces/Etc/components/etcToolBar';
+@use '../interfaces/Etc/components/etcSummary';
+@use '../interfaces/Etc/components/etcTable';

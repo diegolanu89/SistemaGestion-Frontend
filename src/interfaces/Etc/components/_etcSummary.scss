@@ -1,0 +1,137 @@
+.etc-summary {
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto 20px auto;
+
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+
+	// =========================
+	// HEADER
+	// =========================
+	&__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 16px;
+	}
+
+	&__titles {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		max-width: 600px;
+	}
+
+	&__title {
+		font-size: 18px;
+		font-weight: 700;
+		color: var(--color-text-primary);
+		margin: 0;
+	}
+
+	&__subtitle {
+		font-size: 14px;
+		color: var(--color-text-secondary);
+		margin: 0;
+		line-height: 1.4;
+	}
+
+	// =========================
+	// ACTIONS
+	// =========================
+	&__actions {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+	}
+
+	&__btn {
+		height: 44px;
+
+		display: flex;
+		align-items: center;
+		gap: 8px;
+
+		padding: 0 16px;
+
+		border-radius: 10px;
+		border: 1px solid var(--color-border);
+
+		font-size: 14px;
+		cursor: pointer;
+
+		transition: all 0.2s ease;
+
+		.etc-summary__icon {
+			font-size: 18px;
+		}
+
+		&--ghost {
+			background: transparent;
+			color: var(--color-text-primary);
+
+			&:hover {
+				background: var(--color-bg-alt);
+			}
+		}
+
+		&--primary {
+			background: var(--color-primary);
+			color: white;
+			border: none;
+
+			&:hover {
+				background: var(--color-primary-light);
+			}
+		}
+	}
+
+	// =========================
+	// CARDS
+	// =========================
+	&__cards {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 16px;
+	}
+
+	&__card {
+		padding: 16px;
+
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: 12px;
+
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+
+		box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+		span {
+			font-size: 13px;
+			color: var(--color-text-secondary);
+		}
+
+		strong {
+			font-size: 18px;
+			color: var(--color-text-primary);
+		}
+
+		&.is-error {
+			border-color: #ef4444;
+		}
+
+		&.is-ok {
+			border-color: #10b981;
+		}
+	}
+
+	@media (max-width: 900px) {
+		&__cards {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+}
