@@ -5,6 +5,7 @@ export interface IUser {
 	role?: string
 	profileId?: number
 	profileName?: string
+	profileCode?: string
 	avatar?: string | null
 	createdAt?: string | Date
 }

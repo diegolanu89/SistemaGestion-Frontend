@@ -30,7 +30,7 @@ export const ProyectCreateForm: FC = () => {
 				</div>
 
 				<label className="mui-switch">
-					<input type="checkbox" checked={form.RequiresClockifyCreation} onChange={(e) => update('RequiresClockifyCreation')(e.target.checked)} />
+					<input type="checkbox" checked={form.requiresClockifyCreation} onChange={(e) => update('requiresClockifyCreation')(e.target.checked)} />
 					<span className="mui-switch__track">
 						<span className="mui-switch__thumb" />
 					</span>
@@ -46,13 +46,13 @@ export const ProyectCreateForm: FC = () => {
 						{CREATE.FIELDS.PROJECT_TYPE.LABEL} *
 					</label>
 
-					<select className="proyect-create-select" value={form.ProjectType ?? ''} onChange={(e) => update('ProjectType')(e.target.value)} required>
+					<select className="proyect-create-select" value={form.projectType ?? ''} onChange={(e) => update('projectType')(e.target.value)} required>
 						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
 						{refs.types
-							.filter((t) => t.IsActive)
+							.filter((t) => t.isActive)
 							.map((t) => (
-								<option key={t.Code} value={t.Code}>
-									{t.Label}
+								<option key={t.code} value={t.code}>
+									{t.label}
 								</option>
 							))}
 					</select>
@@ -65,7 +65,7 @@ export const ProyectCreateForm: FC = () => {
 						{CREATE.FIELDS.PROJECT_NAME.LABEL} *
 					</label>
 
-					<input className="proyect-create-input" value={form.ProjectName ?? ''} onChange={(e) => update('ProjectName')(e.target.value)} required />
+					<input className="proyect-create-input" value={form.projectName ?? ''} onChange={(e) => update('projectName')(e.target.value)} required />
 				</div>
 
 				{/* CLIENTE */}
@@ -78,8 +78,8 @@ export const ProyectCreateForm: FC = () => {
 					<input
 						className="proyect-create-input"
 						type="number"
-						value={form.ClientId ?? ''}
-						onChange={(e) => update('ClientId')(e.target.value ? Number(e.target.value) : null)}
+						value={form.clientId ?? ''}
+						onChange={(e) => update('clientId')(e.target.value ? Number(e.target.value) : null)}
 					/>
 				</div>
 
@@ -92,8 +92,8 @@ export const ProyectCreateForm: FC = () => {
 
 					<input
 						className="proyect-create-input"
-						value={form.SecondaryProjectNumber ?? ''}
-						onChange={(e) => update('SecondaryProjectNumber')(e.target.value)}
+						value={form.secondaryProjectNumber ?? ''}
+						onChange={(e) => update('secondaryProjectNumber')(e.target.value)}
 					/>
 				</div>
 
@@ -107,8 +107,8 @@ export const ProyectCreateForm: FC = () => {
 					<input
 						className="proyect-create-input"
 						type="date"
-						value={form.RegistrationDate ?? ''}
-						onChange={(e) => update('RegistrationDate')(e.target.value || null)}
+						value={form.registrationDate ?? ''}
+						onChange={(e) => update('registrationDate')(e.target.value || null)}
 					/>
 				</div>
 
@@ -119,13 +119,13 @@ export const ProyectCreateForm: FC = () => {
 						{CREATE.FIELDS.CATEGORY.LABEL}
 					</label>
 
-					<select className="proyect-create-select" value={form.CategoryCode ?? ''} onChange={(e) => update('CategoryCode')(e.target.value || null)}>
+					<select className="proyect-create-select" value={form.categoryCode ?? ''} onChange={(e) => update('categoryCode')(e.target.value || null)}>
 						<option value="">{CREATE.PLACEHOLDERS.EMPTY}</option>
 						{refs.categories
-							.filter((c) => c.IsActive)
+							.filter((c) => c.isActive)
 							.map((c) => (
-								<option key={c.Code} value={c.Code}>
-									{c.Label}
+								<option key={c.code} value={c.code}>
+									{c.label}
 								</option>
 							))}
 					</select>
@@ -138,13 +138,13 @@ export const ProyectCreateForm: FC = () => {
 						{CREATE.FIELDS.STATUS.LABEL}
 					</label>
 
-					<select className="proyect-create-select" value={form.ProjectStatusCode ?? ''} onChange={(e) => update('ProjectStatusCode')(e.target.value || null)}>
+					<select className="proyect-create-select" value={form.projectStatusCode ?? ''} onChange={(e) => update('projectStatusCode')(e.target.value || null)}>
 						<option value="">{CREATE.PLACEHOLDERS.EMPTY}</option>
 						{refs.statuses
-							.filter((s) => s.IsActive)
+							.filter((s) => s.isActive)
 							.map((s) => (
-								<option key={s.Code} value={s.Code}>
-									{s.Label}
+								<option key={s.code} value={s.code}>
+									{s.label}
 								</option>
 							))}
 					</select>
@@ -160,8 +160,8 @@ export const ProyectCreateForm: FC = () => {
 					<input
 						className="proyect-create-input"
 						type="date"
-						value={form.BusinessStatusDate ?? ''}
-						onChange={(e) => update('BusinessStatusDate')(e.target.value || null)}
+						value={form.businessStatusDate ?? ''}
+						onChange={(e) => update('businessStatusDate')(e.target.value || null)}
 					/>
 				</div>
 
@@ -175,8 +175,8 @@ export const ProyectCreateForm: FC = () => {
 					<input
 						className="proyect-create-input"
 						type="date"
-						value={form.EstimatedEndDate ?? ''}
-						onChange={(e) => update('EstimatedEndDate')(e.target.value || null)}
+						value={form.estimatedEndDate ?? ''}
+						onChange={(e) => update('estimatedEndDate')(e.target.value || null)}
 					/>
 				</div>
 
@@ -187,7 +187,7 @@ export const ProyectCreateForm: FC = () => {
 						{CREATE.FIELDS.OBSERVATIONS.LABEL}
 					</label>
 
-					<textarea className="proyect-create-textarea" rows={3} value={form.Observations ?? ''} onChange={(e) => update('Observations')(e.target.value)} />
+					<textarea className="proyect-create-textarea" rows={3} value={form.observations ?? ''} onChange={(e) => update('observations')(e.target.value)} />
 				</div>
 			</div>
 

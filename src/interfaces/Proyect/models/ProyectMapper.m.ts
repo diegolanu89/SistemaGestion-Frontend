@@ -15,27 +15,27 @@ import { ProjectIntakeStatusRefDto, ProjectIntakeCategoryRefDto, ProjectIntakeTy
 
 export const mapStatusOptions = (data: ProjectIntakeStatusRefDto[]): SelectOption[] => {
 	return data
-		.filter((s) => s.IsActive)
+		.filter((s) => s.isActive)
 		.map((s) => ({
-			value: s.Code,
-			label: s.Label,
+			value: s.code,
+			label: s.label,
 		}))
 }
 
 export const mapCategoryOptions = (data: ProjectIntakeCategoryRefDto[]): SelectOption[] => {
 	return data
-		.filter((c) => c.IsActive)
+		.filter((c) => c.isActive)
 		.map((c) => ({
-			value: c.Code,
-			label: c.Label,
+			value: c.code,
+			label: c.label,
 		}))
 }
 
 export const mapTypeOptions = (data: ProjectIntakeTypeRefDto[]): SelectOption[] => {
 	return data
-		.filter((t) => t.IsActive)
+		.filter((t) => t.isActive)
 		.map((t) => ({
-			value: t.Code,
-			label: t.Label,
+			value: t.code,
+			label: t.label,
 		}))
 }

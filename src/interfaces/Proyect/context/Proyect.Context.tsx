@@ -53,16 +53,16 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 		const searchLower = search.toLowerCase()
 
 		return data.filter((p) => {
-			const title = p.ProjectName?.toLowerCase() ?? ''
-			const desc = p.Observations?.toLowerCase() ?? ''
+			const title = p.projectName?.toLowerCase() ?? ''
+			const desc = p.observations?.toLowerCase() ?? ''
 
 			const matchSearch = title.includes(searchLower) || desc.includes(searchLower)
 
-			const matchStatus = status === 'all' || p.ProjectStatusCode === status
+			const matchStatus = status === 'all' || p.projectStatusCode === status
 
-			const matchCategory = category === 'all' || p.CategoryCode === category
+			const matchCategory = category === 'all' || p.categoryCode === category
 
-			const matchType = type === 'all' || p.ProjectType === type
+			const matchType = type === 'all' || p.projectType === type
 
 			return matchSearch && matchStatus && matchCategory && matchType
 		})

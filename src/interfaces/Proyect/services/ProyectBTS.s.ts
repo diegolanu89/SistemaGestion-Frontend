@@ -14,9 +14,15 @@ import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 
 const BASE_URL = import.meta.env.VITE_API_URL
+const ENDPOINT = `${BASE_URL}/project-intakes`
+const STORAGE_KEY = 'authUser'
 
-// 🔥 helper centralizado (clave)
 const normalizeError = (error: unknown): Error => (error instanceof Error ? error : new Error(String(error)))
+
+const authHeaders = (extra: Record<string, string> = {}): Record<string, string> => {
+	const token = localStorage.getItem(STORAGE_KEY)
+	return token ? { Authorization: `Bearer ${token}`, ...extra } : { ...extra }
+}
 
 export class ProyectBDT implements ProyectInterface {
 	// ==========================
@@ -26,7 +32,7 @@ export class ProyectBDT implements ProyectInterface {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] list()')
 
 		try {
-			const res = await fetch(`${BASE_URL}/projects`)
+			const res = await fetch(`${ENDPOINT}?per_page=1000`, { headers: authHeaders() })
 
 			if (!res.ok) {
 				const err = new Error(`Error fetching projects (status=${res.status})`)
@@ -34,11 +40,11 @@ export class ProyectBDT implements ProyectInterface {
 				throw err
 			}
 
-			const data = (await res.json()) as ProjectIntakeRecordDto[]
+			const json = (await res.json()) as { success: boolean; data: ProjectIntakeRecordDto[] }
 
-			logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] list success -> count=${data.length}`)
+			logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] list success -> count=${json.data.length}`)
 
-			return data
+			return json.data
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -53,18 +59,18 @@ export class ProyectBDT implements ProyectInterface {
 		logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] getById -> id=${id}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/projects/${id}`)
+			const res = await fetch(`${ENDPOINT}/${id}`, { headers: authHeaders() })
 
 			if (!res.ok) {
 				logger.warnTag(LogTag.Adapter, `[PROYECT][BDT] getById not found -> id=${id}`)
 				return null
 			}
 
-			const data = (await res.json()) as ProjectIntakeRecordDto
+			const json = (await res.json()) as { success: boolean; data: ProjectIntakeRecordDto }
 
 			logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] getById success -> id=${id}`)
 
-			return data
+			return json.data
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -79,9 +85,9 @@ export class ProyectBDT implements ProyectInterface {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] create', data)
 
 		try {
-			const res = await fetch(`${BASE_URL}/projects`, {
+			const res = await fetch(ENDPOINT, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: authHeaders({ 'Content-Type': 'application/json' }),
 				body: JSON.stringify(data),
 			})
 
@@ -91,11 +97,11 @@ export class ProyectBDT implements ProyectInterface {
 				throw err
 			}
 
-			const result = (await res.json()) as ProjectIntakeRecordDto
+			const json = (await res.json()) as { success: boolean; data: ProjectIntakeRecordDto }
 
-			logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] created -> id=${result.Id}`)
+			logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] created -> id=${json.data.id}`)
 
-			return result
+			return json.data
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -110,9 +116,9 @@ export class ProyectBDT implements ProyectInterface {
 		logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] update -> id=${id}`, data)
 
 		try {
-			const res = await fetch(`${BASE_URL}/projects/${id}`, {
+			const res = await fetch(`${ENDPOINT}/${id}`, {
 				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
+				headers: authHeaders({ 'Content-Type': 'application/json' }),
 				body: JSON.stringify(data),
 			})
 
@@ -122,11 +128,11 @@ export class ProyectBDT implements ProyectInterface {
 				throw err
 			}
 
-			const result = (await res.json()) as ProjectIntakeRecordDto
+			const json = (await res.json()) as { success: boolean; data: ProjectIntakeRecordDto }
 
 			logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] updated -> id=${id}`)
 
-			return result
+			return json.data
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -135,14 +141,15 @@ export class ProyectBDT implements ProyectInterface {
 	}
 
 	// ==========================
-	// 🔹 DELETE
+	// 🔹 DELETE (baja lógica)
 	// ==========================
 	async delete(id: number): Promise<void> {
 		logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] delete -> id=${id}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/projects/${id}`, {
+			const res = await fetch(`${ENDPOINT}/${id}`, {
 				method: 'DELETE',
+				headers: authHeaders(),
 			})
 
 			if (!res.ok) {
@@ -160,19 +167,32 @@ export class ProyectBDT implements ProyectInterface {
 	}
 
 	// ==========================
-	// 🔹 REFS DINÁMICOS
+	// 🔹 REFS — un solo endpoint /options
 	// ==========================
+	private async fetchOptions(): Promise<{ types: ProjectIntakeTypeRefDto[]; categories: ProjectIntakeCategoryRefDto[]; statuses: ProjectIntakeStatusRefDto[] }> {
+		const res = await fetch(`${ENDPOINT}/options`, { headers: authHeaders() })
+
+		if (!res.ok) {
+			throw new Error(`Error fetching options (status=${res.status})`)
+		}
+
+		const json = (await res.json()) as {
+			success: boolean
+			data: {
+				types: ProjectIntakeTypeRefDto[]
+				categories: ProjectIntakeCategoryRefDto[]
+				statuses: ProjectIntakeStatusRefDto[]
+			}
+		}
+
+		return json.data
+	}
+
 	async getStatuses(): Promise<ProjectIntakeStatusRefDto[]> {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] getStatuses()')
-
 		try {
-			const res = await fetch(`${BASE_URL}/projects/statuses`)
-
-			if (!res.ok) {
-				throw new Error(`Error fetching statuses (status=${res.status})`)
-			}
-
-			return (await res.json()) as ProjectIntakeStatusRefDto[]
+			const { statuses } = await this.fetchOptions()
+			return statuses
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -182,15 +202,9 @@ export class ProyectBDT implements ProyectInterface {
 
 	async getCategories(): Promise<ProjectIntakeCategoryRefDto[]> {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] getCategories()')
-
 		try {
-			const res = await fetch(`${BASE_URL}/projects/categories`)
-
-			if (!res.ok) {
-				throw new Error(`Error fetching categories (status=${res.status})`)
-			}
-
-			return (await res.json()) as ProjectIntakeCategoryRefDto[]
+			const { categories } = await this.fetchOptions()
+			return categories
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -200,15 +214,9 @@ export class ProyectBDT implements ProyectInterface {
 
 	async getTypes(): Promise<ProjectIntakeTypeRefDto[]> {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] getTypes()')
-
 		try {
-			const res = await fetch(`${BASE_URL}/projects/types`)
-
-			if (!res.ok) {
-				throw new Error(`Error fetching types (status=${res.status})`)
-			}
-
-			return (await res.json()) as ProjectIntakeTypeRefDto[]
+			const { types } = await this.fetchOptions()
+			return types
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)

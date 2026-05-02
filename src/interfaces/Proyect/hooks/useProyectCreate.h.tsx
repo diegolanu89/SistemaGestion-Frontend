@@ -10,11 +10,11 @@ export const useProyectCreateForm = () => {
 	const { refetch, closeCreate, setCreateStatus, setCreateMessage } = useProyectContext()
 
 	const [form, setForm] = useState<ProjectIntakeRecordDto>({
-		Id: 0,
-		ProjectType: '',
-		ProjectName: '',
-		RequiresClockifyCreation: false,
-		IsActive: true,
+		id: 0,
+		projectType: '',
+		projectName: '',
+		requiresClockifyCreation: false,
+		isActive: true,
 	})
 
 	// ==========================
@@ -29,29 +29,29 @@ export const useProyectCreateForm = () => {
 	// MAP DTO
 	// ==========================
 	const mapToCreateDto = (): CreateProjectIntakeDto => ({
-		ProjectType: form.ProjectType!,
-		ProjectName: form.ProjectName!,
+		projectType: form.projectType!,
+		projectName: form.projectName!,
 
-		SecondaryProjectNumber: form.SecondaryProjectNumber ?? undefined,
-		RegistrationDate: form.RegistrationDate ?? undefined,
-		ClientId: form.ClientId ?? undefined,
-		CategoryCode: form.CategoryCode ?? undefined,
-		ProjectStatusCode: form.ProjectStatusCode ?? undefined,
-		BusinessStatusDate: form.BusinessStatusDate ?? undefined,
-		EstimatedEndDate: form.EstimatedEndDate ?? undefined,
-		ActualEndDate: form.ActualEndDate ?? undefined,
-		CommercialStatus: form.CommercialStatus ?? undefined,
-		LeaderName: form.LeaderName ?? undefined,
-		Observations: form.Observations ?? undefined,
+		secondaryProjectNumber: form.secondaryProjectNumber ?? undefined,
+		registrationDate: form.registrationDate ?? undefined,
+		clientId: form.clientId ?? undefined,
+		categoryCode: form.categoryCode ?? undefined,
+		projectStatusCode: form.projectStatusCode ?? undefined,
+		businessStatusDate: form.businessStatusDate ?? undefined,
+		estimatedEndDate: form.estimatedEndDate ?? undefined,
+		actualEndDate: form.actualEndDate ?? undefined,
+		commercialStatus: form.commercialStatus ?? undefined,
+		leaderName: form.leaderName ?? undefined,
+		observations: form.observations ?? undefined,
 
-		RequiresClockifyCreation: form.RequiresClockifyCreation,
+		requiresClockifyCreation: form.requiresClockifyCreation,
 	})
 
 	// ==========================
 	// SUBMIT
 	// ==========================
 	const submit = async (): Promise<void> => {
-		if (!form.ProjectType || !form.ProjectName) return
+		if (!form.projectType || !form.projectName) return
 
 		const payload = mapToCreateDto()
 
@@ -63,7 +63,7 @@ export const useProyectCreateForm = () => {
 
 			const result = await proyectAdapter.create(payload)
 
-			logger.infoTag(LogTag.Adapter, `${ProyectCreateLogMessages.SUBMIT_SUCCESS} -> id=${result.Id}`, result)
+			logger.infoTag(LogTag.Adapter, `${ProyectCreateLogMessages.SUBMIT_SUCCESS} -> id=${result.id}`, result)
 
 			setCreateStatus('success')
 			setCreateMessage(ProyectCreateMessages.SUCCESS)
