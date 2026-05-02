@@ -3,7 +3,6 @@ import { ESTIMATED_PROJECT_CONFIG } from '../models/EstimatedProjectConfig.m'
 import { UserRefDto } from '../models/EstimatedProjectDTO.m'
 import { MonthSlot } from '../utils/months'
 import { useEstimatedCapacity } from '../hooks/useEstimatedCapacity.h'
-import { buildCapacityMap, buildWorkloadMap, computeMaxAssignable } from '../utils/capacity'
 
 export type MonthlyHoursState = Record<number, Record<string, number>>
 
@@ -14,26 +13,41 @@ interface Props {
 	selectedUsers: UserRefDto[]
 	values: MonthlyHoursState
 	onChange: (userId: number, monthKey: string, hours: number) => void
+	potencialProjectId?: number | null
 }
 
-export const EstimatedProjectMonthlyGrid: FC<Props> = ({ months, monthCount, onMonthCountChange, selectedUsers, values, onChange }) => {
+export const EstimatedProjectMonthlyGrid: FC<Props> = ({
+	months,
+	monthCount,
+	onMonthCountChange,
+	selectedUsers,
+	values,
+	onChange,
+	potencialProjectId,
+}) => {
 	const { MONTHLY_GRID } = ESTIMATED_PROJECT_CONFIG.FORM
 
-	const userIds = useMemo(() => selectedUsers.map((u) => u.Id), [selectedUsers])
+	const userNames = useMemo(() => selectedUsers.map((u) => u.FullName), [selectedUsers])
 	const monthKeys = useMemo(() => months.map((m) => m.key), [months])
 
-	const { capacities, workload, loading } = useEstimatedCapacity({ userIds, monthKeys })
+	const { limits, loading } = useEstimatedCapacity({ userNames, monthKeys, potencialProjectId })
 
-	const capacityByMonth = useMemo(() => buildCapacityMap(capacities), [capacities])
-	const workloadByUser = useMemo(() => buildWorkloadMap(workload), [workload])
+	/** Cap total del proyecto por mes = Σ(available) entre los recursos seleccionados. */
+	const monthAvailableSums = useMemo(() => {
+		const sums: Record<string, number> = {}
+		for (const m of months) {
+			let s = 0
+			for (const u of selectedUsers) s += limits[u.FullName]?.[m.key]?.available ?? 0
+			sums[m.key] = s
+		}
+		return sums
+	}, [months, selectedUsers, limits])
 
 	const monthTotals = useMemo(() => {
 		const totals: Record<string, number> = {}
 		for (const m of months) {
 			let sum = 0
-			for (const u of selectedUsers) {
-				sum += values[u.Id]?.[m.key] ?? 0
-			}
+			for (const u of selectedUsers) sum += values[u.Id]?.[m.key] ?? 0
 			totals[m.key] = sum
 		}
 		return totals
@@ -80,15 +94,12 @@ export const EstimatedProjectMonthlyGrid: FC<Props> = ({ months, monthCount, onM
 					<thead>
 						<tr>
 							<th className="estimated-grid__col-user">{MONTHLY_GRID.USER_COL_HEADER}</th>
-							{months.map((m) => {
-								const cap = capacityByMonth.get(m.key)
-								return (
-									<th key={m.key} className="estimated-grid__col-month">
-										<div className="estimated-grid__month-name">{m.label}</div>
-										<div className="estimated-grid__month-cap">({cap !== undefined ? cap.toFixed(1) : '—'}h)</div>
-									</th>
-								)
-							})}
+							{months.map((m) => (
+								<th key={m.key} className="estimated-grid__col-month">
+									<div className="estimated-grid__month-name">{m.label}</div>
+									<div className="estimated-grid__month-cap">({(monthAvailableSums[m.key] ?? 0).toFixed(1)}h)</div>
+								</th>
+							))}
 							<th className="estimated-grid__col-total">{MONTHLY_GRID.TOTAL_USER_HEADER}</th>
 						</tr>
 					</thead>
@@ -102,65 +113,62 @@ export const EstimatedProjectMonthlyGrid: FC<Props> = ({ months, monthCount, onM
 							</tr>
 						)}
 
-						{selectedUsers.map((user) => {
-							const userMonthMap = workloadByUser.get(user.Id)
-							return (
-								<tr key={user.Id}>
-									<td className="estimated-grid__user">{user.FullName}</td>
+						{selectedUsers.map((user) => (
+							<tr key={user.Id}>
+								<td className="estimated-grid__user">{user.FullName}</td>
 
-									{months.map((m) => {
-										const assignments = userMonthMap?.get(m.key) ?? []
-										const cap = capacityByMonth.get(m.key) ?? 0
-										const max = computeMaxAssignable(cap, assignments)
-										const value = values[user.Id]?.[m.key] ?? 0
+								{months.map((m) => {
+									const limit = limits[user.FullName]?.[m.key]
+									const cap = limit?.capacity ?? 0
+									const etc = limit?.etc_hours ?? 0
+									const other = limit?.other_potencial_hours ?? 0
+									const max = limit?.available ?? 0
+									const value = values[user.Id]?.[m.key] ?? 0
+									const locked = max <= 0
 
-										const locked = max <= 0
-										return (
-											<td key={m.key} className="estimated-grid__cell">
-												<div className="estimated-grid__cell-inner">
-													<input
-														type="number"
-														min={0}
-														max={max}
-														step={1}
-														value={value || ''}
-														onChange={(e) => {
-															const raw = Number(e.target.value)
-															const safe = Number.isNaN(raw) ? 0 : Math.max(0, Math.min(max, raw))
-															onChange(user.Id, m.key, safe)
-														}}
-														disabled={loading || locked}
-													/>
-													<div className="estimated-grid__max">
-														{MONTHLY_GRID.MAX_PREFIX} {max}
-														{MONTHLY_GRID.HOUR_SUFFIX}
-													</div>
-
-													{assignments.length > 0 && (
-														<ul className="estimated-grid__chips">
-															{assignments.map((a, idx) => (
-																<li key={`${a.Kind}-${idx}`} className={`estimated-chip estimated-chip--${a.Kind === 'R' ? 'real' : 'estimado'}`}>
-																	<span className="estimated-chip__kind">{a.Kind}</span>
-																	<span className="estimated-chip__label">
-																		{a.ProjectCode ? `${a.ProjectCode} - ${a.ProjectLabel}` : a.ProjectLabel}
-																	</span>
-																	<span className="estimated-chip__hours">
-																		{a.Hours}
-																		{MONTHLY_GRID.HOUR_SUFFIX}
-																	</span>
-																</li>
-															))}
-														</ul>
-													)}
+									return (
+										<td key={m.key} className="estimated-grid__cell">
+											<div className="estimated-grid__cell-inner">
+												<input
+													type="number"
+													min={0}
+													max={max}
+													step={1}
+													value={value || ''}
+													onChange={(e) => {
+														const raw = Number(e.target.value)
+														const safe = Number.isNaN(raw) ? 0 : Math.max(0, Math.min(max, raw))
+														onChange(user.Id, m.key, safe)
+													}}
+													disabled={loading || locked}
+												/>
+												<div className="estimated-grid__max">
+													{MONTHLY_GRID.MAX_PREFIX} {max}
+													{MONTHLY_GRID.HOUR_SUFFIX}
 												</div>
-											</td>
-										)
-									})}
 
-									<td className="estimated-grid__total estimated-grid__total--user">{userTotals[user.Id].toFixed(1)}</td>
-								</tr>
-							)
-						})}
+												<dl className="estimated-grid__breakdown">
+													<div>
+														<dt>Cap.</dt>
+														<dd>{cap}h</dd>
+													</div>
+													<div>
+														<dt>ETC</dt>
+														<dd>{etc}h</dd>
+													</div>
+													<div>
+														<dt>Otros est.</dt>
+														<dd>{other}h</dd>
+													</div>
+												</dl>
+											</div>
+										</td>
+									)
+								})}
+
+								<td className="estimated-grid__total estimated-grid__total--user">{userTotals[user.Id].toFixed(1)}</td>
+							</tr>
+						))}
 					</tbody>
 
 					{selectedUsers.length > 0 && (

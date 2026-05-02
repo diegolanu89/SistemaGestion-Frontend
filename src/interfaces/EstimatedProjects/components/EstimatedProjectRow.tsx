@@ -37,7 +37,7 @@ export const EstimatedProjectRow: FC<Props> = ({ project, onEdit, onDelete }) =>
 				</td>
 
 				<td>{project.ClientName ?? '-'}</td>
-				<td>{project.ProjectName}</td>
+				<td>{project.Name}</td>
 				<td>{project.Code ?? '-'}</td>
 				<td>{summary.totalHours.toFixed(1)}</td>
 				<td>{summary.totalResources}</td>

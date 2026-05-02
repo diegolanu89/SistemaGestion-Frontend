@@ -1,0 +1,9 @@
+{
+	"Pablo Nicolás Vallejos": {
+		"2026-04": { "capacity": 160, "etc_hours": 56, "other_potencial_hours": 210, "available": 0 },
+		"2026-05": { "capacity": 160, "etc_hours": 80, "other_potencial_hours": 70, "available": 10 }
+	},
+	"Ignacio Martin Commisso": {
+		"2026-04": { "capacity": 160, "etc_hours": 64, "other_potencial_hours": 0, "available": 96 }
+	}
+}

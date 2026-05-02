@@ -40,7 +40,7 @@ export const EstimatedProjectProvider = ({ children }: IProviderProps) => {
 		if (!searchLower) return data
 
 		return data.filter((p) => {
-			const project = p.ProjectName?.toLowerCase() ?? ''
+			const project = p.Name?.toLowerCase() ?? ''
 			const client = p.ClientName?.toLowerCase() ?? ''
 			const code = p.Code?.toLowerCase() ?? ''
 			return project.includes(searchLower) || client.includes(searchLower) || code.includes(searchLower)

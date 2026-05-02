@@ -1,5 +1,5 @@
 import { Route } from 'react-router-dom'
-import { EstimatedProject, EstimatedProjectCreate } from '..'
+import { EstimatedProject, EstimatedProjectCreate, EstimatedProjectEdit } from '..'
 import { EstimatedProjectProvider } from '../context/EstimatedProject.Context'
 import { ESTIMATED_PROJECT_PATHS } from './paths'
 
@@ -25,7 +25,7 @@ export const EstimatedProjectRoutes = () => (
 			path={ESTIMATED_PROJECT_PATHS.EDIT}
 			element={
 				<EstimatedProjectProvider>
-					<EstimatedProjectCreate />
+					<EstimatedProjectEdit />
 				</EstimatedProjectProvider>
 			}
 		/>

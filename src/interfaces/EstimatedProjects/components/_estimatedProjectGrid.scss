@@ -168,13 +168,30 @@
 		color: var(--color-text-secondary);
 	}
 
-	&__chips {
-		list-style: none;
+	&__breakdown {
 		margin: 4px 0 0;
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 4px;
+		gap: 2px;
+		font-size: 11px;
+		color: var(--color-text-secondary);
+
+		div {
+			display: flex;
+			justify-content: space-between;
+			gap: 8px;
+		}
+
+		dt {
+			margin: 0;
+			font-weight: 500;
+		}
+
+		dd {
+			margin: 0;
+			color: var(--color-text-primary);
+		}
 	}
 
 	&__total {
@@ -205,50 +222,3 @@
 	}
 }
 
-/* CHIPS R / E */
-.estimated-chip {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-
-	font-size: 11px;
-	line-height: 1.3;
-	color: var(--color-text-primary);
-
-	&__kind {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-
-		width: 16px;
-		height: 16px;
-
-		font-size: 10px;
-		font-weight: 700;
-		color: #fff;
-		border-radius: 3px;
-		flex: 0 0 auto;
-	}
-
-	&__label {
-		flex: 1;
-		min-width: 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	&__hours {
-		font-weight: 700;
-		color: var(--color-text-primary);
-		flex: 0 0 auto;
-	}
-
-	&--real .estimated-chip__kind {
-		background: #d97706;
-	}
-
-	&--estimado .estimated-chip__kind {
-		background: #f5a623;
-	}
-}

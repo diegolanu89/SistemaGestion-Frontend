@@ -13,6 +13,18 @@ const buildMonthKey = (year: number, monthIdx: number): string => `${year}-${pad
 
 const buildMonthLabel = (year: number, monthIdx: number): string => `${MONTH_NAMES_ES[monthIdx]} de ${year}`
 
+export const parseMonthKey = (key: string): Date => {
+	const [year, month] = key.split('-').map(Number)
+	return new Date(year, (month ?? 1) - 1, 1)
+}
+
+export const monthKeyOf = (d: Date): string => buildMonthKey(d.getFullYear(), d.getMonth())
+
+export const monthsBetween = (from: Date, to: Date): number =>
+	(to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth())
+
+export const earlierOf = (a: Date, b: Date): Date => (a.getTime() < b.getTime() ? a : b)
+
 /**
  * Devuelve `count` meses consecutivos a partir del mes que contiene `anchor`.
  */

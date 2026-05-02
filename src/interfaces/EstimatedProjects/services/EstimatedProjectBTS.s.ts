@@ -1,14 +1,24 @@
 // services/EstimatedProjectBDT.s.ts
+//
+// Endpoints alineados al back (PotencialProjectsController + PotencialClientsController).
+// El back devuelve C# DTOs en camelCase y anonymous objects en snake_case según
+// cómo estén escritos. Acá hacemos la conversión mínima al shape PascalCase del front
+// solo donde hace falta (PotencialProject → EstimatedProjectRecordDto).
 
 import { EstimatedProjectInterface } from '../models/IEstimatedProject.m'
 import {
 	EstimatedProjectRecordDto,
+	EstimatedResourceDto,
 	CreateEstimatedProjectDto,
 	UpdateEstimatedProjectDto,
 	ClientRefDto,
 	UserRefDto,
-	MonthlyCapacityDto,
-	UserMonthWorkloadDto,
+	CapacityLimitsRequestDto,
+	CapacityLimitsResponseDto,
+	ValidateCapacityRequestDto,
+	ValidateCapacityResponseDto,
+	AllocationEntryDto,
+	AllocationWireDto,
 } from '../models/EstimatedProjectDTO.m'
 
 import logger from '../../base/controllers/Logger.c'
@@ -18,14 +28,81 @@ const BASE_URL = import.meta.env.VITE_API_URL
 
 const normalizeError = (error: unknown): Error => (error instanceof Error ? error : new Error(String(error)))
 
+// ==========================
+// 🔹 Wire DTOs (lo que viene del back en JSON)
+// ==========================
+
+interface PotencialProjectWire {
+	id: number
+	name: string
+	code: string | null
+	clientId: number | null
+	clientName: string | null
+}
+
+interface PotencialClientWire {
+	id: number
+	name: string
+	createdAt?: string | null
+	updatedAt?: string | null
+}
+
+// ==========================
+// 🔹 Mappers wire → front (PascalCase)
+// ==========================
+
+const mapClient = (w: PotencialClientWire): ClientRefDto => ({
+	Id: w.id,
+	Name: w.name,
+	CreatedAt: w.createdAt ?? null,
+	UpdatedAt: w.updatedAt ?? null,
+})
+
+const groupResources = (allocations: AllocationWireDto[]): EstimatedResourceDto[] => {
+	const byUser = new Map<string, EstimatedResourceDto>()
+	for (const a of allocations) {
+		const key = `${a.user_id ?? 'null'}-${a.user_name}`
+		if (!byUser.has(key)) {
+			byUser.set(key, { UserId: a.user_id, UserName: a.user_name, MonthlyHours: {} })
+		}
+		byUser.get(key)!.MonthlyHours[a.month_key] = (byUser.get(key)!.MonthlyHours[a.month_key] ?? 0) + a.hours
+	}
+	return [...byUser.values()]
+}
+
+const mapProject = (w: PotencialProjectWire, allocations: AllocationWireDto[]): EstimatedProjectRecordDto => ({
+	Id: w.id,
+	Name: w.name,
+	Code: w.code,
+	ClientId: w.clientId,
+	ClientName: w.clientName,
+	Resources: groupResources(allocations),
+})
+
+// ==========================
+// 🔹 BDT
+// ==========================
+
 export class EstimatedProjectBDT implements EstimatedProjectInterface {
+	// ==========================
+	// 🔹 LIST — combina GET /potencial-projects con GET /{id}/allocations (N+1)
+	// ==========================
 	async list(): Promise<EstimatedProjectRecordDto[]> {
 		logger.infoTag(LogTag.Adapter, '[ESTIMATED-PROYECT][BDT] list()')
 
 		try {
-			const res = await fetch(`${BASE_URL}/estimated-projects`)
-			if (!res.ok) throw new Error(`Error fetching estimated projects (status=${res.status})`)
-			return (await res.json()) as EstimatedProjectRecordDto[]
+			const res = await fetch(`${BASE_URL}/potencial-projects`)
+			if (!res.ok) throw new Error(`Error fetching potencial-projects (status=${res.status})`)
+			const wireProjects = (await res.json()) as PotencialProjectWire[]
+
+			// N+1: hasta que el back exponga un endpoint con summary embebido.
+			const enriched = await Promise.all(
+				wireProjects.map(async (p) => {
+					const allocations = await this.getAllocations(p.id)
+					return mapProject(p, allocations)
+				}),
+			)
+			return enriched
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -37,9 +114,12 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] getById -> id=${id}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/estimated-projects/${id}`)
-			if (!res.ok) return null
-			return (await res.json()) as EstimatedProjectRecordDto
+			const res = await fetch(`${BASE_URL}/potencial-projects/${id}`)
+			if (res.status === 404) return null
+			if (!res.ok) throw new Error(`Error fetching potencial-project (status=${res.status})`)
+			const wireProject = (await res.json()) as PotencialProjectWire
+			const allocations = await this.getAllocations(id)
+			return mapProject(wireProject, allocations)
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -47,17 +127,35 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		}
 	}
 
+	// ==========================
+	// 🔹 CREATE (cadena: cliente → proyecto → allocations)
+	// ==========================
 	async create(data: CreateEstimatedProjectDto): Promise<EstimatedProjectRecordDto> {
 		logger.infoTag(LogTag.Adapter, '[ESTIMATED-PROYECT][BDT] create', data)
 
 		try {
-			const res = await fetch(`${BASE_URL}/estimated-projects`, {
+			// 1. resolver cliente
+			let clientId = data.ClientId ?? null
+			if (data.NewClientName?.trim()) {
+				const newClient = await this.createClient(data.NewClientName.trim())
+				clientId = newClient.Id
+			}
+			if (!clientId) throw new Error('PotencialClientId es obligatorio')
+
+			// 2. crear proyecto
+			const projectRes = await fetch(`${BASE_URL}/potencial-projects`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(data),
+				body: JSON.stringify({ name: data.Name, code: data.Code ?? null, potencialClientId: clientId }),
 			})
-			if (!res.ok) throw new Error(`Error creating estimated project (status=${res.status})`)
-			return (await res.json()) as EstimatedProjectRecordDto
+			if (!projectRes.ok) throw new Error(`Error creating potencial-project (status=${projectRes.status})`)
+			const wireProject = (await projectRes.json()) as PotencialProjectWire
+
+			// 3. allocations
+			const entries = this.resourcesToEntries(data.Resources)
+			const allocations = await this.saveAllocations(wireProject.id, entries)
+
+			return mapProject(wireProject, allocations)
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -69,13 +167,34 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] update -> id=${id}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/estimated-projects/${id}`, {
+			let clientId = data.ClientId ?? null
+			if (data.NewClientName?.trim()) {
+				const newClient = await this.createClient(data.NewClientName.trim())
+				clientId = newClient.Id
+			}
+
+			const body: Record<string, unknown> = {}
+			if (data.Name !== undefined) body.name = data.Name
+			if (data.Code !== undefined) body.code = data.Code
+			if (clientId !== null) body.potencialClientId = clientId
+
+			const res = await fetch(`${BASE_URL}/potencial-projects/${id}`, {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(data),
+				body: JSON.stringify(body),
 			})
-			if (!res.ok) throw new Error(`Error updating estimated project (status=${res.status})`)
-			return (await res.json()) as EstimatedProjectRecordDto
+			if (!res.ok) throw new Error(`Error updating potencial-project (status=${res.status})`)
+			const wireProject = (await res.json()) as PotencialProjectWire
+
+			let allocations: AllocationWireDto[]
+			if (data.Resources) {
+				const entries = this.resourcesToEntries(data.Resources)
+				allocations = await this.saveAllocations(id, entries)
+			} else {
+				allocations = await this.getAllocations(id)
+			}
+
+			return mapProject(wireProject, allocations)
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -84,11 +203,11 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 	}
 
 	async delete(id: number): Promise<void> {
-		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] delete -> id=${id}`)
+		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] delete (físico) -> id=${id}`)
 
 		try {
-			const res = await fetch(`${BASE_URL}/estimated-projects/${id}`, { method: 'DELETE' })
-			if (!res.ok) throw new Error(`Error deleting estimated project (status=${res.status})`)
+			const res = await fetch(`${BASE_URL}/potencial-projects/${id}`, { method: 'DELETE' })
+			if (!res.ok) throw new Error(`Error deleting potencial-project (status=${res.status})`)
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -96,13 +215,118 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		}
 	}
 
+	// ==========================
+	// 🔹 ALLOCATIONS
+	// ==========================
+	async getAllocations(projectId: number): Promise<AllocationWireDto[]> {
+		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] getAllocations -> id=${projectId}`)
+
+		try {
+			const res = await fetch(`${BASE_URL}/potencial-projects/${projectId}/allocations`)
+			if (!res.ok) throw new Error(`Error fetching allocations (status=${res.status})`)
+			const json = (await res.json()) as { allocations: AllocationWireDto[] }
+			return json.allocations
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+			logger.errorTag(LogTag.Adapter, err)
+			throw err
+		}
+	}
+
+	async saveAllocations(projectId: number, entries: AllocationEntryDto[]): Promise<AllocationWireDto[]> {
+		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] saveAllocations -> id=${projectId} entries=${entries.length}`)
+
+		try {
+			const res = await fetch(`${BASE_URL}/potencial-projects/${projectId}/allocations`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ entries }),
+			})
+			if (!res.ok) throw new Error(`Error saving allocations (status=${res.status})`)
+			const json = (await res.json()) as { allocations: AllocationWireDto[] }
+			return json.allocations
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+			logger.errorTag(LogTag.Adapter, err)
+			throw err
+		}
+	}
+
+	// ==========================
+	// 🔹 VALIDATE CAPACITY
+	// ==========================
+	async validateCapacity(req: ValidateCapacityRequestDto): Promise<ValidateCapacityResponseDto> {
+		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] validateCapacity -> entries=${req.entries.length}`)
+
+		try {
+			const res = await fetch(`${BASE_URL}/potencial-projects/validate-capacity`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(req),
+			})
+			if (!res.ok) throw new Error(`Error validating capacity (status=${res.status})`)
+			return (await res.json()) as ValidateCapacityResponseDto
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+			logger.errorTag(LogTag.Adapter, err)
+			throw err
+		}
+	}
+
+	// ==========================
+	// 🔹 CAPACITY LIMITS
+	// ==========================
+	async getCapacityLimits(req: CapacityLimitsRequestDto): Promise<CapacityLimitsResponseDto> {
+		logger.infoTag(
+			LogTag.Adapter,
+			`[ESTIMATED-PROYECT][BDT] getCapacityLimits -> users=${req.userNames.length} months=${req.monthKeys.length} excludeId=${req.potencialProjectId ?? '-'}`,
+		)
+
+		try {
+			const res = await fetch(`${BASE_URL}/potencial-projects/capacity-limits`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(req),
+			})
+			if (!res.ok) throw new Error(`Error fetching capacity limits (status=${res.status})`)
+			return (await res.json()) as CapacityLimitsResponseDto
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+			logger.errorTag(LogTag.Adapter, err)
+			throw err
+		}
+	}
+
+	// ==========================
+	// 🔹 REFS
+	// ==========================
 	async getClients(): Promise<ClientRefDto[]> {
 		logger.infoTag(LogTag.Adapter, '[ESTIMATED-PROYECT][BDT] getClients()')
 
 		try {
-			const res = await fetch(`${BASE_URL}/clients`)
-			if (!res.ok) throw new Error(`Error fetching clients (status=${res.status})`)
-			return (await res.json()) as ClientRefDto[]
+			const res = await fetch(`${BASE_URL}/potencial-clients`)
+			if (!res.ok) throw new Error(`Error fetching potencial-clients (status=${res.status})`)
+			const wire = (await res.json()) as PotencialClientWire[]
+			return wire.map(mapClient)
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+			logger.errorTag(LogTag.Adapter, err)
+			throw err
+		}
+	}
+
+	async createClient(name: string): Promise<ClientRefDto> {
+		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] createClient -> ${name}`)
+
+		try {
+			const res = await fetch(`${BASE_URL}/potencial-clients`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ name }),
+			})
+			if (!res.ok) throw new Error(`Error creating potencial-client (status=${res.status})`)
+			const wire = (await res.json()) as PotencialClientWire
+			return mapClient(wire)
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 			logger.errorTag(LogTag.Adapter, err)
@@ -114,8 +338,9 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, '[ESTIMATED-PROYECT][BDT] getUsers()')
 
 		try {
-			const res = await fetch(`${BASE_URL}/users`)
-			if (!res.ok) throw new Error(`Error fetching users (status=${res.status})`)
+			// TODO: confirmar endpoint exacto contra ClockifyUsersListController.cs
+			const res = await fetch(`${BASE_URL}/clockify-users`)
+			if (!res.ok) throw new Error(`Error fetching clockify-users (status=${res.status})`)
 			return (await res.json()) as UserRefDto[]
 		} catch (error: unknown) {
 			const err = normalizeError(error)
@@ -125,38 +350,22 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 	}
 
 	// ==========================
-	// 🔹 CAPACITY (RF-09)
+	// 🔹 helpers
 	// ==========================
-	async getMonthlyCapacities(monthKeys: string[]): Promise<MonthlyCapacityDto[]> {
-		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] getMonthlyCapacities -> ${monthKeys.length} meses`)
-
-		try {
-			const qs = monthKeys.map((m) => `months=${encodeURIComponent(m)}`).join('&')
-			const res = await fetch(`${BASE_URL}/capacity/monthly?${qs}`)
-			if (!res.ok) throw new Error(`Error fetching monthly capacities (status=${res.status})`)
-			return (await res.json()) as MonthlyCapacityDto[]
-		} catch (error: unknown) {
-			const err = normalizeError(error)
-			logger.errorTag(LogTag.Adapter, err)
-			throw err
+	private resourcesToEntries(resources: EstimatedResourceDto[]): AllocationEntryDto[] {
+		const entries: AllocationEntryDto[] = []
+		for (const r of resources) {
+			for (const [monthKey, hours] of Object.entries(r.MonthlyHours)) {
+				if (hours <= 0) continue
+				entries.push({
+					monthKey,
+					monthLabel: monthKey,
+					userId: r.UserId,
+					userName: r.UserName,
+					hours,
+				})
+			}
 		}
-	}
-
-	async getUserWorkload(userIds: number[], monthKeys: string[]): Promise<UserMonthWorkloadDto[]> {
-		logger.infoTag(LogTag.Adapter, `[ESTIMATED-PROYECT][BDT] getUserWorkload -> users=${userIds.length} months=${monthKeys.length}`)
-
-		try {
-			const res = await fetch(`${BASE_URL}/capacity/workload`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ userIds, monthKeys }),
-			})
-			if (!res.ok) throw new Error(`Error fetching user workload (status=${res.status})`)
-			return (await res.json()) as UserMonthWorkloadDto[]
-		} catch (error: unknown) {
-			const err = normalizeError(error)
-			logger.errorTag(LogTag.Adapter, err)
-			throw err
-		}
+		return entries
 	}
 }
