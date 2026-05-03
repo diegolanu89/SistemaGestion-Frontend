@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { Tooltip, useMediaQuery } from '@mui/material'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { useProyectCreateForm } from '../hooks/useProyectCreate.h'
@@ -8,9 +9,12 @@ import { usePotencialClients } from '../hooks/usePotencialClient.h'
 export const ProyectCreateForm: FC = () => {
 	const { refs, closeCreate } = useProyectContext()
 	const { CREATE, ACTIONS } = PROYECT_CONFIG
+	const isSmallScreen = useMediaQuery('(max-width: 768px)')
 	const { form, update, submit, submitting } = useProyectCreateForm()
 
 	const { clients, loading: loadingClients } = usePotencialClients()
+
+	const selectedType = refs.types.find((t) => t.Code === form.projectType)
 
 	if (!refs) return null
 
@@ -22,7 +26,7 @@ export const ProyectCreateForm: FC = () => {
 				void submit()
 			}}
 		>
-			<div className="proyect-create-clockify" data-tooltip={CREATE.CLOCKIFY.TOOLTIP}>
+			<div className="proyect-create-clockify">
 				<div>
 					<h3>
 						<span className="material-icons">{CREATE.CLOCKIFY.ICON}</span>
@@ -31,12 +35,39 @@ export const ProyectCreateForm: FC = () => {
 					<p>{CREATE.CLOCKIFY.DESCRIPTION}</p>
 				</div>
 
-				<label className="mui-switch">
-					<input type="checkbox" checked={form.requiresClockifyCreation} onChange={(e) => update('requiresClockifyCreation')(e.target.checked)} />
-					<span className="mui-switch__track">
-						<span className="mui-switch__thumb" />
-					</span>
-				</label>
+				<Tooltip
+					title={CREATE.CLOCKIFY.TOOLTIP}
+					placement="right"
+					arrow
+					disableHoverListener={isSmallScreen}
+					disableFocusListener={isSmallScreen}
+					disableTouchListener={isSmallScreen}
+					slotProps={{
+						tooltip: {
+							sx: {
+								fontSize: '13px',
+								fontWeight: 500,
+								px: 1.5,
+								py: 1,
+								borderRadius: '10px',
+								bgcolor: 'var(--color-bg-alt)',
+								color: 'var(--color-text-primary)',
+								boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
+								border: '1px solid var(--color-border-soft)',
+							},
+						},
+						arrow: {
+							sx: { color: 'var(--color-bg-alt)' },
+						},
+					}}
+				>
+					<label className="mui-switch">
+						<input type="checkbox" checked={form.requiresClockifyCreation} onChange={(e) => update('requiresClockifyCreation')(e.target.checked)} />
+						<span className="mui-switch__track">
+							<span className="mui-switch__thumb" />
+						</span>
+					</label>
+				</Tooltip>
 			</div>
 
 			<div className="proyect-create-grid">
@@ -159,20 +190,22 @@ export const ProyectCreateForm: FC = () => {
 					</select>
 				</div>
 
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">today</span>
-						Fecha estado negocio *
-					</label>
+				{selectedType?.RequiresBusinessStatusDate && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">today</span>
+							Fecha estado negocio *
+						</label>
 
-					<input
-						className="proyect-create-input"
-						type="date"
-						value={form.businessStatusDate ?? ''}
-						onChange={(e) => update('businessStatusDate')(e.target.value || null)}
-						required
-					/>
-				</div>
+						<input
+							className="proyect-create-input"
+							type="date"
+							value={form.businessStatusDate ?? ''}
+							onChange={(e) => update('businessStatusDate')(e.target.value || null)}
+							required
+						/>
+					</div>
+				)}
 
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
@@ -188,6 +221,39 @@ export const ProyectCreateForm: FC = () => {
 						required
 					/>
 				</div>
+
+				{selectedType?.RequiresActualEndDate && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">event_busy</span>
+							Fecha fin real *
+						</label>
+
+						<input
+							className="proyect-create-input"
+							type="date"
+							value={form.actualEndDate ?? ''}
+							onChange={(e) => update('actualEndDate')(e.target.value || null)}
+							required
+						/>
+					</div>
+				)}
+
+				{selectedType?.RequiresCommercialFields && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">business_center</span>
+							Estado comercial *
+						</label>
+
+						<input
+							className="proyect-create-input"
+							value={form.commercialStatus ?? ''}
+							onChange={(e) => update('commercialStatus')(e.target.value)}
+							required
+						/>
+					</div>
+				)}
 
 				<div className="proyect-create-field proyect-create-field--full">
 					<label className="proyect-create-label">

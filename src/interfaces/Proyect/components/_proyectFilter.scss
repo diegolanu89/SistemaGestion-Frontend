@@ -104,10 +104,11 @@
 		}
 	}
 
-	/* REFRESH */
+	/* REFRESH + CLEAR */
 	&__refresh {
 		display: flex;
 		align-items: flex-end;
+		gap: 8px;
 		height: 100%;
 	}
 
@@ -129,7 +130,7 @@
 
 		transition:
 			background 0.2s ease,
-			border 0.2s ease;
+			border-color 0.2s ease;
 
 		box-shadow: 0 2px 6px var(--color-shadow-soft);
 
@@ -142,9 +143,22 @@
 			background: var(--color-primary-opacity-08);
 		}
 
-		/* 🔥 SOLO EL ICONO ROTA */
 		&:hover .material-icons {
 			transform: rotate(90deg);
+		}
+	}
+
+	&__clear-btn {
+		color: var(--color-error, #ef4444);
+		border-color: rgba(239, 68, 68, 0.25);
+
+		&:hover {
+			background: rgba(239, 68, 68, 0.08);
+			border-color: rgba(239, 68, 68, 0.4);
+		}
+
+		&:hover .material-icons {
+			transform: none;
 		}
 	}
 

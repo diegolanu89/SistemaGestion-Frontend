@@ -120,4 +120,6 @@ export interface UpdateProjectIntakeDto {
 	CommercialStatus?: string
 	LeaderName?: string
 	Observations?: string
+
+	RequiresClockifyCreation?: boolean
 }

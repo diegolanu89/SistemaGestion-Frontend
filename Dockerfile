@@ -2,8 +2,8 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json package-lock.json ./
+RUN npm install --include=optional --legacy-peer-deps && npm install @rollup/rollup-linux-x64-musl --no-save --legacy-peer-deps
 
 COPY . .
 
@@ -15,8 +15,8 @@ ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_APP_MODE=$VITE_APP_MODE
 ENV VITE_AUTH_PROVIDER=$VITE_AUTH_PROVIDER
 
-RUN yarn sass:build
-RUN yarn build
+RUN npm run sass:build
+RUN npm run build
 
 FROM nginx:alpine
 

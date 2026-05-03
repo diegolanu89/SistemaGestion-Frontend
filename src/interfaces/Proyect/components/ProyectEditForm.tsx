@@ -1,4 +1,5 @@
 import { FC, useEffect } from 'react'
+import { Tooltip, useMediaQuery } from '@mui/material'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { useProyectEditForm } from '../hooks/useProyectEditForm.h'
@@ -7,8 +8,12 @@ import { ProyectClockifyStatus } from './ProyectClockifyStatus'
 export const ProyectEditForm: FC = () => {
 	const { refs, closeEdit, selectedProject } = useProyectContext()
 	const { CREATE, ACTIONS } = PROYECT_CONFIG
+	const isSmallScreen = useMediaQuery('(max-width: 768px)')
 
 	const { form, update, submit, submitting, setForm } = useProyectEditForm()
+
+	const isAlreadySynced = Boolean(selectedProject?.ClockifyRecordId)
+	const selectedType = refs?.types.find((t) => t.Code === selectedProject?.ProjectType)
 
 	useEffect(() => {
 		if (!selectedProject) return
@@ -26,6 +31,7 @@ export const ProyectEditForm: FC = () => {
 			CommercialStatus: selectedProject.CommercialStatus ?? undefined,
 			LeaderName: selectedProject.LeaderName ?? undefined,
 			Observations: selectedProject.Observations ?? undefined,
+			RequiresClockifyCreation: selectedProject.RequiresClockifyCreation,
 		})
 	}, [selectedProject, setForm])
 
@@ -39,7 +45,57 @@ export const ProyectEditForm: FC = () => {
 				void submit()
 			}}
 		>
-			<ProyectClockifyStatus project={selectedProject} />
+			{isAlreadySynced ? (
+				<ProyectClockifyStatus project={selectedProject} />
+			) : (
+				<div className="proyect-create-clockify">
+					<div>
+						<h3>
+							<span className="material-icons">{CREATE.CLOCKIFY.ICON}</span>
+							{CREATE.CLOCKIFY.TITLE}
+						</h3>
+						<p>{CREATE.CLOCKIFY.DESCRIPTION}</p>
+					</div>
+
+					<Tooltip
+						title={CREATE.CLOCKIFY.TOOLTIP}
+						placement="right"
+						arrow
+						disableHoverListener={isSmallScreen}
+						disableFocusListener={isSmallScreen}
+						disableTouchListener={isSmallScreen}
+						slotProps={{
+							tooltip: {
+								sx: {
+									fontSize: '13px',
+									fontWeight: 500,
+									px: 1.5,
+									py: 1,
+									borderRadius: '10px',
+									bgcolor: 'var(--color-bg-alt)',
+									color: 'var(--color-text-primary)',
+									boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
+									border: '1px solid var(--color-border-soft)',
+								},
+							},
+							arrow: {
+								sx: { color: 'var(--color-bg-alt)' },
+							},
+						}}
+					>
+						<label className="mui-switch">
+							<input
+								type="checkbox"
+								checked={form.RequiresClockifyCreation ?? false}
+								onChange={(e) => update('RequiresClockifyCreation')(e.target.checked)}
+							/>
+							<span className="mui-switch__track">
+								<span className="mui-switch__thumb" />
+							</span>
+						</label>
+					</Tooltip>
+				</div>
+			)}
 
 			<div className="proyect-create-grid">
 				<div className="proyect-create-field">
@@ -150,20 +206,22 @@ export const ProyectEditForm: FC = () => {
 					</select>
 				</div>
 
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">today</span>
-						Fecha estado negocio *
-					</label>
+				{selectedType?.RequiresBusinessStatusDate && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">today</span>
+							Fecha estado negocio *
+						</label>
 
-					<input
-						className="proyect-create-input"
-						type="date"
-						value={form.BusinessStatusDate ?? ''}
-						onChange={(e) => update('BusinessStatusDate')(e.target.value || undefined)}
-						required
-					/>
-				</div>
+						<input
+							className="proyect-create-input"
+							type="date"
+							value={form.BusinessStatusDate ?? ''}
+							onChange={(e) => update('BusinessStatusDate')(e.target.value || undefined)}
+							required
+						/>
+					</div>
+				)}
 
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
@@ -180,19 +238,22 @@ export const ProyectEditForm: FC = () => {
 					/>
 				</div>
 
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">event_busy</span>
-						Fecha fin real
-					</label>
+				{selectedType?.RequiresActualEndDate && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">event_busy</span>
+							Fecha fin real *
+						</label>
 
-					<input
-						className="proyect-create-input"
-						type="date"
-						value={form.ActualEndDate ?? ''}
-						onChange={(e) => update('ActualEndDate')(e.target.value || undefined)}
-					/>
-				</div>
+						<input
+							className="proyect-create-input"
+							type="date"
+							value={form.ActualEndDate ?? ''}
+							onChange={(e) => update('ActualEndDate')(e.target.value || undefined)}
+							required
+						/>
+					</div>
+				)}
 
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
@@ -203,14 +264,16 @@ export const ProyectEditForm: FC = () => {
 					<input className="proyect-create-input" value={form.LeaderName ?? ''} onChange={(e) => update('LeaderName')(e.target.value)} />
 				</div>
 
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">business_center</span>
-						Estado comercial
-					</label>
+				{selectedType?.RequiresCommercialFields && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">business_center</span>
+							Estado comercial *
+						</label>
 
-					<input className="proyect-create-input" value={form.CommercialStatus ?? ''} onChange={(e) => update('CommercialStatus')(e.target.value)} />
-				</div>
+						<input className="proyect-create-input" value={form.CommercialStatus ?? ''} onChange={(e) => update('CommercialStatus')(e.target.value)} required />
+					</div>
+				)}
 
 				<div className="proyect-create-field proyect-create-field--full">
 					<label className="proyect-create-label">
