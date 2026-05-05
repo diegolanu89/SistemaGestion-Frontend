@@ -1,14 +1,14 @@
 import { FC, useEffect } from 'react'
-import { Tooltip, useMediaQuery } from '@mui/material'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { useProyectEditForm } from '../hooks/useProyectEditForm.h'
 import { ProyectClockifyStatus } from './ProyectClockifyStatus'
+import { useIsSmallScreen } from '../../base/hooks/useSmallScreen.h'
 
 export const ProyectEditForm: FC = () => {
 	const { refs, closeEdit, selectedProject } = useProyectContext()
 	const { CREATE, ACTIONS } = PROYECT_CONFIG
-	const isSmallScreen = useMediaQuery('(max-width: 768px)')
+	const isSmallScreen = useIsSmallScreen()
 
 	const { form, update, submit, submitting, setForm } = useProyectEditForm()
 
@@ -57,43 +57,13 @@ export const ProyectEditForm: FC = () => {
 						<p>{CREATE.CLOCKIFY.DESCRIPTION}</p>
 					</div>
 
-					<Tooltip
-						title={CREATE.CLOCKIFY.TOOLTIP}
-						placement="right"
-						arrow
-						disableHoverListener={isSmallScreen}
-						disableFocusListener={isSmallScreen}
-						disableTouchListener={isSmallScreen}
-						slotProps={{
-							tooltip: {
-								sx: {
-									fontSize: '13px',
-									fontWeight: 500,
-									px: 1.5,
-									py: 1,
-									borderRadius: '10px',
-									bgcolor: 'var(--color-bg-alt)',
-									color: 'var(--color-text-primary)',
-									boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
-									border: '1px solid var(--color-border-soft)',
-								},
-							},
-							arrow: {
-								sx: { color: 'var(--color-bg-alt)' },
-							},
-						}}
-					>
-						<label className="mui-switch">
-							<input
-								type="checkbox"
-								checked={form.RequiresClockifyCreation ?? false}
-								onChange={(e) => update('RequiresClockifyCreation')(e.target.checked)}
-							/>
-							<span className="mui-switch__track">
-								<span className="mui-switch__thumb" />
-							</span>
-						</label>
-					</Tooltip>
+					{/* 🔹 Tooltip reemplazado */}
+					<label className="mui-switch" title={!isSmallScreen ? CREATE.CLOCKIFY.TOOLTIP : ''}>
+						<input type="checkbox" checked={form.RequiresClockifyCreation ?? false} onChange={(e) => update('RequiresClockifyCreation')(e.target.checked)} />
+						<span className="mui-switch__track">
+							<span className="mui-switch__thumb" />
+						</span>
+					</label>
 				</div>
 			)}
 

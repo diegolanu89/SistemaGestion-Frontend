@@ -96,31 +96,33 @@
 
 	&__action {
 		position: relative;
-		padding: 6px 14px;
-		border-radius: 8px;
-		border: none;
-		font-size: 13px;
-		font-weight: 600;
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 10px;
+		border: 1px solid transparent;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		color: #fff;
+		background: transparent;
+
+		.material-icons {
+			font-size: 20px;
+		}
 
 		&::after {
 			content: attr(data-tooltip);
 			position: absolute;
-			bottom: 110%;
+			bottom: 120%;
 			left: 50%;
 			transform: translateX(-50%) scale(0.9);
-
 			background: var(--color-bg-alt);
 			color: var(--color-text-primary);
-			padding: 4px 8px;
+			padding: 6px 10px;
 			border-radius: 6px;
-
-			font-size: 11px;
-			font-weight: 500;
+			font-size: 12px;
 			white-space: nowrap;
-
 			opacity: 0;
 			pointer-events: none;
 			box-shadow: 0 2px 6px var(--color-shadow-medium);
@@ -133,18 +135,22 @@
 		}
 
 		&--edit {
-			background: #f5a623;
+			color: var(--color-primary);
+			background: var(--color-primary-opacity-08);
 
 			&:hover {
-				background: #e0961a;
+				background: var(--color-primary-opacity-15);
+				border-color: var(--color-primary);
 			}
 		}
 
 		&--delete {
-			background: #e74c3c;
+			color: var(--color-error);
+			background: var(--color-error-opacity-08);
 
 			&:hover {
-				background: #cf3f31;
+				background: var(--color-error-opacity-15);
+				border-color: var(--color-error);
 			}
 		}
 	}
@@ -262,4 +268,3 @@
 	gap: 8px;
 	margin-top: 16px;
 }
-

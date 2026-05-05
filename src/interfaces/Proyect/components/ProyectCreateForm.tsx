@@ -1,20 +1,20 @@
 import { FC } from 'react'
-import { Tooltip, useMediaQuery } from '@mui/material'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { useProyectCreateForm } from '../hooks/useProyectCreate.h'
 import { PotencialClientDto } from '../models/PotencialClientDTO.m'
 import { usePotencialClients } from '../hooks/usePotencialClient.h'
+import { useIsSmallScreen } from '../../base/hooks/useSmallScreen.h'
 
 export const ProyectCreateForm: FC = () => {
 	const { refs, closeCreate } = useProyectContext()
 	const { CREATE, ACTIONS } = PROYECT_CONFIG
-	const isSmallScreen = useMediaQuery('(max-width: 768px)')
-	const { form, update, submit, submitting } = useProyectCreateForm()
+	const isSmallScreen = useIsSmallScreen()
 
+	const { form, update, submit, submitting } = useProyectCreateForm()
 	const { clients, loading: loadingClients } = usePotencialClients()
 
-	const selectedType = refs.types.find((t) => t.Code === form.projectType)
+	const selectedType = refs?.types.find((t) => t.Code === form.projectType)
 
 	if (!refs) return null
 
@@ -35,39 +35,13 @@ export const ProyectCreateForm: FC = () => {
 					<p>{CREATE.CLOCKIFY.DESCRIPTION}</p>
 				</div>
 
-				<Tooltip
-					title={CREATE.CLOCKIFY.TOOLTIP}
-					placement="right"
-					arrow
-					disableHoverListener={isSmallScreen}
-					disableFocusListener={isSmallScreen}
-					disableTouchListener={isSmallScreen}
-					slotProps={{
-						tooltip: {
-							sx: {
-								fontSize: '13px',
-								fontWeight: 500,
-								px: 1.5,
-								py: 1,
-								borderRadius: '10px',
-								bgcolor: 'var(--color-bg-alt)',
-								color: 'var(--color-text-primary)',
-								boxShadow: '0 4px 14px rgba(0,0,0,0.12)',
-								border: '1px solid var(--color-border-soft)',
-							},
-						},
-						arrow: {
-							sx: { color: 'var(--color-bg-alt)' },
-						},
-					}}
-				>
-					<label className="mui-switch">
-						<input type="checkbox" checked={form.requiresClockifyCreation} onChange={(e) => update('requiresClockifyCreation')(e.target.checked)} />
-						<span className="mui-switch__track">
-							<span className="mui-switch__thumb" />
-						</span>
-					</label>
-				</Tooltip>
+				{/* 🔹 Tooltip reemplazado */}
+				<label className="mui-switch" title={!isSmallScreen ? CREATE.CLOCKIFY.TOOLTIP : ''}>
+					<input type="checkbox" checked={form.requiresClockifyCreation} onChange={(e) => update('requiresClockifyCreation')(e.target.checked)} />
+					<span className="mui-switch__track">
+						<span className="mui-switch__thumb" />
+					</span>
+				</label>
 			</div>
 
 			<div className="proyect-create-grid">
@@ -246,12 +220,7 @@ export const ProyectCreateForm: FC = () => {
 							Estado comercial *
 						</label>
 
-						<input
-							className="proyect-create-input"
-							value={form.commercialStatus ?? ''}
-							onChange={(e) => update('commercialStatus')(e.target.value)}
-							required
-						/>
+						<input className="proyect-create-input" value={form.commercialStatus ?? ''} onChange={(e) => update('commercialStatus')(e.target.value)} required />
 					</div>
 				)}
 
@@ -266,11 +235,11 @@ export const ProyectCreateForm: FC = () => {
 			</div>
 
 			<div className="modal__actions">
-				<button type="button" className="proyect-create-btn proyect-create-btn--cancel" onClick={closeCreate} data-tooltip={ACTIONS.CANCEL.TOOLTIP}>
+				<button type="button" className="proyect-create-btn proyect-create-btn--cancel" onClick={closeCreate}>
 					{ACTIONS.CANCEL.LABEL}
 				</button>
 
-				<button type="submit" className="proyect-create-btn proyect-create-btn--confirm" disabled={submitting} data-tooltip={ACTIONS.CONFIRM.TOOLTIP}>
+				<button type="submit" className="proyect-create-btn proyect-create-btn--confirm" disabled={submitting}>
 					{ACTIONS.CONFIRM.LABEL}
 				</button>
 			</div>

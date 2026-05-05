@@ -4,7 +4,7 @@ import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { resolveCapabilities } from '../../base/model/ResolveCapabilities.m'
 import { ProyectViewInterface } from '../models/ProyectViewInterface.m'
-import { ProyectViewBTS } from './ProyectViewBTS.s'
+import { ProyectViewBDT } from './ProyectViewBDT.s'
 import { ProyectViewMock } from './ProyectViewMock.s'
 
 export class ProyectViewAdapterFactory {
@@ -15,7 +15,7 @@ export class ProyectViewAdapterFactory {
 
 		switch (provider) {
 			case 'ers':
-				return new ProyectViewBTS()
+				return new ProyectViewBDT()
 
 			case 'mock':
 			default:

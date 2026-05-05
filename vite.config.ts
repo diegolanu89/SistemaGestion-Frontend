@@ -30,7 +30,7 @@ export default defineConfig({
 			Expires: '0',
 		},
 		host: true,
-		port: 5173,
+		port: 3001,
 		strictPort: true,
 	},
 })

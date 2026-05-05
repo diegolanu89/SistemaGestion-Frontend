@@ -3,7 +3,7 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install --include=optional --legacy-peer-deps && npm install @rollup/rollup-linux-x64-musl --no-save --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
@@ -18,10 +18,10 @@ ENV VITE_AUTH_PROVIDER=$VITE_AUTH_PROVIDER
 RUN npm run sass:build
 RUN npm run build
 
+# -------- NGINX --------
 FROM nginx:alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
-
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

@@ -1,6 +1,6 @@
 // views/EtcLoadView.tsx
 
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import { useEtcController } from '../hooks/useEtcController.h'
 import { EtcToolbar } from '../components/EtcToolBar'
 import { EtcGrid } from '../components/EtcGrid'
@@ -13,10 +13,6 @@ export const EtcLoadView: FC = () => {
 	useEtcController()
 
 	const { loading } = useEtcContext()
-
-	useEffect(() => {
-		console.log('HOLA')
-	}, [])
 
 	return (
 		<div className="etc-container">

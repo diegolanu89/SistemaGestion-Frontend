@@ -1,0 +1,66 @@
+.proyect__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.proyect__header-left {
+	display: flex;
+	flex-direction: row;
+	gap: 4px;
+}
+
+.proyect__titles {
+	display: flex;
+	flex-direction: column;
+}
+
+.proyect__back-btn {
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	border-radius: 10px;
+	border: 1px solid var(--color-border);
+	background: transparent;
+	color: var(--color-text-secondary);
+
+	cursor: pointer;
+	transition: all 0.2s ease;
+	position: relative; // 🔥 necesario para tooltip
+
+	.material-icons {
+		font-size: 20px;
+	}
+
+	&:hover {
+		background: var(--color-hover);
+		color: var(--color-text-primary);
+	}
+
+	/* Tooltip */
+	&::after {
+		content: attr(data-tooltip);
+		position: absolute;
+		bottom: 120%;
+		left: 50%;
+		transform: translateX(-50%) scale(0.9);
+		background: var(--color-bg-alt);
+		color: var(--color-text-primary);
+		padding: 6px 10px;
+		border-radius: 6px;
+		font-size: 12px;
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		box-shadow: 0 2px 6px var(--color-shadow-medium);
+		transition: all 0.2s ease;
+	}
+
+	&:hover::after {
+		opacity: 1;
+		transform: translateX(-50%) scale(1);
+	}
+}

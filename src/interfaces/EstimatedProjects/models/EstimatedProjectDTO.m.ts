@@ -110,11 +110,11 @@ export interface AllocationWireDto {
 
 /** Item de body para POST /allocations (back usa case-insensitive deserialization). */
 export interface AllocationEntryDto {
-	monthKey: string
-	monthLabel: string
-	userId?: number | null
-	userName: string
-	hours: number
+	MonthKey: string
+	MonthLabel: string
+	UserId?: number | null
+	UserName: string
+	Hours: number
 }
 
 export interface SaveAllocationsRequestDto {

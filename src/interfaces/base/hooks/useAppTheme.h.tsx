@@ -1,7 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Theme } from '@mui/material/styles'
-
-import { styleLight, styleTravel } from '../context/Style.Context'
 
 export type ThemeMode = 'dark' | 'light'
 
@@ -18,14 +15,15 @@ export const useAppTheme = () => {
 	}
 
 	useEffect(() => {
-		document.body.classList.toggle('theme-dark', mode === 'dark')
+		const body = document.body
+
+		body.classList.remove('theme-dark', 'theme-light')
+		body.classList.add(mode === 'dark' ? 'theme-dark' : 'theme-light')
+
 		localStorage.setItem(STORAGE_KEY, mode)
 	}, [mode])
 
-	const theme: Theme = mode === 'dark' ? styleTravel : styleLight
-
 	return {
-		theme,
 		mode,
 		toggleTheme,
 	}

@@ -143,6 +143,8 @@ export const EstimatedProjectCreateForm: FC<Props> = ({ editingId = null }) => {
 		}
 	}, [editingId])
 
+	const hasHours = Object.values(form.monthlyHours).some((user) => Object.values(user).some((h) => h > 0))
+
 	const filteredUsers = useMemo<UserRefDto[]>(() => {
 		if (!refs?.users) return []
 		const term = userSearch.toLowerCase().trim()
@@ -252,8 +254,7 @@ export const EstimatedProjectCreateForm: FC<Props> = ({ editingId = null }) => {
 		}
 	}
 
-	const canSubmit = (form.clientId !== '' || form.newClientName.trim() !== '') && form.projectName.trim() !== '' && form.selectedUserIds.size > 0
-
+	const canSubmit = (form.clientId !== '' || form.newClientName.trim() !== '') && form.projectName.trim() !== '' && form.selectedUserIds.size > 0 && hasHours
 	const toggleAllLabel = form.selectedUserIds.size > 0 ? 'Deseleccionar todos' : FORM.FIELDS.RESOURCES.SELECT_ALL
 
 	const title = isEditing ? FORM.TITLE_EDIT : FORM.TITLE_CREATE

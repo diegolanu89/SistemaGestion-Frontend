@@ -8,6 +8,7 @@ import { estimatedProjectAdapter } from '../services/EstimatedProjectAdapter.s'
 
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
+import { EstimatedDeleteModal } from './EstimatedProyectDeleteModal'
 
 export const EstimatedProjectTable: FC = () => {
 	const { filtered, loading, refetch } = useEstimatedProjectContext()
@@ -19,7 +20,7 @@ export const EstimatedProjectTable: FC = () => {
 	const [deleting, setDeleting] = useState<boolean>(false)
 	const [deleteError, setDeleteError] = useState<string | null>(null)
 
-	const pendingProject = pendingDeleteId !== null ? filtered.find((p) => p.Id === pendingDeleteId) ?? null : null
+	const pendingProject = pendingDeleteId !== null ? (filtered.find((p) => p.Id === pendingDeleteId) ?? null) : null
 
 	const handleEdit = (id: number) => {
 		navigate(buildEditPath(id))
@@ -86,30 +87,14 @@ export const EstimatedProjectTable: FC = () => {
 			</table>
 
 			{pendingProject && (
-				<div className="estimated-project-table__confirm-overlay" role="dialog" aria-modal="true">
-					<div className="estimated-project-table__confirm">
-						<h3>Borrar proyecto estimado</h3>
-						<p>
-							Esta acción es <strong>irreversible</strong>: el proyecto <strong>{pendingProject.Name}</strong>
-							{pendingProject.ClientName ? ` (${pendingProject.ClientName})` : ''} y todas sus asignaciones se eliminarán definitivamente
-							de la base.
-						</p>
-						{deleteError && <p className="estimated-project-table__confirm-error">{deleteError}</p>}
-						<div className="estimated-project-table__confirm-actions">
-							<button type="button" className="estimated-project-form__btn estimated-project-form__btn--cancel" onClick={cancelDelete} disabled={deleting}>
-								Cancelar
-							</button>
-							<button
-								type="button"
-								className="estimated-project-table__action estimated-project-table__action--delete"
-								onClick={confirmDelete}
-								disabled={deleting}
-							>
-								{deleting ? 'Eliminando…' : 'Borrar definitivamente'}
-							</button>
-						</div>
-					</div>
-				</div>
+				<EstimatedDeleteModal
+					projectName={pendingProject.Name}
+					clientName={pendingProject.ClientName}
+					error={deleteError}
+					deleting={deleting}
+					onCancel={cancelDelete}
+					onConfirm={confirmDelete}
+				/>
 			)}
 		</div>
 	)

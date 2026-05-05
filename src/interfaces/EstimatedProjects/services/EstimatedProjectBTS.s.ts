@@ -32,9 +32,28 @@ const TOKEN_STORAGE_KEY = 'authUser'
 /** fetch envuelto que mete `Authorization: Bearer <token>` cuando hay token guardado. */
 const authFetch = (input: RequestInfo, init?: RequestInit): Promise<Response> => {
 	const token = localStorage.getItem(TOKEN_STORAGE_KEY)
-	const headers = new Headers(init?.headers ?? {})
-	if (token) headers.set('Authorization', `Bearer ${token}`)
-	return fetch(input, { ...init, headers })
+
+	const headers = new Headers()
+
+	// 👇 copiar headers originales correctamente
+	if (init?.headers) {
+		const original = new Headers(init.headers)
+		original.forEach((value, key) => headers.set(key, value))
+	}
+
+	// 👇 asegurar JSON SIEMPRE
+	if (!headers.has('Content-Type') && init?.body) {
+		headers.set('Content-Type', 'application/json')
+	}
+
+	if (token) {
+		headers.set('Authorization', `Bearer ${token}`)
+	}
+
+	return fetch(input, {
+		...init,
+		headers,
+	})
 }
 
 const normalizeError = (error: unknown): Error => (error instanceof Error ? error : new Error(String(error)))
@@ -111,7 +130,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 				wireProjects.map(async (p) => {
 					const allocations = await this.getAllocations(p.id)
 					return mapProject(p, allocations)
-				}),
+				})
 			)
 			return enriched
 		} catch (error: unknown) {
@@ -251,7 +270,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 			const res = await authFetch(`${BASE_URL}/potencial-projects/${projectId}/allocations`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ entries }),
+				body: JSON.stringify({ Entries: entries }),
 			})
 			if (!res.ok) throw new Error(`Error saving allocations (status=${res.status})`)
 			const json = (await res.json()) as { allocations: AllocationWireDto[] }
@@ -290,7 +309,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 	async getCapacityLimits(req: CapacityLimitsRequestDto): Promise<CapacityLimitsResponseDto> {
 		logger.infoTag(
 			LogTag.Adapter,
-			`[ESTIMATED-PROYECT][BDT] getCapacityLimits -> users=${req.userNames.length} months=${req.monthKeys.length} excludeId=${req.potencialProjectId ?? '-'}`,
+			`[ESTIMATED-PROYECT][BDT] getCapacityLimits -> users=${req.userNames.length} months=${req.monthKeys.length} excludeId=${req.potencialProjectId ?? '-'}`
 		)
 
 		try {
@@ -371,11 +390,15 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 			for (const [monthKey, hours] of Object.entries(r.MonthlyHours)) {
 				if (hours <= 0) continue
 				entries.push({
-					monthKey,
-					monthLabel: monthKey,
-					userId: r.UserId,
-					userName: r.UserName,
-					hours,
+					MonthKey: monthKey,
+
+					MonthLabel: monthKey,
+
+					UserId: r.UserId,
+
+					UserName: r.UserName,
+
+					Hours: hours,
 				})
 			}
 		}

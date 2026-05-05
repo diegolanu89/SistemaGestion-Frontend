@@ -3,7 +3,7 @@ export const PROYECT_CONFIG = {
 	// 🔹 TEXTOS
 	// ==========================
 	TEXTS: {
-		TITLE: 'Proyectos',
+		TITLE: 'Alta de proyectos',
 		DESCRIPTION: 'Explorá, filtrá y gestioná los proyectos disponibles',
 		SEARCH_LABEL: 'Buscar',
 		SEARCH_PLACEHOLDER: 'Buscar proyecto...',

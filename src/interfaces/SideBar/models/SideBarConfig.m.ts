@@ -36,6 +36,11 @@ export const SIDEBAR = {
 
 	menu: [
 		{
+			label: 'Inicio',
+			icon: 'home',
+			path: '/',
+		},
+		{
 			label: 'Operaciones',
 			icon: 'build_circle',
 			children: [

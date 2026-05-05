@@ -50,15 +50,16 @@ export const EstimatedProjectRow: FC<Props> = ({ project, onEdit, onDelete }) =>
 						onClick={() => onEdit(project.Id)}
 						data-tooltip={TABLE.ACTIONS.EDIT_TOOLTIP}
 					>
-						{TABLE.ACTIONS.EDIT_LABEL}
+						<span className="material-icons">edit</span>
 					</button>
+
 					<button
 						type="button"
 						className="estimated-project-table__action estimated-project-table__action--delete"
 						onClick={() => onDelete(project.Id)}
 						data-tooltip={TABLE.ACTIONS.DELETE_TOOLTIP}
 					>
-						{TABLE.ACTIONS.DELETE_LABEL}
+						<span className="material-icons">delete</span>
 					</button>
 				</td>
 			</tr>

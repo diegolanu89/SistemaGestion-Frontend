@@ -22,21 +22,33 @@ export const SideBarView: FC = () => {
 				</div>
 
 				<nav className="sidebar__menu">
-					{SIDEBAR.menu.map((item) => (
-						<div key={item.label} className="sidebar__section">
-							<button className="sidebar__parent" onClick={() => toggle(item.label)}>
-								<span className="material-icons">{item.icon}</span>
-								<span>{item.label}</span>
-								<span className="material-icons">{open[item.label] ? 'expand_less' : 'expand_more'}</span>
-							</button>
+					{SIDEBAR.menu.map((item) => {
+						// 🔗 ITEM DIRECTO (sin children)
+						if (!item.children) {
+							return (
+								<div key={item.label} className="sidebar__section">
+									<SideBarItem label={item.label} icon={item.icon} path={item.path} />
+								</div>
+							)
+						}
 
-							<div className={`sidebar__children ${open[item.label] ? 'is-open' : ''}`}>
-								{item.children?.map((child) => (
-									<SideBarItem key={child.label} label={child.label} icon={child.icon} path={child.path} />
-								))}
+						// 📁 ITEM CON CHILDREN
+						return (
+							<div key={item.label} className="sidebar__section">
+								<button className="sidebar__parent" onClick={() => toggle(item.label)}>
+									<span className="material-icons">{item.icon}</span>
+									<span>{item.label}</span>
+									<span className="material-icons">{open[item.label] ? 'expand_less' : 'expand_more'}</span>
+								</button>
+
+								<div className={`sidebar__children ${open[item.label] ? 'is-open' : ''}`}>
+									{item.children.map((child) => (
+										<SideBarItem key={child.label} label={child.label} icon={child.icon} path={child.path} />
+									))}
+								</div>
 							</div>
-						</div>
-					))}
+						)
+					})}
 				</nav>
 			</aside>
 		</>
