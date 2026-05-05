@@ -4,7 +4,7 @@ import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { resolveCapabilities } from '../../base/model/ResolveCapabilities.m'
 import { ProyectInterface } from '../models/IProyect.m'
-import { ProyectBDT } from './ProyectBTS.s'
+import { ProyectBDT } from './ProyectBDT.s'
 import { ProyectMock } from './ProyectMock.s'
 
 export class ProyectAdapterFactory {

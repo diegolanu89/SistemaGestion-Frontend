@@ -1,0 +1,157 @@
+/* ==========================
+   DELETE MODAL (AISLADO)
+========================== */
+
+.proyect-delete-modal {
+	width: 100%;
+	max-width: 460px;
+
+	background: var(--color-surface);
+	border-radius: 18px;
+
+	border: 1px solid var(--color-border);
+	box-shadow: 0 30px 80px var(--color-shadow-medium);
+
+	overflow: hidden;
+
+	display: flex;
+	flex-direction: column;
+}
+
+/* ==========================
+   HEADER
+========================== */
+.proyect-delete-modal__header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+
+	padding: 18px 20px;
+
+	color: var(--color-error);
+
+	background: var(--color-error-opacity-08);
+	border-bottom: 1px solid var(--color-error-opacity-15);
+
+	font-size: 16px;
+	font-weight: 600;
+
+	.material-icons {
+		font-size: 22px;
+	}
+}
+
+/* ==========================
+   CONTENT
+========================== */
+.proyect-delete-modal__content {
+	padding: 20px;
+
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+
+	font-size: 14px;
+	color: var(--color-text-secondary);
+}
+
+/* NOMBRE DEL PROYECTO */
+.proyect-delete-modal__project {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--color-text-primary);
+
+	background: var(--color-bg-alt);
+	padding: 10px 12px;
+	border-radius: 10px;
+
+	border: 1px solid var(--color-border);
+}
+
+/* WARNING BOX */
+.proyect-delete-modal__warning {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+
+	padding: 12px 14px;
+
+	border-radius: 12px;
+
+	background: var(--color-error-opacity-08);
+	border: 1px solid var(--color-error-opacity-15);
+
+	color: var(--color-error);
+
+	font-size: 13px;
+	font-weight: 500;
+
+	.material-icons {
+		font-size: 20px;
+	}
+}
+
+/* ==========================
+   ACTIONS
+========================== */
+.proyect-delete-modal__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+
+	padding: 16px 20px;
+
+	border-top: 1px solid var(--color-border);
+}
+
+/* ==========================
+   BOTONES
+========================== */
+.proyect-delete-btn {
+	height: 40px;
+	padding: 0 16px;
+
+	border-radius: 10px;
+	border: 1px solid transparent;
+
+	font-size: 13px;
+	font-weight: 600;
+
+	cursor: pointer;
+
+	transition: all 0.2s ease;
+}
+
+/* CANCEL */
+.proyect-delete-btn--cancel {
+	background: var(--color-bg-alt);
+	color: var(--color-text-primary);
+	border: 1px solid var(--color-border);
+
+	&:hover {
+		background: var(--color-hover);
+	}
+}
+
+/* DELETE */
+.proyect-delete-btn--confirm {
+	background: var(--color-error-opacity-08);
+	color: var(--color-error);
+	border: 1px solid var(--color-error-opacity-15);
+
+	&:hover {
+		background: var(--color-error-opacity-15);
+		border-color: var(--color-error);
+		transform: translateY(-1px);
+	}
+
+	&:active {
+		transform: scale(0.97);
+	}
+}
+
+.proyect-delete-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	transform: none;
+}

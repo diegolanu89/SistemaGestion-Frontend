@@ -1,63 +1,89 @@
 import { useState } from 'react'
-import { ProjectIntakeRecordDto, CreateProjectIntakeDto } from '../models/ProyectDTO.m'
+import { CreateProjectIntakeDto } from '../models/ProyectDTO.m'
 import { proyectAdapter } from '../services/ProyectAdapter.s'
 import { useProyectContext } from './useProyectContext.h'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { ProyectCreateLogMessages, ProyectCreateMessages } from '../models/EProyectCreateMessage.m'
 
+type FormState = {
+	projectType?: string
+	projectName?: string
+
+	secondaryProjectNumber?: string
+	registrationDate?: string | null
+	clientId?: number | null
+
+	categoryCode?: string | null
+	projectStatusCode?: string | null
+
+	businessStatusDate?: string | null
+	estimatedEndDate?: string | null
+	actualEndDate?: string | null
+
+	commercialStatus?: string | null
+	leaderName?: string | null
+	observations?: string | null
+
+	requiresClockifyCreation: boolean
+}
+
 export const useProyectCreateForm = () => {
 	const { refetch, closeCreate, setCreateStatus, setCreateMessage } = useProyectContext()
 
-	const [form, setForm] = useState<ProjectIntakeRecordDto>({
-		Id: 0,
-		ProjectType: '',
-		ProjectName: '',
-		RequiresClockifyCreation: false,
-		IsActive: true,
+	const [form, setForm] = useState<FormState>({
+		projectType: '',
+		projectName: '',
+		requiresClockifyCreation: false,
 	})
+
+	const [submitting, setSubmitting] = useState(false)
 
 	// ==========================
 	// UPDATE FORM
 	// ==========================
 	const update =
-		<K extends keyof ProjectIntakeRecordDto>(key: K) =>
-		(value: ProjectIntakeRecordDto[K]) =>
+		<K extends keyof FormState>(key: K) =>
+		(value: FormState[K]) =>
 			setForm((prev) => ({ ...prev, [key]: value }))
 
 	// ==========================
-	// MAP DTO
+	// MAP DTO (PascalCase)
 	// ==========================
 	const mapToCreateDto = (): CreateProjectIntakeDto => ({
-		ProjectType: form.ProjectType!,
-		ProjectName: form.ProjectName!,
+		ProjectType: form.projectType!,
+		ProjectName: form.projectName!,
 
-		SecondaryProjectNumber: form.SecondaryProjectNumber ?? undefined,
-		RegistrationDate: form.RegistrationDate ?? undefined,
-		ClientId: form.ClientId ?? undefined,
-		CategoryCode: form.CategoryCode ?? undefined,
-		ProjectStatusCode: form.ProjectStatusCode ?? undefined,
-		BusinessStatusDate: form.BusinessStatusDate ?? undefined,
-		EstimatedEndDate: form.EstimatedEndDate ?? undefined,
-		ActualEndDate: form.ActualEndDate ?? undefined,
-		CommercialStatus: form.CommercialStatus ?? undefined,
-		LeaderName: form.LeaderName ?? undefined,
-		Observations: form.Observations ?? undefined,
+		SecondaryProjectNumber: form.secondaryProjectNumber ?? undefined,
+		RegistrationDate: form.registrationDate ?? undefined,
+		ClientId: form.clientId ?? undefined,
 
-		RequiresClockifyCreation: form.RequiresClockifyCreation,
+		CategoryCode: form.categoryCode ?? undefined,
+		ProjectStatusCode: form.projectStatusCode ?? undefined,
+
+		BusinessStatusDate: form.businessStatusDate ?? undefined,
+		EstimatedEndDate: form.estimatedEndDate ?? undefined,
+		ActualEndDate: form.actualEndDate ?? undefined,
+
+		CommercialStatus: form.commercialStatus ?? undefined,
+		LeaderName: form.leaderName ?? undefined,
+		Observations: form.observations ?? undefined,
+
+		RequiresClockifyCreation: form.requiresClockifyCreation,
 	})
 
 	// ==========================
 	// SUBMIT
 	// ==========================
 	const submit = async (): Promise<void> => {
-		if (!form.ProjectType || !form.ProjectName) return
+		if (!form.projectType || !form.projectName) return
 
 		const payload = mapToCreateDto()
 
 		logger.infoTag(LogTag.Maps, ProyectCreateLogMessages.SUBMIT_START, payload)
 
 		try {
+			setSubmitting(true)
 			setCreateStatus('loading')
 			setCreateMessage(null)
 
@@ -85,12 +111,16 @@ export const useProyectCreateForm = () => {
 				setCreateStatus('idle')
 				setCreateMessage(null)
 			}, 2500)
+		} finally {
+			setSubmitting(false)
 		}
 	}
 
 	return {
 		form,
+		setForm,
 		update,
 		submit,
+		submitting,
 	}
 }

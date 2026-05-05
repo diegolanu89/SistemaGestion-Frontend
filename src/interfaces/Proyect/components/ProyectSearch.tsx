@@ -1,4 +1,3 @@
-// components/ProyectSearch.tsx
 import { FC, useEffect, useState } from 'react'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
@@ -7,14 +6,18 @@ export const ProyectSearch: FC = () => {
 	const { search, setSearch } = useProyectContext()
 
 	const [localValue, setLocalValue] = useState(search)
+	const [isSearching, setIsSearching] = useState(false)
 
 	useEffect(() => {
 		setLocalValue(search)
 	}, [search])
 
 	useEffect(() => {
+		setIsSearching(true)
+
 		const timer = setTimeout(() => {
 			setSearch(localValue)
+			setIsSearching(false)
 		}, PROYECT_CONFIG.SEARCH.DEBOUNCE_MS)
 
 		return () => clearTimeout(timer)
@@ -34,6 +37,12 @@ export const ProyectSearch: FC = () => {
 					value={localValue}
 					onChange={(e) => setLocalValue(e.target.value)}
 				/>
+
+				{isSearching && (
+					<div className="proyect-search__loader">
+						<span className="material-icons spin">autorenew</span>
+					</div>
+				)}
 			</div>
 		</div>
 	)

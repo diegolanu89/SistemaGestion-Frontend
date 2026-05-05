@@ -1,4 +1,4 @@
-/* proyectTable.scss (sin rgba, usando tokens del sistema) */
+/* proyectTable.scss */
 .proyect-table {
 	width: 100%;
 	border-collapse: collapse;
@@ -6,6 +6,17 @@
 	border-radius: 12px;
 	overflow: hidden;
 	border: 1px solid var(--color-border);
+
+	th,
+	td {
+		transition:
+			background 0.2s ease,
+			color 0.2s ease;
+	}
+
+	.is-hovered {
+		background: var(--color-primary-opacity-08);
+	}
 
 	thead {
 		background: var(--color-bg-alt);
@@ -16,6 +27,12 @@
 			font-size: 13px;
 			font-weight: 500;
 			color: var(--color-text-secondary);
+			cursor: pointer;
+			user-select: none;
+
+			&:hover {
+				color: var(--color-primary);
+			}
 		}
 	}
 
@@ -23,10 +40,6 @@
 		tr {
 			border-bottom: 1px solid var(--color-border);
 			transition: background 0.2s ease;
-
-			&:hover {
-				background: var(--color-hover);
-			}
 
 			&:last-child {
 				border-bottom: none;
@@ -39,9 +52,16 @@
 			color: var(--color-text-primary);
 			vertical-align: middle;
 		}
+
+		tr:hover td {
+			background: var(--color-hover);
+		}
+
+		tr:hover td.is-hovered {
+			background: var(--color-primary-opacity-15);
+		}
 	}
 
-	/* ACCIONES */
 	&__actions-header {
 		width: 120px;
 	}
@@ -54,47 +74,35 @@
 
 	&__action {
 		position: relative;
-
 		width: 36px;
 		height: 36px;
-
 		display: flex;
 		align-items: center;
 		justify-content: center;
-
 		border-radius: 10px;
 		border: 1px solid transparent;
-
 		cursor: pointer;
-
 		transition: all 0.2s ease;
 
 		.material-icons {
 			font-size: 20px;
 		}
 
-		/* TOOLTIP */
 		&::after {
 			content: attr(data-tooltip);
 			position: absolute;
 			bottom: 120%;
 			left: 50%;
 			transform: translateX(-50%) scale(0.9);
-
 			background: var(--color-bg-alt);
 			color: var(--color-text-primary);
-
 			padding: 6px 10px;
 			border-radius: 6px;
-
 			font-size: 12px;
 			white-space: nowrap;
-
 			opacity: 0;
 			pointer-events: none;
-
 			box-shadow: 0 2px 6px var(--color-shadow-medium);
-
 			transition: all 0.2s ease;
 		}
 
@@ -103,7 +111,6 @@
 			transform: translateX(-50%) scale(1);
 		}
 
-		/* EDIT */
 		&--edit {
 			color: var(--color-primary);
 			background: var(--color-primary-opacity-08);
@@ -114,7 +121,6 @@
 			}
 		}
 
-		/* DELETE */
 		&--delete {
 			color: var(--color-error);
 			background: var(--color-error-opacity-08);

@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { ProyectCreateForm } from './ProyectCreateForm'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
-import { ActionAlert } from '../../Login/components/ActionAlert'
+import { ActionAlert } from '../../base/components/alert/ActionAlert'
 import { SectionLoader } from '../../base/components/loading/SectionLoader'
 
 export const ProyectCreateModal: FC = () => {

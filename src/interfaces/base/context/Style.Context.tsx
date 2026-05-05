@@ -1,4 +1,4 @@
-// src/theme/themes.ts
+/* src/theme/themes.ts
 import { createTheme } from '@mui/material/styles'
 
 export const styleLight = createTheme({
@@ -14,19 +14,7 @@ export const styleLight = createTheme({
 	},
 })
 
-/**
- * 🌙 Tema oscuro general (base Material UI)
- *
- * Define una paleta oscura con colores `primary` y `secondary` personalizados.
- * Puede usarse como tema base para aplicaciones con modo oscuro tradicional.
- *
- * Ejemplo de uso:
- * ```tsx
- * <ThemeProvider theme={styleDark}>
- *   <App />
- * </ThemeProvider>
- * ```
- */
+
 export const styleDark = createTheme({
 	palette: {
 		mode: 'dark',
@@ -93,14 +81,7 @@ export const styleEvents = createTheme({
 	},
 })
 
-/**
- * 🌍 Tema Travel
- *
- * Base dark + identidad viajera:
- * - Azules profundos con matiz violáceo
- * - Sensación nocturna / mapas / itinerarios
- * - Compatible con cards, timelines y chips
- */
+
 export const styleTravel = createTheme({
 	palette: {
 		mode: 'dark',
@@ -178,4 +159,4 @@ export const styleTravel = createTheme({
 			},
 		},
 	},
-})
+})*/

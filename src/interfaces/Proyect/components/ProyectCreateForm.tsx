@@ -1,13 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC } from 'react'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { useProyectCreateForm } from '../hooks/useProyectCreate.h'
+import { PotencialClientDto } from '../models/PotencialClientDTO.m'
+import { usePotencialClients } from '../hooks/usePotencialClient.h'
+import { useIsSmallScreen } from '../../base/hooks/useSmallScreen.h'
 
 export const ProyectCreateForm: FC = () => {
 	const { refs, closeCreate } = useProyectContext()
 	const { CREATE, ACTIONS } = PROYECT_CONFIG
+	const isSmallScreen = useIsSmallScreen()
+
 	const { form, update, submit, submitting } = useProyectCreateForm()
+	const { clients, loading: loadingClients } = usePotencialClients()
+
+	const selectedType = refs?.types.find((t) => t.Code === form.projectType)
 
 	if (!refs) return null
 
@@ -19,8 +26,7 @@ export const ProyectCreateForm: FC = () => {
 				void submit()
 			}}
 		>
-			{/* ================= CLOCKIFY ================= */}
-			<div className="proyect-create-clockify" data-tooltip={CREATE.CLOCKIFY.TOOLTIP}>
+			<div className="proyect-create-clockify">
 				<div>
 					<h3>
 						<span className="material-icons">{CREATE.CLOCKIFY.ICON}</span>
@@ -29,24 +35,23 @@ export const ProyectCreateForm: FC = () => {
 					<p>{CREATE.CLOCKIFY.DESCRIPTION}</p>
 				</div>
 
-				<label className="mui-switch">
-					<input type="checkbox" checked={form.RequiresClockifyCreation} onChange={(e) => update('RequiresClockifyCreation')(e.target.checked)} />
+				{/* 🔹 Tooltip reemplazado */}
+				<label className="mui-switch" title={!isSmallScreen ? CREATE.CLOCKIFY.TOOLTIP : ''}>
+					<input type="checkbox" checked={form.requiresClockifyCreation} onChange={(e) => update('requiresClockifyCreation')(e.target.checked)} />
 					<span className="mui-switch__track">
 						<span className="mui-switch__thumb" />
 					</span>
 				</label>
 			</div>
 
-			{/* ================= GRID ================= */}
 			<div className="proyect-create-grid">
-				{/* TIPO */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.PROJECT_TYPE.ICON}</span>
 						{CREATE.FIELDS.PROJECT_TYPE.LABEL} *
 					</label>
 
-					<select className="proyect-create-select" value={form.ProjectType ?? ''} onChange={(e) => update('ProjectType')(e.target.value)} required>
+					<select className="proyect-create-select" value={form.projectType ?? ''} onChange={(e) => update('projectType')(e.target.value)} required>
 						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
 						{refs.types
 							.filter((t) => t.IsActive)
@@ -58,68 +63,73 @@ export const ProyectCreateForm: FC = () => {
 					</select>
 				</div>
 
-				{/* NOMBRE */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.PROJECT_NAME.ICON}</span>
 						{CREATE.FIELDS.PROJECT_NAME.LABEL} *
 					</label>
 
-					<input className="proyect-create-input" value={form.ProjectName ?? ''} onChange={(e) => update('ProjectName')(e.target.value)} required />
+					<input className="proyect-create-input" value={form.projectName ?? ''} onChange={(e) => update('projectName')(e.target.value)} required />
 				</div>
 
-				{/* CLIENTE */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">business</span>
-						Cliente
+						Cliente *
 					</label>
 
-					<input
-						className="proyect-create-input"
-						type="number"
-						value={form.ClientId ?? ''}
-						onChange={(e) => update('ClientId')(e.target.value ? Number(e.target.value) : null)}
-					/>
+					<select
+						className="proyect-create-select"
+						value={form.clientId ?? ''}
+						onChange={(e) => update('clientId')(e.target.value ? Number(e.target.value) : null)}
+						required
+					>
+						<option value="">{loadingClients ? 'Cargando clientes...' : CREATE.PLACEHOLDERS.SELECT}</option>
+
+						{clients.map((c: PotencialClientDto) => (
+							<option key={c.Id} value={c.Id}>
+								{c.Name}
+							</option>
+						))}
+					</select>
 				</div>
 
-				{/* N° PROYECTO COMERCIAL */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.SECONDARY_NUMBER.ICON}</span>
-						{CREATE.FIELDS.SECONDARY_NUMBER.LABEL}
+						{CREATE.FIELDS.SECONDARY_NUMBER.LABEL} *
 					</label>
 
 					<input
 						className="proyect-create-input"
-						value={form.SecondaryProjectNumber ?? ''}
-						onChange={(e) => update('SecondaryProjectNumber')(e.target.value)}
+						value={form.secondaryProjectNumber ?? ''}
+						onChange={(e) => update('secondaryProjectNumber')(e.target.value)}
+						required
 					/>
 				</div>
 
-				{/* FECHA ALTA */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.REGISTRATION_DATE.ICON}</span>
-						{CREATE.FIELDS.REGISTRATION_DATE.LABEL}
+						{CREATE.FIELDS.REGISTRATION_DATE.LABEL} *
 					</label>
 
 					<input
 						className="proyect-create-input"
 						type="date"
-						value={form.RegistrationDate ?? ''}
-						onChange={(e) => update('RegistrationDate')(e.target.value || null)}
+						value={form.registrationDate ?? ''}
+						onChange={(e) => update('registrationDate')(e.target.value || null)}
+						required
 					/>
 				</div>
 
-				{/* CATEGORÍA */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.CATEGORY.ICON}</span>
-						{CREATE.FIELDS.CATEGORY.LABEL}
+						{CREATE.FIELDS.CATEGORY.LABEL} *
 					</label>
 
-					<select className="proyect-create-select" value={form.CategoryCode ?? ''} onChange={(e) => update('CategoryCode')(e.target.value || null)}>
+					<select className="proyect-create-select" value={form.categoryCode ?? ''} onChange={(e) => update('categoryCode')(e.target.value || null)} required>
 						<option value="">{CREATE.PLACEHOLDERS.EMPTY}</option>
 						{refs.categories
 							.filter((c) => c.IsActive)
@@ -131,14 +141,18 @@ export const ProyectCreateForm: FC = () => {
 					</select>
 				</div>
 
-				{/* ESTADO */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.STATUS.ICON}</span>
-						{CREATE.FIELDS.STATUS.LABEL}
+						{CREATE.FIELDS.STATUS.LABEL} *
 					</label>
 
-					<select className="proyect-create-select" value={form.ProjectStatusCode ?? ''} onChange={(e) => update('ProjectStatusCode')(e.target.value || null)}>
+					<select
+						className="proyect-create-select"
+						value={form.projectStatusCode ?? ''}
+						onChange={(e) => update('projectStatusCode')(e.target.value || null)}
+						required
+					>
 						<option value="">{CREATE.PLACEHOLDERS.EMPTY}</option>
 						{refs.statuses
 							.filter((s) => s.IsActive)
@@ -150,54 +164,82 @@ export const ProyectCreateForm: FC = () => {
 					</select>
 				</div>
 
-				{/* FECHA ESTADO NEGOCIO */}
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">today</span>
-						Fecha estado negocio
-					</label>
+				{selectedType?.RequiresBusinessStatusDate && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">today</span>
+							Fecha estado negocio *
+						</label>
 
-					<input
-						className="proyect-create-input"
-						type="date"
-						value={form.BusinessStatusDate ?? ''}
-						onChange={(e) => update('BusinessStatusDate')(e.target.value || null)}
-					/>
-				</div>
+						<input
+							className="proyect-create-input"
+							type="date"
+							value={form.businessStatusDate ?? ''}
+							onChange={(e) => update('businessStatusDate')(e.target.value || null)}
+							required
+						/>
+					</div>
+				)}
 
-				{/* FECHA ESTIMADA FIN */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">event_available</span>
-						Fecha estimada fin
+						Fecha estimada fin *
 					</label>
 
 					<input
 						className="proyect-create-input"
 						type="date"
-						value={form.EstimatedEndDate ?? ''}
-						onChange={(e) => update('EstimatedEndDate')(e.target.value || null)}
+						value={form.estimatedEndDate ?? ''}
+						onChange={(e) => update('estimatedEndDate')(e.target.value || null)}
+						required
 					/>
 				</div>
 
-				{/* OBSERVACIONES */}
+				{selectedType?.RequiresActualEndDate && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">event_busy</span>
+							Fecha fin real *
+						</label>
+
+						<input
+							className="proyect-create-input"
+							type="date"
+							value={form.actualEndDate ?? ''}
+							onChange={(e) => update('actualEndDate')(e.target.value || null)}
+							required
+						/>
+					</div>
+				)}
+
+				{selectedType?.RequiresCommercialFields && (
+					<div className="proyect-create-field">
+						<label className="proyect-create-label">
+							<span className="material-icons">business_center</span>
+							Estado comercial *
+						</label>
+
+						<input className="proyect-create-input" value={form.commercialStatus ?? ''} onChange={(e) => update('commercialStatus')(e.target.value)} required />
+					</div>
+				)}
+
 				<div className="proyect-create-field proyect-create-field--full">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.OBSERVATIONS.ICON}</span>
 						{CREATE.FIELDS.OBSERVATIONS.LABEL}
 					</label>
 
-					<textarea className="proyect-create-textarea" rows={3} value={form.Observations ?? ''} onChange={(e) => update('Observations')(e.target.value)} />
+					<textarea className="proyect-create-textarea" rows={3} value={form.observations ?? ''} onChange={(e) => update('observations')(e.target.value)} />
 				</div>
 			</div>
 
-			{/* ================= ACTIONS ================= */}
 			<div className="modal__actions">
-				<button type="button" className="proyect-create-btn proyect-create-btn--cancel" onClick={closeCreate} data-tooltip={ACTIONS.CANCEL.TOOLTIP}>
+				<button type="button" className="proyect-create-btn proyect-create-btn--cancel" onClick={closeCreate}>
 					{ACTIONS.CANCEL.LABEL}
 				</button>
 
-				<button type="submit" className="proyect-create-btn proyect-create-btn--confirm" disabled={submitting} data-tooltip={ACTIONS.CONFIRM.TOOLTIP}>
+				<button type="submit" className="proyect-create-btn proyect-create-btn--confirm" disabled={submitting}>
 					{ACTIONS.CONFIRM.LABEL}
 				</button>
 			</div>

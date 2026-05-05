@@ -1,0 +1,12 @@
+[
+	{
+		"userName": "Juan Pérez",
+		"monthKey": "2026-01",
+		"capacity": 160
+	},
+	{
+		"userName": "María Gómez",
+		"monthKey": "2026-02",
+		"capacity": 140
+	}
+]

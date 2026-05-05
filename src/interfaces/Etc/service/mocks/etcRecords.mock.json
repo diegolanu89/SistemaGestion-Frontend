@@ -1,0 +1,62 @@
+[
+	{
+		"id": 1,
+		"projectId": 1,
+		"snapshotId": 1,
+		"userId": 1,
+		"userName": "Juan Pérez",
+		"monthKey": "2026-01",
+		"monthLabel": "Enero 2026",
+		"hours": 32,
+		"createdAt": "2026-01-01T10:00:00Z",
+		"updatedAt": "2026-01-01T10:00:00Z"
+	},
+	{
+		"id": 2,
+		"projectId": 1,
+		"snapshotId": 1,
+		"userId": 2,
+		"userName": "María Gómez",
+		"monthKey": "2026-01",
+		"monthLabel": "Enero 2026",
+		"hours": 28,
+		"createdAt": "2026-01-01T10:00:00Z",
+		"updatedAt": "2026-01-01T10:00:00Z"
+	},
+	{
+		"id": 3,
+		"projectId": 1,
+		"snapshotId": 1,
+		"userId": 3,
+		"userName": "Lucas Díaz",
+		"monthKey": "2026-02",
+		"monthLabel": "Febrero 2026",
+		"hours": 35,
+		"createdAt": "2026-02-01T10:00:00Z",
+		"updatedAt": "2026-02-01T10:00:00Z"
+	},
+	{
+		"id": 4,
+		"projectId": 1,
+		"snapshotId": 1,
+		"userId": 4,
+		"userName": "Sofía Torres",
+		"monthKey": "2026-02",
+		"monthLabel": "Febrero 2026",
+		"hours": 30,
+		"createdAt": "2026-02-01T10:00:00Z",
+		"updatedAt": "2026-02-01T10:00:00Z"
+	},
+	{
+		"id": 5,
+		"projectId": 1,
+		"snapshotId": 1,
+		"userId": 1,
+		"userName": "Juan Pérez",
+		"monthKey": "2026-03",
+		"monthLabel": "Marzo 2026",
+		"hours": 40,
+		"createdAt": "2026-03-01T10:00:00Z",
+		"updatedAt": "2026-03-01T10:00:00Z"
+	}
+]

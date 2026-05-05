@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { authAdapter } from '../services/LoginAdapterFactory.s'
@@ -9,9 +9,25 @@ import { AuthLoading } from '../../base/components/loading/AuthLoading'
 
 export const AuthProvider = ({ children, home }: IProviderProps) => {
 	const [user, setUser] = useState<IUser | null>(null)
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(true)
 
 	const navigate = useNavigate()
+
+	// RESTORE SESSION
+	useEffect(() => {
+		const restore = async () => {
+			try {
+				const user = await authAdapter.getUser()
+				setUser(user)
+			} catch {
+				setUser(null)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		restore()
+	}, [])
 
 	// ==========================
 	// LOGIN
@@ -49,9 +65,6 @@ export const AuthProvider = ({ children, home }: IProviderProps) => {
 		}
 	}, [navigate])
 
-	// ==========================
-	// CONTEXT VALUE
-	// ==========================
 	const value = useMemo(
 		() => ({
 			user,

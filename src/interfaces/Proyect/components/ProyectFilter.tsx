@@ -5,23 +5,11 @@ import { useProyectContext } from '../hooks/useProyectContext.h'
 import { Category, Status, Type } from '../models/IProyectItem.m'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { ProyectSearch } from './ProyectSearch'
+import { ProyectClearFilters } from './ProyectClearFilters'
 import { SelectOption, mapStatusOptions, mapCategoryOptions, mapTypeOptions } from '../models/ProyectMapper.m'
 
 export const ProyectFilters: FC = () => {
-	const {
-		status,
-		setStatus,
-		category,
-		setCategory,
-		type,
-		setType,
-		refetch,
-		refs, // 🔥 ahora viene del context
-	} = useProyectContext()
-
-	// ==========================
-	// 🔹 OPTIONS DINÁMICOS
-	// ==========================
+	const { status, setStatus, category, setCategory, type, setType, refetch, refs } = useProyectContext()
 
 	const statusOptions: SelectOption[] = useMemo(() => {
 		if (!refs) return [{ value: 'all', label: 'Todos' }]
@@ -40,10 +28,6 @@ export const ProyectFilters: FC = () => {
 
 		return [{ value: 'all', label: 'Todos' }, ...mapTypeOptions(refs.types)]
 	}, [refs])
-
-	// ==========================
-	// 🔹 UI
-	// ==========================
 
 	return (
 		<div className="proyect-filters">
@@ -89,8 +73,9 @@ export const ProyectFilters: FC = () => {
 				</select>
 			</div>
 
-			{/* REFRESH */}
+			{/* ACTIONS */}
 			<div className="proyect-filters__refresh">
+				<ProyectClearFilters />
 				<button className="proyect-filters__refresh-btn" onClick={refetch} data-tooltip={PROYECT_CONFIG.ACTIONS.REFRESH_TOOLTIP}>
 					<span className="material-icons">{PROYECT_CONFIG.ACTIONS.REFRESH_ICON}</span>
 				</button>

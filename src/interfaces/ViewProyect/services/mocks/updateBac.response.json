@@ -1,0 +1,24 @@
+{
+	"message": "BAC actualizado correctamente",
+	"project": {
+		"id": 1,
+		"clockifyProjectId": "clk_001",
+		"name": "Proyecto Alpha",
+		"code": "30.001",
+		"clientId": 10,
+		"clientName": "Cliente A",
+		"status": "activo",
+		"startDate": "2026-01-01",
+		"endDatePlanned": "2026-06-01",
+		"endDateActual": null,
+		"bacBaseHours": 110,
+		"bacBaseCost": 11000,
+		"bacTotalHours": 130,
+		"bacTotalCost": 13000,
+		"hourlyRate": 100,
+		"etcCalculationMode": "manual",
+		"createdAt": "2026-01-01T10:00:00Z",
+		"updatedAt": "2026-03-01T10:00:00Z",
+		"filter": { "id": 1, "projectId": 1 }
+	}
+}

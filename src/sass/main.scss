@@ -12,6 +12,8 @@
 
 /**BASE APP**/
 @use '../interfaces/base/components/loading/authLoading';
+@use '../interfaces/base/components/RefreshButton/refreshButton';
+@use '../interfaces/base/components/alert/actionAlert';
 
 /**APP_BAR**/
 @use '../interfaces/AppBar/components/bar/_appBarSpacer';
@@ -28,15 +30,37 @@
 @use '../interfaces/Login/components/loginContainer';
 @use '../interfaces/Login/components/loginForm';
 @use '../interfaces/Login/components/loginHeader';
-@use '../interfaces/Login/components/loginAlert';
 
 /**HOME (Idle)**/
 @use '../interfaces/Idle/views/idle';
 @use '../interfaces/Idle/components/featureGrid';
 
 /**PROYECT**/
+@use '../interfaces/Proyect/components/proyectHeader';
 @use '../interfaces/Proyect/components/_proyectFilter';
 @use '../interfaces/Proyect/views/proyect';
 @use '../interfaces/Proyect/components/_proyectTable';
 @use '../interfaces/Proyect/components/proyectCreateModal';
 @use '../interfaces/Proyect/components/proyectCreateForm';
+@use '../interfaces/Proyect/components/proyectClockifyStatus';
+@use '../interfaces/Proyect/components/proyectDeleteModal';
+@use '../interfaces/Proyect/components/proyectSearch';
+
+/**PROYECTVIEWS**/
+@use '../interfaces/ViewProyect/views/proyectView';
+@use '../interfaces/ViewProyect/components/proyectViewFilter';
+@use '../interfaces/ViewProyect/components/proyectGrid';
+@use '../interfaces/ViewProyect/views/proyectItem';
+
+/**ETC**/
+@use '../interfaces/Etc/views/etcLoadView';
+@use '../interfaces/Etc/components/etcHeader';
+@use '../interfaces/Etc/components/etcToolBar';
+@use '../interfaces/Etc/components/etcSummary';
+@use '../interfaces/Etc/components/etcTable';
+
+/**ESTIMATED PROJECTS**/
+@use '../interfaces/EstimatedProjects/views/estimatedProject';
+@use '../interfaces/EstimatedProjects/components/estimatedProjectTable';
+@use '../interfaces/EstimatedProjects/components/estimatedProjectForm';
+@use '../interfaces/EstimatedProjects/components/estimatedProjectGrid';

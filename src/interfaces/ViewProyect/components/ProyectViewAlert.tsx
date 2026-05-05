@@ -1,21 +1,18 @@
-// components/ActionAlert.tsx
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useProyectContext } from '../../Proyect/hooks/useProyectContext.h'
+import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 
-export const ActionAlert = () => {
-	const { createStatus, createMessage } = useProyectContext()
+export const ProyectViewAlert = () => {
+	const { error } = useProyectViewContext()
 
-	if (!createMessage) return null
-
-	const variant = createStatus === 'error' ? 'error' : 'success'
+	if (!error) return null
 
 	return createPortal(
 		<div className="login-alert-wrapper">
 			<AnimatePresence>
 				<motion.div
-					key={variant}
-					className={`login-alert login-alert--${variant}`}
+					key="error"
+					className="login-alert login-alert--error"
 					initial={{ opacity: 0, y: -10, scale: 0.95 }}
 					animate={{ opacity: 1, y: 0, scale: 1 }}
 					exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -25,8 +22,8 @@ export const ActionAlert = () => {
 						damping: 22,
 					}}
 				>
-					<span>{variant === 'success' ? '✅' : '⚠️'}</span>
-					<span>{createMessage}</span>
+					<span>⚠️</span>
+					<span>{error}</span>
 				</motion.div>
 			</AnimatePresence>
 		</div>,

@@ -1,5 +1,3 @@
-// src/components/ProtectedRoute.tsx
-
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../../../Login/hooks/useAuth.h'
 
@@ -7,15 +5,14 @@ interface ProtectedRouteProps {
 	redirectTo: string
 }
 
-/**
- * Protege rutas que requieren autenticación.
- *
- * @param redirectTo Ruta a la que se redirige si no hay usuario autenticado
- */
-const ProtectedRoute = ({ redirectTo }: ProtectedRouteProps): JSX.Element => {
-	const { user } = useAuth()
+const ProtectedRoute = ({ redirectTo }: ProtectedRouteProps): JSX.Element | null => {
+	const { user, loading } = useAuth()
 
-	return user ? <Outlet /> : <Navigate to={redirectTo} replace />
+	if (loading) return null
+
+	if (!user) return <Navigate to={redirectTo} replace />
+
+	return <Outlet />
 }
 
 export default ProtectedRoute
