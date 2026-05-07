@@ -5,10 +5,14 @@ import { useEtcContext } from '../hooks/useEtcContext.h'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { EtcTable } from './EtcTable'
+// components/EtcSummary.tsx
+
+import { useNavigate } from 'react-router-dom'
+import { PROYECT_PATHS_VIEWS } from '../../ViewProyect/routes/paths'
 
 export const EtcSummary: FC = () => {
-	const { entries, errors } = useEtcContext()
-
+	const { entries, errors, projectId } = useEtcContext()
+	const navigate = useNavigate()
 	// =========================
 	// SUMMARY
 	// =========================
@@ -35,6 +39,12 @@ export const EtcSummary: FC = () => {
 
 	const handleNewVersion = () => {
 		logger.infoTag(LogTag.Adapter, '[ETC] Create weekly snapshot')
+
+		navigate(PROYECT_PATHS_VIEWS.ETC_WEEKLY_VERSION, {
+			state: {
+				projectId,
+			},
+		})
 	}
 
 	return (

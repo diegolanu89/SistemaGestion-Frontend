@@ -1,18 +1,110 @@
 // hooks/useEtcController.h.ts
 
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useEtcContext } from './useEtcContext.h'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { etcAdapter } from '../service/EtcAdapter'
 import type { ValidateCapacityResponse } from '../model/IEtcApi.m'
+import type { EtcEntryDto } from '../model/Etc.m'
+import type { AllocationWireDto } from '../../EstimatedProjects/models/EstimatedProjectDTO.m'
+import { estimatedProjectAdapter } from '../../EstimatedProjects/services/EstimatedProjectAdapter.s'
 
 export const useEtcController = () => {
-	const { projectId, entries, setLoading, setErrors } = useEtcContext()
+	const { projectId, entries, setEntries, setLoading, setErrors } = useEtcContext()
+
+	// =========================
+	// INITIAL LOAD
+	// =========================
+
+	useEffect(() => {
+		let cancelled = false
+
+		void (async () => {
+			logger.infoTag(LogTag.Adapter, '[ETC] Initial load', {
+				projectId,
+			})
+
+			setLoading(true)
+
+			try {
+				// =========================
+				// CURRENT ETC
+				// =========================
+
+				const response = await etcAdapter.getByProject(projectId)
+
+				const existing = response.records ?? []
+
+				// =========================
+				// IF ETC EXISTS
+				// =========================
+
+				if (existing.length > 0) {
+					const mappedEntries: EtcEntryDto[] = existing.map(
+						(record: { userName?: string | null; monthKey: string; monthLabel?: string | null; hours?: number | null }) => ({
+							userName: record.userName ?? 'Sin usuario',
+
+							monthKey: record.monthKey,
+
+							monthLabel: record.monthLabel ?? record.monthKey,
+
+							hours: Number(record.hours ?? 0),
+						})
+					)
+
+					if (!cancelled) {
+						setEntries(mappedEntries)
+					}
+
+					return
+				}
+
+				// =========================
+				// FALLBACK → ALLOCATIONS
+				// =========================
+
+				const allocations: AllocationWireDto[] = await estimatedProjectAdapter.getAllocations(projectId)
+
+				const allocationEntries: EtcEntryDto[] = allocations.map((allocation) => ({
+					userName: allocation.user_name ?? 'Sin usuario',
+
+					monthKey: allocation.month_key,
+
+					monthLabel: allocation.month_label ?? allocation.month_key,
+
+					hours: Number(allocation.hours ?? 0),
+				}))
+
+				if (!cancelled) {
+					setEntries(allocationEntries)
+				}
+			} catch (e: unknown) {
+				logger.errorTag(LogTag.Adapter, '[ETC] Initial load error', e)
+
+				if (!cancelled) {
+					setErrors([
+						{
+							message: 'Error al cargar ETC',
+						},
+					])
+				}
+			} finally {
+				if (!cancelled) {
+					setLoading(false)
+				}
+			}
+		})()
+
+		return () => {
+			cancelled = true
+		}
+	}, [projectId, setEntries, setLoading, setErrors])
 
 	// =========================
 	// VALIDATE
 	// =========================
+
 	const validate = useCallback(async () => {
 		logger.infoTag(LogTag.Adapter, '[ETC] Validate start', {
 			projectId,
@@ -49,6 +141,7 @@ export const useEtcController = () => {
 	// =========================
 	// SAVE (BULK)
 	// =========================
+
 	const save = useCallback(async () => {
 		logger.infoTag(LogTag.Adapter, '[ETC] Save start', {
 			projectId,
@@ -67,7 +160,6 @@ export const useEtcController = () => {
 				created: res.records.length,
 			})
 
-			// 🔥 opcional: limpiar errores si guardó OK
 			setErrors([])
 		} catch (e: unknown) {
 			logger.errorTag(LogTag.Adapter, '[ETC] Save error', e)
@@ -85,6 +177,7 @@ export const useEtcController = () => {
 	// =========================
 	// SNAPSHOT
 	// =========================
+
 	const snapshot = useCallback(async () => {
 		logger.infoTag(LogTag.Adapter, '[ETC] Snapshot start', {
 			projectId,
@@ -102,7 +195,6 @@ export const useEtcController = () => {
 				version: res.snapshot.version,
 			})
 
-			// 🔥 opcional: limpiar errores
 			setErrors([])
 		} catch (e: unknown) {
 			logger.errorTag(LogTag.Adapter, '[ETC] Snapshot error', e)

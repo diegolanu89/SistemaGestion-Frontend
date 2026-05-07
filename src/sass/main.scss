@@ -54,6 +54,7 @@
 
 /**ETC**/
 @use '../interfaces/Etc/views/etcLoadView';
+@use '../interfaces/Etc/views/etcWeeklyVersion';
 @use '../interfaces/Etc/components/etcHeader';
 @use '../interfaces/Etc/components/etcToolBar';
 @use '../interfaces/Etc/components/etcSummary';

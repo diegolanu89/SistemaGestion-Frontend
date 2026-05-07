@@ -9,6 +9,7 @@ import { ProyectViewProvider } from '../context/ProyectView.Context'
 
 import { EtcLoadView } from '../../Etc/views/EtcLoadView.v'
 import { EtcProvider } from '../../Etc/context/Etc.Context'
+import EtcWeeklyVersionView from '../../Etc/views/EtcWeeklyVersionView.v'
 
 export const ProyectViewPublicRoutes = () => (
 	<Route
@@ -23,12 +24,14 @@ export const ProyectViewPublicRoutes = () => (
 		<Route path={PROYECT_PATHS_VIEWS.PROYECT_ITEM} element={<ProyectViewItem />} />
 
 		<Route
-			path={PROYECT_PATHS_VIEWS.ETC_LOAD}
 			element={
 				<EtcProvider>
-					<EtcLoadView />
+					<Outlet />
 				</EtcProvider>
 			}
-		/>
+		>
+			<Route path={PROYECT_PATHS_VIEWS.ETC_LOAD} element={<EtcLoadView />} />
+			<Route path={PROYECT_PATHS_VIEWS.ETC_WEEKLY_VERSION} element={<EtcWeeklyVersionView />} />
+		</Route>
 	</Route>
 )
