@@ -1,0 +1,222 @@
+/* =========================================
+   METRICS
+========================================= */
+
+.etc-weekly-metrics {
+	display: grid;
+	grid-template-columns: 220px 220px 1fr;
+	gap: 16px;
+
+	align-items: stretch;
+
+	@media (max-width: 1100px) {
+		grid-template-columns: 1fr;
+	}
+
+	&__cards {
+		display: contents;
+	}
+}
+
+/* =========================================
+   MINI CARD
+========================================= */
+
+.etc-weekly-mini-card {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+
+	height: 120px;
+
+	padding: 18px;
+
+	border-radius: 14px;
+
+	border: 1px solid var(--color-border);
+
+	background: var(--color-surface);
+
+	transition: all 0.2s ease;
+
+	&:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 10px 20px var(--color-shadow-soft);
+	}
+
+	&__icon {
+		width: 46px;
+		height: 46px;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		border-radius: 12px;
+
+		flex-shrink: 0;
+
+		.material-icons {
+			font-size: 22px;
+		}
+	}
+
+	&__content {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	&__label {
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.4px;
+
+		text-transform: uppercase;
+
+		color: var(--color-text-secondary);
+	}
+
+	&__value {
+		font-size: 22px;
+		font-weight: 700;
+
+		color: var(--color-text-primary);
+	}
+
+	&--bac {
+		background: linear-gradient(135deg, var(--color-primary-opacity-08), transparent), var(--color-surface);
+
+		.etc-weekly-mini-card__icon {
+			background: var(--color-primary-opacity-15);
+
+			color: var(--color-primary);
+		}
+	}
+
+	&--erc {
+		background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), transparent), var(--color-surface);
+
+		.etc-weekly-mini-card__icon {
+			background: rgba(16, 185, 129, 0.15);
+
+			color: #10b981;
+		}
+	}
+}
+
+/* =========================================
+   PROGRESS CARD
+========================================= */
+
+.etc-weekly-progress-card {
+	height: 120px;
+
+	background: var(--color-surface);
+
+	border: 1px solid var(--color-border);
+	border-radius: 14px;
+
+	padding: 18px 20px;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 18px;
+
+	&__header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 20px;
+
+		h4 {
+			margin: 0;
+
+			font-size: 16px;
+			font-weight: 600;
+
+			color: var(--color-text-primary);
+		}
+
+		p {
+			margin: 4px 0 0;
+
+			font-size: 12px;
+			line-height: 1.4;
+
+			color: var(--color-text-secondary);
+		}
+
+		strong {
+			font-size: 28px;
+			font-weight: 700;
+
+			color: var(--color-text-primary);
+
+			white-space: nowrap;
+		}
+	}
+}
+
+/* =========================================
+   PROGRESS
+========================================= */
+
+.etc-weekly-progress {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	&__bar {
+		position: relative;
+
+		width: 100%;
+		height: 14px;
+
+		border-radius: 999px;
+
+		background: var(--color-bg-alt);
+
+		border: 1px solid var(--color-border);
+
+		overflow: hidden;
+	}
+
+	&__fill {
+		position: absolute;
+		inset: 0 auto 0 0;
+
+		height: 100%;
+
+		border-radius: inherit;
+
+		transition: width 0.3s ease;
+
+		box-shadow:
+			0 0 18px rgba(0, 0, 0, 0.12),
+			inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+		&.is-success {
+			background: linear-gradient(135deg, #10b981, #059669);
+		}
+
+		&.is-warning {
+			background: linear-gradient(135deg, #f59e0b, #d97706);
+		}
+
+		&.is-danger {
+			background: linear-gradient(135deg, #ef4444, #dc2626);
+		}
+	}
+
+	&__legend {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		font-size: 11px;
+
+		color: var(--color-text-secondary);
+	}
+}

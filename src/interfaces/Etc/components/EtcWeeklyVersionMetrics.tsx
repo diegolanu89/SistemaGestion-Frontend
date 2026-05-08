@@ -13,26 +13,52 @@ export const EtcWeeklyVersionMetrics: FC<Props> = ({ bac, erc, usePercentage }) 
 
 	return (
 		<section className="etc-weekly-metrics">
-			<div className="etc-weekly-metric-card">
-				<span className="etc-weekly-metric-card__label">BAC</span>
+			{/* =========================
+			    LEFT CARDS
+			========================= */}
 
-				<strong>{bac.toFixed(2)}h</strong>
-			</div>
-
-			<div className="etc-weekly-metric-card">
-				<span className="etc-weekly-metric-card__label">ERC / ETC</span>
-
-				<strong>{erc.toFixed(2)}h</strong>
-			</div>
-
-			<div className="etc-weekly-metric-card etc-weekly-metric-card--wide">
-				<div className="etc-weekly-progress">
-					<div className="etc-weekly-progress__header">
-						<span>Use BAC</span>
-
-						<strong>{usePercentage.toFixed(1)}%</strong>
+			<div className="etc-weekly-metrics__cards">
+				<div className="etc-weekly-mini-card etc-weekly-mini-card--bac">
+					<div className="etc-weekly-mini-card__icon">
+						<span className="material-icons">account_balance_wallet</span>
 					</div>
 
+					<div className="etc-weekly-mini-card__content">
+						<span className="etc-weekly-mini-card__label">BAC</span>
+
+						<strong className="etc-weekly-mini-card__value">{bac.toFixed(2)}h</strong>
+					</div>
+				</div>
+
+				<div className="etc-weekly-mini-card etc-weekly-mini-card--erc">
+					<div className="etc-weekly-mini-card__icon">
+						<span className="material-icons">query_stats</span>
+					</div>
+
+					<div className="etc-weekly-mini-card__content">
+						<span className="etc-weekly-mini-card__label">ERC / ETC</span>
+
+						<strong className="etc-weekly-mini-card__value">{erc.toFixed(2)}h</strong>
+					</div>
+				</div>
+			</div>
+
+			{/* =========================
+			    RIGHT PROGRESS
+			========================= */}
+
+			<div className="etc-weekly-progress-card">
+				<div className="etc-weekly-progress-card__header">
+					<div>
+						<h4>Use BAC</h4>
+
+						<p>Porcentaje utilizado del BAC total del proyecto.</p>
+					</div>
+
+					<strong>{usePercentage.toFixed(1)}%</strong>
+				</div>
+
+				<div className="etc-weekly-progress">
 					<div className="etc-weekly-progress__bar">
 						<div
 							className={`etc-weekly-progress__fill ${colorClass}`}
@@ -40,6 +66,12 @@ export const EtcWeeklyVersionMetrics: FC<Props> = ({ bac, erc, usePercentage }) 
 								width: `${Math.min(usePercentage, 100)}%`,
 							}}
 						/>
+					</div>
+
+					<div className="etc-weekly-progress__legend">
+						<span>{erc.toFixed(2)}h utilizadas</span>
+
+						<span>{bac.toFixed(2)}h disponibles</span>
 					</div>
 				</div>
 			</div>
