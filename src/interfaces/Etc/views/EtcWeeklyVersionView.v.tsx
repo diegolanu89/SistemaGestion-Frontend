@@ -12,33 +12,30 @@ import { EtcWeeklyVersionActions } from '../components/EtcWeeklyVersionActions'
 
 import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionController.h'
 
+import { SectionLoader } from '../../base/components/loading/SectionLoader'
+
 export const EtcWeeklyVersionView: FC = () => {
-	const controller = useEtcWeeklyVersionController()
+	const { loading } = useEtcWeeklyVersionController()
 
 	return (
 		<div className="etc-weekly-version">
-			<EtcWeeklyVersionHeader projectName={controller.projectName} onBack={controller.handleBack} />
+			<EtcWeeklyVersionHeader />
 
-			<EtcWeeklyVersionMetrics bac={controller.bac} erc={controller.erc} usePercentage={controller.usePercentage} />
+			<EtcWeeklyVersionMetrics />
 
-			<EtcWeeklyVersionMonthSelector
-				months={controller.selectedMonths}
-				onAddMonth={controller.addMonth}
-				onRemoveMonth={controller.removeMonth}
-				rangeLabel={controller.rangeLabel}
-			/>
+			<EtcWeeklyVersionMonthSelector />
 
-			<EtcWeeklyVersionResources
-				users={controller.filteredUsers}
-				selectedUserIds={controller.selectedUserIds}
-				search={controller.search}
-				onSearch={controller.setSearch}
-				onToggleUser={controller.toggleUser}
-			/>
+			<EtcWeeklyVersionResources />
 
-			<EtcWeeklyVersionGrid users={controller.selectedUsers} months={controller.selectedMonths} values={controller.values} onChange={controller.updateHours} />
+			<EtcWeeklyVersionGrid />
 
-			<EtcWeeklyVersionActions onCancel={controller.handleBack} onSave={controller.saveSnapshot} loading={controller.loading} />
+			<EtcWeeklyVersionActions />
+
+			{loading && (
+				<div className="etc-weekly-version__loading">
+					<SectionLoader text="Guardando versión semanal..." />
+				</div>
+			)}
 
 			<Outlet />
 		</div>

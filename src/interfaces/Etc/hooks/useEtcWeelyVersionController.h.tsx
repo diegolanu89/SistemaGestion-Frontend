@@ -1,6 +1,6 @@
 // hooks/useEtcWeeklyVersionController.h.ts
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import logger from '../../base/controllers/Logger.c'
@@ -10,15 +10,15 @@ import { etcAdapter } from '../service/EtcAdapter'
 
 import { userAdapter } from '../../Users/service/UserRefAdapter'
 
-import type { UserRefDto } from '../../EstimatedProjects/models/EstimatedProjectDTO.m'
-
 import type { EtcEntryDto } from '../model/Etc.m'
 
-import { monthKeyOf, parseMonthKey } from '../../EstimatedProjects/utils/months'
+import { monthKeyOf } from '../../EstimatedProjects/utils/months'
 
 import { proyectViewAdapter } from '../../ViewProyect/services/ProyectViewAdapter.s'
 
 import type { ProjectDto } from '../../ViewProyect/models/ProyectViewDTO.m'
+
+import { useEtcContext } from './useEtcContext.h'
 
 interface GridValues {
 	[userId: number]: Record<string, number>
@@ -31,25 +31,34 @@ export const useEtcWeeklyVersionController = () => {
 
 	const projectId = Number(location.state?.projectId)
 
-	// =========================
-	// STATE
-	// =========================
+	const {
+		loading,
+		setLoading,
 
-	const [loading, setLoading] = useState(false)
+		projectName,
+		setProjectName,
 
-	const [projectName, setProjectName] = useState('')
+		bac,
+		setBac,
 
-	const [bac, setBac] = useState(0)
+		search,
+		setSearch,
 
-	const [search, setSearch] = useState('')
+		selectedMonths,
+		setSelectedMonths,
 
-	const [selectedMonths, setSelectedMonths] = useState<string[]>([monthKeyOf(new Date())])
+		monthToAdd,
+		setMonthToAdd,
 
-	const [users, setUsers] = useState<UserRefDto[]>([])
+		users,
+		setUsers,
 
-	const [selectedUserIds, setSelectedUserIds] = useState<Set<number>>(new Set())
+		selectedUserIds,
+		setSelectedUserIds,
 
-	const [values, setValues] = useState<GridValues>({})
+		values,
+		setValues,
+	} = useEtcContext()
 
 	// =========================
 	// INITIAL LOAD
@@ -62,10 +71,6 @@ export const useEtcWeeklyVersionController = () => {
 			setLoading(true)
 
 			try {
-				// =========================
-				// REAL PROJECT
-				// =========================
-
 				const project: ProjectDto = await proyectViewAdapter.getById(projectId)
 
 				if (cancelled) {
@@ -76,10 +81,6 @@ export const useEtcWeeklyVersionController = () => {
 
 				setBac(Number(project.bacTotalHours ?? 0))
 
-				// =========================
-				// USERS
-				// =========================
-
 				const allUsers = await userAdapter.getUsers()
 
 				if (cancelled) {
@@ -87,10 +88,6 @@ export const useEtcWeeklyVersionController = () => {
 				}
 
 				setUsers(allUsers)
-
-				// =========================
-				// ETC SNAPSHOT
-				// =========================
 
 				const response = await etcAdapter.getByProject(projectId)
 
@@ -110,10 +107,6 @@ export const useEtcWeeklyVersionController = () => {
 					})
 				)
 
-				// =========================
-				// MONTHS
-				// =========================
-
 				const monthSet = new Set<string>()
 
 				records.forEach((r) => {
@@ -122,11 +115,9 @@ export const useEtcWeeklyVersionController = () => {
 
 				if (monthSet.size > 0) {
 					setSelectedMonths(Array.from(monthSet).sort())
+				} else {
+					setSelectedMonths([monthKeyOf(new Date())])
 				}
-
-				// =========================
-				// USER IDS + VALUES
-				// =========================
 
 				const ids = new Set<number>()
 
@@ -165,7 +156,7 @@ export const useEtcWeeklyVersionController = () => {
 		return () => {
 			cancelled = true
 		}
-	}, [projectId])
+	}, [projectId, setLoading, setProjectName, setBac, setUsers, setSelectedMonths, setSelectedUserIds, setValues])
 
 	// =========================
 	// FILTERED USERS
@@ -230,61 +221,64 @@ export const useEtcWeeklyVersionController = () => {
 	// TOGGLE USER
 	// =========================
 
-	const toggleUser = useCallback((userId: number) => {
-		setSelectedUserIds((prev) => {
-			const next = new Set(prev)
+	const toggleUser = useCallback(
+		(userId: number) => {
+			setSelectedUserIds((prev) => {
+				const next = new Set(prev)
 
-			if (next.has(userId)) {
-				next.delete(userId)
-			} else {
-				next.add(userId)
-			}
+				if (next.has(userId)) {
+					next.delete(userId)
+				} else {
+					next.add(userId)
+				}
 
-			return next
-		})
-	}, [])
+				return next
+			})
+		},
+		[setSelectedUserIds]
+	)
 
 	// =========================
 	// UPDATE HOURS
 	// =========================
 
-	const updateHours = useCallback((userId: number, month: string, value: number) => {
-		setValues((prev) => ({
-			...prev,
+	const updateHours = useCallback(
+		(userId: number, month: string, value: number) => {
+			setValues((prev) => ({
+				...prev,
 
-			[userId]: {
-				...(prev[userId] ?? {}),
+				[userId]: {
+					...(prev[userId] ?? {}),
 
-				[month]: value,
-			},
-		}))
-	}, [])
+					[month]: value,
+				},
+			}))
+		},
+		[setValues]
+	)
 
 	// =========================
 	// ADD MONTH
 	// =========================
 
 	const addMonth = useCallback(() => {
-		const ordered = [...selectedMonths].sort()
+		if (selectedMonths.includes(monthToAdd)) {
+			return
+		}
 
-		const last = ordered[ordered.length - 1] ?? monthKeyOf(new Date())
-
-		const nextDate = parseMonthKey(last)
-
-		nextDate.setMonth(nextDate.getMonth() + 1)
-
-		const nextMonth = monthKeyOf(nextDate)
-
-		setSelectedMonths((prev) => [...prev, nextMonth])
-	}, [selectedMonths])
+		setSelectedMonths((prev) => [...prev, monthToAdd].sort())
+	}, [monthToAdd, selectedMonths, setSelectedMonths])
 
 	// =========================
 	// REMOVE MONTH
 	// =========================
 
-	const removeMonth = useCallback((month: string) => {
-		setSelectedMonths((prev) => prev.filter((m) => m !== month))
-	}, [])
+	const removeMonth = useCallback(
+		(month: string) => {
+			setSelectedMonths((prev) => prev.filter((m) => m !== month))
+		},
+		[setSelectedMonths]
+	)
 
 	// =========================
 	// SAVE SNAPSHOT
@@ -332,11 +326,7 @@ export const useEtcWeeklyVersionController = () => {
 		} finally {
 			setLoading(false)
 		}
-	}, [projectId, selectedUsers, selectedMonths, values, navigate])
-
-	// =========================
-	// BACK
-	// =========================
+	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading])
 
 	const handleBack = () => {
 		navigate(-1)
@@ -369,6 +359,10 @@ export const useEtcWeeklyVersionController = () => {
 
 		selectedMonths,
 
+		monthToAdd,
+
+		setMonthToAdd,
+
 		rangeLabel,
 
 		values,
@@ -384,5 +378,6 @@ export const useEtcWeeklyVersionController = () => {
 		saveSnapshot,
 
 		handleBack,
+		setLoading,
 	}
 }

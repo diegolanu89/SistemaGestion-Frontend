@@ -95,12 +95,34 @@
 	}
 
 	&--erc {
-		background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), transparent), var(--color-surface);
+		&.is-success {
+			background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), transparent), var(--color-surface);
 
-		.etc-weekly-mini-card__icon {
-			background: rgba(16, 185, 129, 0.15);
+			.etc-weekly-mini-card__icon {
+				background: rgba(16, 185, 129, 0.15);
 
-			color: #10b981;
+				color: #10b981;
+			}
+		}
+
+		&.is-warning {
+			background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), transparent), var(--color-surface);
+
+			.etc-weekly-mini-card__icon {
+				background: rgba(245, 158, 11, 0.15);
+
+				color: #f59e0b;
+			}
+		}
+
+		&.is-danger {
+			background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), transparent), var(--color-surface);
+
+			.etc-weekly-mini-card__icon {
+				background: rgba(239, 68, 68, 0.15);
+
+				color: #ef4444;
+			}
 		}
 	}
 }

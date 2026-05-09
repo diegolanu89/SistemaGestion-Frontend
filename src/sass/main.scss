@@ -60,6 +60,8 @@
 @use '../interfaces/Etc/components/etcSummary';
 @use '../interfaces/Etc/components/etcTable';
 @use '../interfaces/Etc/components/etcWeeklyMetrics';
+@use '../interfaces/Etc/components/etcAvatarCell';
+@use '../interfaces/Etc/components/etcMonthSelector';
 
 /**ESTIMATED PROJECTS**/
 @use '../interfaces/EstimatedProjects/views/estimatedProject';

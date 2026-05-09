@@ -2,15 +2,14 @@
 
 import { FC } from 'react'
 
-interface Props {
-	projectName: string
-	onBack: () => void
-}
+import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionController.h'
 
-export const EtcWeeklyVersionHeader: FC<Props> = ({ projectName, onBack }) => {
+export const EtcWeeklyVersionHeader: FC = () => {
+	const { projectName, handleBack } = useEtcWeeklyVersionController()
+
 	return (
 		<header className="etc-weekly-header">
-			<button type="button" className="etc-weekly-header__back" onClick={onBack}>
+			<button type="button" className="etc-weekly-header__back" onClick={handleBack}>
 				<span className="material-icons">arrow_back</span>
 			</button>
 

@@ -2,13 +2,11 @@
 
 import { FC } from 'react'
 
-interface Props {
-	bac: number
-	erc: number
-	usePercentage: number
-}
+import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionController.h'
 
-export const EtcWeeklyVersionMetrics: FC<Props> = ({ bac, erc, usePercentage }) => {
+export const EtcWeeklyVersionMetrics: FC = () => {
+	const { bac, erc, usePercentage } = useEtcWeeklyVersionController()
+
 	const colorClass = usePercentage >= 85 ? 'is-danger' : usePercentage >= 60 ? 'is-warning' : 'is-success'
 
 	return (
@@ -30,7 +28,7 @@ export const EtcWeeklyVersionMetrics: FC<Props> = ({ bac, erc, usePercentage }) 
 					</div>
 				</div>
 
-				<div className="etc-weekly-mini-card etc-weekly-mini-card--erc">
+				<div className={`etc-weekly-mini-card etc-weekly-mini-card--erc ${colorClass}`}>
 					<div className="etc-weekly-mini-card__icon">
 						<span className="material-icons">query_stats</span>
 					</div>
