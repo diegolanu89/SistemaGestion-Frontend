@@ -5,9 +5,10 @@ import { ProyectPagination } from '../components/ProyectPagination'
 import { ProyectViewAlert } from '../components/ProyectViewAlert'
 import { SectionLoader } from '../../base/components/loading/SectionLoader'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
+import ProyectHeaderView from '../components/ProyectHeaderView'
 
 export const ProyectView: FC = () => {
-	const { loading } = useProyectViewContext()
+	const { loading, loadingText } = useProyectViewContext()
 
 	return (
 		<div className="proyect-container">
@@ -15,11 +16,14 @@ export const ProyectView: FC = () => {
 
 			<div className="proyect-view__body">
 				<div className="proyect-view__content">
+					<ProyectHeaderView />
+
 					<ProyectViewFilters />
+
 					<ProyectGrid />
 				</div>
 
-				{loading && <SectionLoader text="Cargando proyectos…" />}
+				{loading && <SectionLoader text={loadingText} />}
 			</div>
 
 			<ProyectPagination />

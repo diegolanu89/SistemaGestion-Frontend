@@ -51,6 +51,8 @@
 @use '../interfaces/ViewProyect/components/proyectViewFilter';
 @use '../interfaces/ViewProyect/components/proyectGrid';
 @use '../interfaces/ViewProyect/views/proyectItem';
+@use '../interfaces/ViewProyect/components/proyectHeaderView';
+@use '../interfaces/ViewProyect/components/proyectHeaderViewItem';
 
 /**ETC**/
 @use '../interfaces/Etc/views/etcLoadView';

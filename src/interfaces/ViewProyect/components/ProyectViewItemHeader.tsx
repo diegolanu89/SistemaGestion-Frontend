@@ -1,7 +1,12 @@
+// components/ProyectViewItemHeader.tsx
+
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { ProjectDto } from '../models/ProyectViewDTO.m'
+
 import { PROYECT_PATHS_VIEWS } from '../routes/paths'
+
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 
@@ -18,32 +23,41 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 		})
 
 		navigate('/operaciones/etc', {
-			state: { projectId: project.id },
+			state: {
+				projectId: project.id,
+			},
 		})
 	}
 
 	return (
 		<header className="project-detail-header">
-			<button className="project-detail-header__back" onClick={() => navigate(PROYECT_PATHS_VIEWS.PROYECT_VIEW)} data-tooltip="Volver al listado de proyectos">
-				<span className="material-icons">arrow_back</span>
-				<span>Volver a proyectos</span>
-			</button>
+			<div className="project-detail-header__top">
+				<div className="project-detail-header__left">
+					<button className="project-detail-header__back" onClick={() => navigate(PROYECT_PATHS_VIEWS.PROYECT_VIEW)} data-tooltip="Volver a proyectos">
+						<span className="material-icons">arrow_back</span>
+					</button>
 
-			<div className="project-detail-header__client">
-				Cliente: <strong>{project.clientName ?? '-'}</strong>
+					<div className="project-detail-header__titles">
+						<h1 className="project-detail-header__title">
+							<span>{project.code ?? '-'}</span>
+							<span>-</span>
+							<span>{project.clientName ?? '-'}</span>
+							<span>-</span>
+							<span>{project.name}</span>
+						</h1>
+
+						<p className="project-detail-header__subtitle">
+							Visualización integral del proyecto, métricas EVM, costos, horas, capacidad operativa y planificación ETC.
+						</p>
+					</div>
+				</div>
+
+				<span className={`project-detail-header__status project-detail-header__status--${project.status}`}>{project.status}</span>
 			</div>
 
-			<div className="project-detail-header__main">
-				<div>
-					<h1>
-						<span>{project.code ?? '-'}</span>
-						<span>-</span>
-						<span>{project.clientName ?? '-'}</span>
-						<span>-</span>
-						<span>{project.name}</span>
-					</h1>
-
-					<span className={`project-detail-header__status project-detail-header__status--${project.status}`}>{project.status}</span>
+			<div className="project-detail-header__bottom">
+				<div className="project-detail-header__client">
+					Cliente: <strong>{project.clientName ?? '-'}</strong>
 				</div>
 
 				<div className="project-detail-header__actions">
@@ -53,12 +67,13 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 
 					<button data-tooltip="Recalcular horas cargadas del proyecto">
 						<span className="material-icons">calculate</span>
+
 						<span>Recalcular horas</span>
 					</button>
 
-					{/* 🔥 BOTÓN ACTUALIZADO */}
 					<button onClick={goToEtc} data-tooltip="Abrir carga de estimación ETC">
 						<span className="material-icons">edit_calendar</span>
+
 						<span>Carga ETC</span>
 					</button>
 				</div>
