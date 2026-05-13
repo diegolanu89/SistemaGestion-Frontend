@@ -7,13 +7,14 @@ import {
 	ProjectIntakeTypeRefDto,
 	CreateProjectIntakeDto,
 	UpdateProjectIntakeDto,
+	PaginatedProjectIntakeResponseDto,
 } from './ProyectDTO.m'
 
 export interface ProyectInterface {
 	// ==========================
 	// CRUD PROYECTOS
 	// ==========================
-	list(): Promise<ProjectIntakeRecordDto[]>
+	list(page: number, perPage: number): Promise<PaginatedProjectIntakeResponseDto>
 
 	getById(id: number): Promise<ProjectIntakeRecordDto | null>
 

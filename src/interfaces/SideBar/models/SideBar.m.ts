@@ -1,6 +1,7 @@
 export interface SideBarItem {
 	label: string
+	icon: string
 	path?: string
-	icon?: string
+	requiredPermission?: string
 	children?: SideBarItem[]
 }
