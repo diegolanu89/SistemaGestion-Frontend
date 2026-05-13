@@ -1,66 +1,199 @@
 // src/interfaces/AppBar/components/UserMenu.tsx
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo, useState } from 'react'
+
 import AvatarImage from '../avatar/AvatarImage'
+
 import { AppBarController } from '../../controllers/AppBarController.c'
+
 import { useAuth } from '../../../Login/hooks/useAuth.h'
 
 interface Props {
 	controller: AppBarController
 }
 
+type PermissionMatrix = {
+	module: string
+	permissions: string[]
+}
+
 export const UserMenu = ({ controller }: Props) => {
 	const { user } = useAuth()
+
 	const state = controller.getMenuState()
+
 	const labels = controller.getLabels()
 
 	const menuRef = useRef<HTMLDivElement | null>(null)
 
+	// ==========================
+	// 🔹 MODAL
+	// ==========================
+
+	const [isPermissionsOpen, setIsPermissionsOpen] = useState(false)
+
+	// ==========================
+	// 🔹 OUTSIDE CLICK
+	// ==========================
+
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+			if (!menuRef.current) {
+				return
+			}
+
+			const target = event.target as Node
+
+			// 🔥 si clickea fuera del menu
+			if (!menuRef.current.contains(target)) {
 				controller.closeMenu()
 			}
 		}
 
-		document.addEventListener('click', handleClickOutside)
-		return () => document.removeEventListener('click', handleClickOutside)
+		document.addEventListener('mousedown', handleClickOutside)
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside)
+		}
 	}, [controller])
 
+	// ==========================
+	// 🔹 PERMISSION MATRIX
+	// ==========================
+
+	const permissionMatrix = useMemo<PermissionMatrix[]>(() => {
+		// ==========================
+		// 🔹 REEMPLAZAR
+		// por tu matrix real desde utils
+		// ==========================
+
+		return [
+			{
+				module: 'Proyectos',
+				permissions: ['Visualizar', 'Crear', 'Editar'],
+			},
+			{
+				module: 'Dashboard EVM',
+				permissions: ['Visualizar', 'Exportar'],
+			},
+			{
+				module: 'Clockify',
+				permissions: ['Sincronizar'],
+			},
+			{
+				module: 'Administración',
+				permissions: ['Usuarios', 'Roles'],
+			},
+		]
+	}, [user])
+
 	return (
-		<div className="user-menu" ref={menuRef}>
-			{/* Avatar Button */}
-			<button className="user-menu__trigger" onClick={controller.openMenu} aria-label="Abrir menú usuario">
-				<AvatarImage />
-			</button>
+		<>
+			<div className="user-menu" ref={menuRef}>
+				{/* ========================== */}
+				{/* TRIGGER */}
+				{/* ========================== */}
 
-			{/* Dropdown */}
-			{state.anchorEl && (
-				<div className="user-menu__dropdown">
-					{/* Header */}
-					<div className="user-menu__header">
-						<AvatarImage />
-						<span className="user-menu__name">{user?.name}</span>
+				<button className="user-menu__trigger" onClick={controller.openMenu} aria-label="Abrir menú usuario">
+					<AvatarImage />
+				</button>
+
+				{/* ========================== */}
+				{/* DROPDOWN */}
+				{/* ========================== */}
+
+				{state.anchorEl && (
+					<div className="user-menu__dropdown">
+						{/* ========================== */}
+						{/* HEADER */}
+						{/* ========================== */}
+
+						<div className="user-menu__header">
+							<AvatarImage />
+
+							<div className="user-menu__identity">
+								<span className="user-menu__name">{user?.name}</span>
+
+								<span className="user-menu__email">{user?.email}</span>
+
+								<div className="user-menu__meta">
+									<button className="user-menu__permissions-button" onClick={() => setIsPermissionsOpen(true)}>
+										<span className="material-icons">shield</span>
+
+										<span>Ver permisos</span>
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<div className="user-menu__divider" />
+
+						{/* ========================== */}
+						{/* ITEMS */}
+						{/* ========================== */}
+
+						<button className="user-menu__item" onClick={controller.goHome}>
+							{labels.HOME}
+						</button>
+
+						<div className="user-menu__divider" />
+
+						<button className="user-menu__item user-menu__item--danger" onClick={controller.logout}>
+							{labels.LOGOUT}
+						</button>
 					</div>
+				)}
+			</div>
 
-					<div className="user-menu__divider" />
+			{/* ========================== */}
+			{/* 🔹 PERMISSIONS MODAL */}
+			{/* ========================== */}
 
-					{/* Items */}
-					<button className="user-menu__item" onClick={controller.goHome}>
-						{labels.HOME}
-					</button>
+			{isPermissionsOpen && (
+				<div className="permissions-modal" onClick={() => setIsPermissionsOpen(false)}>
+					<div className="permissions-modal__content" onClick={(e) => e.stopPropagation()}>
+						{/* ========================== */}
+						{/* HEADER */}
+						{/* ========================== */}
 
-					<button className="user-menu__item" onClick={controller.openProfile}>
-						{labels.PROFILE}
-					</button>
+						<div className="permissions-modal__header">
+							<div>
+								<h2 className="permissions-modal__title">Matriz de permisos</h2>
 
-					<div className="user-menu__divider" />
+								<p className="permissions-modal__subtitle">Accesos habilitados para el usuario actual</p>
+							</div>
 
-					<button className="user-menu__item user-menu__item--danger" onClick={controller.logout}>
-						{labels.LOGOUT}
-					</button>
+							<button className="permissions-modal__close" onClick={() => setIsPermissionsOpen(false)}>
+								<span className="material-icons">close</span>
+							</button>
+						</div>
+
+						{/* ========================== */}
+						{/* MATRIX */}
+						{/* ========================== */}
+
+						<div className="permissions-modal__matrix">
+							{permissionMatrix.map((group) => (
+								<div key={group.module} className="permissions-modal__card">
+									<div className="permissions-modal__module">
+										<span className="material-icons">lock</span>
+
+										<span>{group.module}</span>
+									</div>
+
+									<div className="permissions-modal__badges">
+										{group.permissions.map((permission) => (
+											<span key={permission} className="permissions-modal__badge">
+												{permission}
+											</span>
+										))}
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
 				</div>
 			)}
-		</div>
+		</>
 	)
 }

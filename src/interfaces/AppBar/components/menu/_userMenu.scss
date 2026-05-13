@@ -6,101 +6,214 @@
 	align-items: center;
 
 	// ==========================
-	// Trigger
+	// 🔹 TRIGGER
 	// ==========================
+
 	&__trigger {
 		padding: 4px;
+
 		border-radius: 50%;
+
 		border: none;
+
 		background: transparent;
+
 		cursor: pointer;
 
-		transition: transform 0.15s ease;
+		transition:
+			transform 0.15s ease,
+			filter 0.2s ease;
 
 		&:hover {
 			transform: scale(1.05);
+
+			filter: brightness(1.05);
 		}
 
 		&:focus-visible {
 			outline: 2px solid var(--color-primary);
+
 			outline-offset: 2px;
 		}
 	}
 
 	// ==========================
-	// Dropdown
+	// 🔹 DROPDOWN
 	// ==========================
+
 	&__dropdown {
 		position: absolute;
-		top: 120%;
+
+		top: calc(100% + 12px);
+
 		right: 0;
 
-		min-width: 220px;
-		border-radius: 12px;
+		width: 280px;
+
+		border-radius: 18px;
+
 		overflow: hidden;
 
-		background-color: var(--color-surface);
+		background: var(--color-surface);
+
 		border: 1px solid var(--color-border);
 
 		box-shadow:
-			0 8px 24px rgba(0, 0, 0, 0.25),
-			inset 0 1px 0 rgba(255, 255, 255, 0.04);
+			0 20px 50px rgba(0, 0, 0, 0.25),
+			0 2px 8px rgba(0, 0, 0, 0.12);
 
 		display: flex;
+
 		flex-direction: column;
-		z-index: 10;
+
+		z-index: 999;
 	}
 
 	// ==========================
-	// Header
+	// 🔹 HEADER
 	// ==========================
+
 	&__header {
 		display: flex;
+
 		align-items: center;
-		gap: 10px;
 
-		padding: 12px 16px;
+		gap: 14px;
 
-		// 🔥 ahora usa el theme
-		background: linear-gradient(135deg, var(--color-primary-light), transparent);
+		padding: 18px;
+
+		background: var(--color-surface-secondary);
+
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	&__identity {
+		display: flex;
+
+		flex-direction: column;
+
+		min-width: 0;
 	}
 
 	&__name {
 		font-size: 14px;
-		font-weight: 600;
+
+		font-weight: 700;
+
 		color: var(--color-text-primary);
 	}
 
-	// ==========================
-	// Divider
-	// ==========================
-	&__divider {
-		height: 1px;
-		background-color: var(--color-border);
-		margin: 6px 0;
+	&__email {
+		font-size: 12px;
+
+		color: var(--color-text-secondary);
+
+		margin-top: 2px;
+
+		overflow: hidden;
+
+		text-overflow: ellipsis;
+
+		white-space: nowrap;
+	}
+
+	&__meta {
+		display: flex;
+
+		align-items: center;
+
+		gap: 8px;
+
+		margin-top: 10px;
 	}
 
 	// ==========================
-	// Items
+	// 🔹 PERMISSIONS BUTTON
 	// ==========================
+
+	&__permissions-button {
+		display: flex;
+
+		align-items: center;
+
+		gap: 6px;
+
+		padding: 6px 10px;
+
+		border-radius: 999px;
+
+		border: 1px solid var(--color-border);
+
+		background: var(--color-surface);
+
+		color: var(--color-text-primary);
+
+		font-size: 12px;
+
+		font-weight: 600;
+
+		cursor: pointer;
+
+		transition: all 0.2s ease;
+
+		.material-icons {
+			font-size: 15px;
+		}
+
+		&:hover {
+			transform: translateY(-1px);
+
+			background-color: var(--color-hover);
+
+			border-color: var(--color-primary);
+		}
+
+		&:active {
+			transform: scale(0.98);
+		}
+	}
+
+	// ==========================
+	// 🔹 DIVIDER
+	// ==========================
+
+	&__divider {
+		height: 1px;
+
+		background-color: var(--color-border);
+
+		margin: 4px 0;
+	}
+
+	// ==========================
+	// 🔹 ITEMS
+	// ==========================
+
 	&__item {
-		padding: 10px 14px;
+		padding: 11px 14px;
+
 		border: none;
+
 		background: transparent;
+
 		text-align: left;
+
 		cursor: pointer;
 
 		font-size: 14px;
-		border-radius: 8px;
+
+		border-radius: 10px;
 
 		margin: 4px 8px;
 
 		color: var(--color-text-primary);
 
-		transition: all 0.2s ease;
+		transition: all 0.18s ease;
 
 		&:hover {
 			background-color: var(--color-hover);
+
+			transform: translateX(2px);
 		}
 
 		&:active {
@@ -109,17 +222,279 @@
 
 		&:focus-visible {
 			outline: 2px solid var(--color-primary);
+
 			outline-offset: 2px;
 		}
 
 		&--danger {
 			color: var(--color-error);
-			font-weight: 500;
+
+			font-weight: 600;
 
 			&:hover {
-				// 🔥 sin rgba hardcodeado
 				background-color: var(--color-hover);
 			}
 		}
+	}
+}
+
+// ==========================
+// 🔹 PERMISSIONS MODAL
+// ==========================
+
+.permissions-modal {
+	position: fixed;
+
+	inset: 0;
+
+	width: 100vw;
+
+	height: 100vh;
+
+	background: rgba(0, 0, 0, 0.55);
+
+	display: flex;
+
+	align-items: center;
+
+	justify-content: center;
+
+	padding: 24px;
+
+	z-index: 99999;
+
+	animation: fadeOverlay 0.2s ease;
+
+	// 🔥 permite click en toda la pantalla
+	cursor: pointer;
+
+	// ==========================
+	// 🔹 CONTENT
+	// ==========================
+
+	&__content {
+		width: 100%;
+
+		max-width: 720px;
+
+		max-height: 80vh;
+
+		overflow: auto;
+
+		border-radius: 24px;
+
+		padding: 24px;
+
+		background: var(--color-surface);
+
+		border: 1px solid var(--color-border);
+
+		box-shadow:
+			0 30px 80px rgba(0, 0, 0, 0.3),
+			0 4px 12px rgba(0, 0, 0, 0.12);
+
+		// 🔥 animación de entrada desde arriba
+		animation: slideDownModal 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+
+		// 🔥 evita cerrar al clickear dentro
+		cursor: default;
+
+		position: relative;
+	}
+
+	// ==========================
+	// 🔹 HEADER
+	// ==========================
+
+	&__header {
+		display: flex;
+
+		align-items: flex-start;
+
+		justify-content: space-between;
+
+		gap: 16px;
+
+		margin-bottom: 24px;
+	}
+
+	&__title {
+		font-size: 22px;
+
+		font-weight: 700;
+
+		color: var(--color-text-primary);
+	}
+
+	&__subtitle {
+		font-size: 13px;
+
+		color: var(--color-text-secondary);
+
+		margin-top: 6px;
+	}
+
+	&__close {
+		width: 40px;
+
+		height: 40px;
+
+		border: none;
+
+		border-radius: 12px;
+
+		background: var(--color-surface-secondary);
+
+		color: var(--color-text-primary);
+
+		cursor: pointer;
+
+		display: flex;
+
+		align-items: center;
+
+		justify-content: center;
+
+		transition: all 0.2s ease;
+
+		.material-icons {
+			font-size: 20px;
+		}
+
+		&:hover {
+			background: var(--color-hover);
+
+			transform: rotate(90deg) scale(1.04);
+		}
+	}
+
+	// ==========================
+	// 🔹 MATRIX
+	// ==========================
+
+	&__matrix {
+		display: grid;
+
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
+		gap: 16px;
+	}
+
+	&__card {
+		padding: 18px;
+
+		border-radius: 18px;
+
+		background: var(--color-surface-secondary);
+
+		border: 1px solid var(--color-border);
+
+		transition: all 0.2s ease;
+
+		animation: fadeCard 0.35s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+
+			border-color: var(--color-primary);
+
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+		}
+	}
+
+	&__module {
+		display: flex;
+
+		align-items: center;
+
+		gap: 8px;
+
+		font-size: 14px;
+
+		font-weight: 700;
+
+		color: var(--color-text-primary);
+
+		margin-bottom: 14px;
+
+		.material-icons {
+			font-size: 18px;
+
+			color: var(--color-primary);
+		}
+	}
+
+	&__badges {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		gap: 8px;
+	}
+
+	&__badge {
+		padding: 6px 10px;
+
+		border-radius: 999px;
+
+		font-size: 12px;
+
+		font-weight: 600;
+
+		background: var(--color-surface);
+
+		border: 1px solid var(--color-border);
+
+		color: var(--color-text-primary);
+
+		transition: all 0.18s ease;
+
+		&:hover {
+			transform: scale(1.03);
+
+			border-color: var(--color-primary);
+		}
+	}
+}
+
+// ==========================
+// 🔹 ANIMATIONS
+// ==========================
+
+@keyframes fadeOverlay {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes slideDownModal {
+	from {
+		opacity: 0;
+
+		transform: translateY(-60px) scale(0.96);
+	}
+
+	to {
+		opacity: 1;
+
+		transform: translateY(0) scale(1);
+	}
+}
+
+@keyframes fadeCard {
+	from {
+		opacity: 0;
+
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+
+		transform: translateY(0);
 	}
 }
