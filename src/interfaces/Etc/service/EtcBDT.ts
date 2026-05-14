@@ -1,136 +1,250 @@
+import { HttpClient } from '../../base/services/HttpClient.s'
+import logger from '../../base/controllers/Logger.c'
+import { LogTag } from '../../base/model/LogTag.m'
 import { CreateEtcRecordDto, UpdateEtcRecordDto, CreateSnapshotDto, BulkEtcDto, ValidateEtcCapacityDto } from '../model/Etc.m'
-
-import { IEtcApi } from '../model/IEtcApi.m'
+import {
+	IEtcApi,
+	GetEtcByProjectResponse,
+	CreateEtcResponse,
+	UpdateEtcResponse,
+	DeleteEtcResponse,
+	DeleteByProjectResponse,
+	ProjectSummaryDto,
+	FinalizeBaselineResponse,
+	CreateSnapshotResponse,
+	BulkEtcResponse,
+	ValidateCapacityResponse,
+	ExportCapacityDto,
+} from '../model/IEtcApi.m'
 
 const BASE = import.meta.env.VITE_API_URL
 
+const normalizeError = (error: unknown): Error => (error instanceof Error ? error : new Error(String(error)))
+
 export class EtcBDT implements IEtcApi {
-	private getAuthHeaders(): HeadersInit {
-		const token = localStorage.getItem('authUser')
+	// ==========================
+	// GET BY PROJECT
+	// ==========================
 
-		return token
-			? {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json',
-				}
-			: {
-					'Content-Type': 'application/json',
-				}
+	async getByProject(projectId: number, snapshot?: 'baseline'): Promise<GetEtcByProjectResponse> {
+		logger.infoTag(LogTag.Adapter, `[ETC][BDT] getByProject -> id=${projectId}`)
+
+		try {
+			const url = `${BASE}/projects/${projectId}/etc${snapshot ? `?snapshot=${snapshot}` : ''}`
+
+			return await HttpClient.request<GetEtcByProjectResponse>(url)
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async getByProject(projectId: number, snapshot?: 'baseline') {
-		const url = `${BASE}/projects/${projectId}/etc${snapshot ? `?snapshot=${snapshot}` : ''}`
+	// ==========================
+	// CREATE
+	// ==========================
 
-		const res = await fetch(url, {
-			headers: this.getAuthHeaders(),
-		})
+	async create(projectId: number, dto: CreateEtcRecordDto): Promise<CreateEtcResponse> {
+		logger.infoTag(LogTag.Adapter, `[ETC][BDT] create -> projectId=${projectId}`, dto)
 
-		return await res.json()
+		try {
+			return await HttpClient.request<CreateEtcResponse>(`${BASE}/projects/${projectId}/etc`, {
+				method: 'POST',
+
+				body: JSON.stringify(dto),
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async create(projectId: number, dto: CreateEtcRecordDto) {
-		const res = await fetch(`${BASE}/projects/${projectId}/etc`, {
-			method: 'POST',
+	// ==========================
+	// UPDATE
+	// ==========================
 
-			headers: this.getAuthHeaders(),
+	async update(id: number, dto: UpdateEtcRecordDto): Promise<UpdateEtcResponse> {
+		logger.infoTag(LogTag.Adapter, `[ETC][BDT] update -> id=${id}`, dto)
 
-			body: JSON.stringify(dto),
-		})
+		try {
+			return await HttpClient.request<UpdateEtcResponse>(`${BASE}/etc/${id}`, {
+				method: 'PUT',
 
-		return await res.json()
+				body: JSON.stringify(dto),
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async update(id: number, dto: UpdateEtcRecordDto) {
-		const res = await fetch(`${BASE}/etc/${id}`, {
-			method: 'PUT',
+	// ==========================
+	// DELETE
+	// ==========================
 
-			headers: this.getAuthHeaders(),
+	async delete(id: number): Promise<DeleteEtcResponse> {
+		logger.infoTag(LogTag.Adapter, `[ETC][BDT] delete -> id=${id}`)
 
-			body: JSON.stringify(dto),
-		})
+		try {
+			return await HttpClient.request<DeleteEtcResponse>(`${BASE}/etc/${id}`, {
+				method: 'DELETE',
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
 
-		return await res.json()
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async delete(id: number) {
-		const res = await fetch(`${BASE}/etc/${id}`, {
-			method: 'DELETE',
+	// ==========================
+	// DELETE BY PROJECT
+	// ==========================
 
-			headers: this.getAuthHeaders(),
-		})
+	async deleteByProject(projectId: number): Promise<DeleteByProjectResponse> {
+		logger.infoTag(LogTag.Adapter, `[ETC][BDT] deleteByProject -> projectId=${projectId}`)
 
-		return await res.json()
+		try {
+			return await HttpClient.request<DeleteByProjectResponse>(`${BASE}/etc/project/${projectId}`, {
+				method: 'DELETE',
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async deleteByProject(projectId: number) {
-		const res = await fetch(`${BASE}/etc/project/${projectId}`, {
-			method: 'DELETE',
+	// ==========================
+	// PROJECTS SUMMARY
+	// ==========================
 
-			headers: this.getAuthHeaders(),
-		})
+	async getProjectsSummary(): Promise<ProjectSummaryDto[]> {
+		logger.infoTag(LogTag.Adapter, '[ETC][BDT] getProjectsSummary')
 
-		return await res.json()
+		try {
+			return await HttpClient.request<ProjectSummaryDto[]>(`${BASE}/etc/projects-summary`)
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async getProjectsSummary() {
-		const res = await fetch(`${BASE}/etc/projects-summary`, {
-			headers: this.getAuthHeaders(),
-		})
+	// ==========================
+	// FINALIZE BASELINE
+	// ==========================
 
-		return await res.json()
+	async finalizeBaseline(projectId: number): Promise<FinalizeBaselineResponse> {
+		logger.infoTag(LogTag.Adapter, `[ETC][BDT] finalizeBaseline -> projectId=${projectId}`)
+
+		try {
+			return await HttpClient.request<FinalizeBaselineResponse>(`${BASE}/projects/${projectId}/etc/finalize-baseline`, {
+				method: 'POST',
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async finalizeBaseline(projectId: number) {
-		const res = await fetch(`${BASE}/projects/${projectId}/etc/finalize-baseline`, {
-			method: 'POST',
+	// ==========================
+	// CREATE SNAPSHOT
+	// ==========================
 
-			headers: this.getAuthHeaders(),
-		})
+	async createSnapshot(projectId: number, dto: CreateSnapshotDto): Promise<CreateSnapshotResponse> {
+		logger.infoTag(LogTag.Adapter, `[ETC][BDT] createSnapshot -> projectId=${projectId}`, dto)
 
-		return await res.json()
+		try {
+			return await HttpClient.request<CreateSnapshotResponse>(`${BASE}/projects/${projectId}/etc/snapshot`, {
+				method: 'POST',
+
+				body: JSON.stringify(dto),
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async createSnapshot(projectId: number, dto: CreateSnapshotDto) {
-		const res = await fetch(`${BASE}/projects/${projectId}/etc/snapshot`, {
-			method: 'POST',
+	// ==========================
+	// STORE BULK
+	// ==========================
 
-			headers: this.getAuthHeaders(),
+	async storeBulk(dto: BulkEtcDto): Promise<BulkEtcResponse> {
+		logger.infoTag(LogTag.Adapter, '[ETC][BDT] storeBulk', dto)
 
-			body: JSON.stringify(dto),
-		})
+		try {
+			return await HttpClient.request<BulkEtcResponse>(`${BASE}/etc/bulk`, {
+				method: 'POST',
 
-		return await res.json()
+				body: JSON.stringify(dto),
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async storeBulk(dto: BulkEtcDto) {
-		const res = await fetch(`${BASE}/etc/bulk`, {
-			method: 'POST',
+	// ==========================
+	// VALIDATE CAPACITY
+	// ==========================
 
-			headers: this.getAuthHeaders(),
+	async validateCapacity(dto: ValidateEtcCapacityDto): Promise<ValidateCapacityResponse> {
+		logger.infoTag(LogTag.Adapter, '[ETC][BDT] validateCapacity', dto)
 
-			body: JSON.stringify(dto),
-		})
+		try {
+			return await HttpClient.request<ValidateCapacityResponse>(`${BASE}/etc/validate-capacity`, {
+				method: 'POST',
 
-		return await res.json()
+				body: JSON.stringify(dto),
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
 	}
 
-	async validateCapacity(dto: ValidateEtcCapacityDto) {
-		const res = await fetch(`${BASE}/etc/validate-capacity`, {
-			method: 'POST',
+	// ==========================
+	// EXPORT CAPACITIES
+	// ==========================
 
-			headers: this.getAuthHeaders(),
+	async exportCapacities(): Promise<ExportCapacityDto[]> {
+		logger.infoTag(LogTag.Adapter, '[ETC][BDT] exportCapacities')
 
-			body: JSON.stringify(dto),
-		})
+		try {
+			return await HttpClient.request<ExportCapacityDto[]>(`${BASE}/etc/export-capacities`)
+		} catch (error: unknown) {
+			const err = normalizeError(error)
 
-		return await res.json()
-	}
+			logger.errorTag(LogTag.Adapter, err)
 
-	async exportCapacities() {
-		const res = await fetch(`${BASE}/etc/export-capacities`, {
-			headers: this.getAuthHeaders(),
-		})
-
-		return await res.json()
+			throw err
+		}
 	}
 }
