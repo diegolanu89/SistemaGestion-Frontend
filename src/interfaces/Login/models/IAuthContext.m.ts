@@ -22,9 +22,12 @@ export interface IAuthContext {
 	user: IUser | null
 
 	login(email: string, password: string): Promise<void>
+
 	logout(): Promise<void>
 
 	setUser: (user: IUser | null) => void
 
 	loading: boolean
+
+	authInitialized: boolean
 }

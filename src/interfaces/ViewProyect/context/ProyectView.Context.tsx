@@ -1,6 +1,9 @@
 import { useMemo, ReactNode, useState } from 'react'
+
 import { IProyectViewContext } from '../models/IProyectViewContext.m'
+
 import { proyectViewContext } from '../hooks/useProyectViewContext.h'
+
 import { ProjectDto } from '../models/ProyectViewDTO.m'
 
 interface IProviderProps {
@@ -9,11 +12,17 @@ interface IProviderProps {
 
 export const ProyectViewProvider = ({ children }: IProviderProps) => {
 	const [projects, setProjects] = useState<ProjectDto[]>([])
+
 	const [loading, setLoading] = useState(false)
+
+	const [loadingText, setLoadingText] = useState('Cargando proyectos...')
+
 	const [error, setError] = useState<string | null>(null)
 
 	const [page, setPage] = useState(1)
+
 	const [perPage, setPerPage] = useState(15)
+
 	const [total, setTotal] = useState(0)
 
 	const [filters, setFilters] = useState({
@@ -29,14 +38,22 @@ export const ProyectViewProvider = ({ children }: IProviderProps) => {
 		() => ({
 			projects,
 			setProjects,
+
 			loading,
 			setLoading,
+
+			loadingText,
+			setLoadingText,
+
 			error,
 			setError,
+
 			page,
 			setPage,
+
 			perPage,
 			setPerPage,
+
 			total,
 			setTotal,
 
@@ -46,7 +63,7 @@ export const ProyectViewProvider = ({ children }: IProviderProps) => {
 			refetch: refetchFn,
 			setRefetch: setRefetchFn,
 		}),
-		[projects, loading, error, page, perPage, total, filters, refetchFn]
+		[projects, loading, loadingText, error, page, perPage, total, filters, refetchFn]
 	)
 
 	return <proyectViewContext.Provider value={contextValue}>{children}</proyectViewContext.Provider>

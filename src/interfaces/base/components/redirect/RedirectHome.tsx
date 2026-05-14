@@ -1,7 +1,5 @@
-// src/components/navigation/RedirectHome.tsx
-
-import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
+
 import { useAuth } from '../../../Login/hooks/useAuth.h'
 
 interface RedirectHomeProps {
@@ -10,18 +8,11 @@ interface RedirectHomeProps {
 }
 
 const RedirectHome = ({ authenticatedPath, unauthenticatedPath }: RedirectHomeProps) => {
-	const { user } = useAuth()
-	const [checkingAuth, setCheckingAuth] = useState(true)
+	const { user, authInitialized } = useAuth()
 
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setCheckingAuth(false)
-		}, 100)
-
-		return () => clearTimeout(timer)
-	}, [])
-
-	if (checkingAuth) return null
+	if (!authInitialized) {
+		return null
+	}
 
 	return user ? <Navigate to={authenticatedPath} replace /> : <Navigate to={unauthenticatedPath} replace />
 }

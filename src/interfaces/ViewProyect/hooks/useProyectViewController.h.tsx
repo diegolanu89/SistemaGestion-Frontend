@@ -1,5 +1,6 @@
 /* eslint-disable no-empty */
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useRef, useCallback } from 'react'
 import { useProyectViewContext } from './useProyectViewContext.h'
 import { proyectViewAdapter } from '../services/ProyectViewAdapter.s'
@@ -19,28 +20,57 @@ type CacheEntry = {
 }
 
 const CACHE_KEY = 'projects_cache'
+
 const ETC_CACHE_KEY = 'projects_etc_cache'
 
 const CACHE_TTL = 1000 * 60 * 5
 
+const MIN_LOADING_TIME = 1000
+
 export const useProyectViewController = () => {
-	const { setProjects, setLoading, setError, page, setPage, perPage, total, setTotal, filters, setFilters, setRefetch } = useProyectViewContext()
+	const {
+		setProjects,
+		setLoading,
+		setLoadingText,
+		setError,
+
+		page,
+		setPage,
+
+		perPage,
+
+		total,
+		setTotal,
+
+		filters,
+		setFilters,
+
+		setRefetch,
+	} = useProyectViewContext()
 
 	const inFlightRef = useRef(false)
+
 	const didFetchRef = useRef(false)
 
-	const getKey = () => `${page}-${perPage}`
+	const getKey = () =>
+		JSON.stringify({
+			page,
+			perPage,
 
-	// =========================
-	// CACHE HELPERS
-	// =========================
+			search: filters.search,
+			client: filters.client,
+			status: filters.status,
+			code: filters.code,
+		})
 
 	const getCache = (key: string): CacheEntry | null => {
 		try {
 			const raw = localStorage.getItem(CACHE_KEY)
+
 			if (!raw) return null
 
 			const cache = JSON.parse(raw)
+
 			const entry = cache[key]
 
 			if (!entry) return null
@@ -49,6 +79,7 @@ export const useProyectViewController = () => {
 
 			if (isExpired) {
 				logger.infoTag(LogTag.Cache, '[PROJECT] Cache expired', { key })
+
 				return null
 			}
 
@@ -63,6 +94,7 @@ export const useProyectViewController = () => {
 	const setCache = (key: string, value: CacheEntry) => {
 		try {
 			const raw = localStorage.getItem(CACHE_KEY)
+
 			const cache = raw ? JSON.parse(raw) : {}
 
 			cache[key] = value
@@ -76,13 +108,10 @@ export const useProyectViewController = () => {
 		} catch {}
 	}
 
-	// =========================
-	// ETC CACHE (por projectId)
-	// =========================
-
 	const getEtcCache = (): Record<number, number> => {
 		try {
 			const raw = localStorage.getItem(ETC_CACHE_KEY)
+
 			return raw ? JSON.parse(raw) : {}
 		} catch {
 			return {}
@@ -95,10 +124,6 @@ export const useProyectViewController = () => {
 		} catch {}
 	}
 
-	// =========================
-	// FETCH
-	// =========================
-
 	const fetchProjects = useCallback(
 		async (force = false) => {
 			const key = getKey()
@@ -107,6 +132,7 @@ export const useProyectViewController = () => {
 				key,
 				page,
 				perPage,
+				filters,
 				force,
 			})
 
@@ -116,6 +142,7 @@ export const useProyectViewController = () => {
 				if (cached) {
 					setProjects(cached.data)
 					setTotal(cached.total)
+
 					return
 				}
 
@@ -124,13 +151,19 @@ export const useProyectViewController = () => {
 
 			if (inFlightRef.current) {
 				logger.infoTag(LogTag.Adapter, '[PROJECT] Skipped (in flight)', { key })
+
 				return
 			}
 
 			inFlightRef.current = true
 
 			try {
+				const startTime = Date.now()
+
 				setLoading(true)
+
+				setLoadingText('Cargando proyectos...')
+
 				setError(null)
 
 				logger.infoTag(LogTag.Adapter, '[PROJECT] Fetch start', { key })
@@ -138,11 +171,19 @@ export const useProyectViewController = () => {
 				const res = await proyectViewAdapter.getAll({
 					page,
 					per_page: perPage,
+
+					search: filters.search || undefined,
+
+					client: filters.client !== 'all' ? filters.client : undefined,
+
+					status: filters.status !== 'all' ? filters.status : undefined,
+
+					code: filters.code !== 'all' ? filters.code : undefined,
 				})
 
-				// =========================
-				// ETC ORQUESTACIÓN
-				// =========================
+				await new Promise((resolve) => setTimeout(resolve, 500))
+
+				setLoadingText('Cargando métricas...')
 
 				const etcCache = getEtcCache()
 
@@ -190,30 +231,41 @@ export const useProyectViewController = () => {
 				})
 
 				setProjects(enriched)
+
 				setTotal(res.total)
+
+				const elapsed = Date.now() - startTime
+
+				const remaining = MIN_LOADING_TIME - elapsed
+
+				if (remaining > 0) {
+					await new Promise((resolve) => setTimeout(resolve, remaining))
+				}
 			} catch (e: unknown) {
 				logger.errorTag(LogTag.Adapter, '[PROJECT] Fetch error', e)
+
 				setError('Error al cargar proyectos')
 			} finally {
 				setLoading(false)
+
 				inFlightRef.current = false
 
-				logger.infoTag(LogTag.Adapter, '[PROJECT] Fetch end', { key })
+				logger.infoTag(LogTag.Adapter, '[PROJECT] Fetch end', {
+					key,
+				})
 			}
 		},
-		[page, perPage]
+		[page, perPage, filters.search, filters.client, filters.status, filters.code]
 	)
-
-	// =========================
-	// EFFECTS
-	// =========================
-
 	useEffect(() => {
-		setRefetch(() => fetchProjects(true))
+		setRefetch(() => async () => {
+			await fetchProjects(true)
+		})
 	}, [fetchProjects])
 
 	useEffect(() => {
 		if (didFetchRef.current) return
+
 		didFetchRef.current = true
 
 		logger.infoTag(LogTag.Adapter, '[PROJECT] Initial fetch')
@@ -222,20 +274,27 @@ export const useProyectViewController = () => {
 	}, [fetchProjects])
 
 	useEffect(() => {
-		logger.infoTag(LogTag.Adapter, '[PROJECT] Page change', {
+		logger.infoTag(LogTag.Adapter, '[PROJECT] Query changed', {
 			page,
 			perPage,
+			filters,
 		})
 
 		fetchProjects()
-	}, [page, perPage])
+	}, [page, perPage, filters.search, filters.client, filters.status, filters.code])
+
+	useEffect(() => {
+		setPage(1)
+	}, [filters.search, filters.client, filters.status, filters.code])
 
 	const totalPages = Math.ceil(total / perPage)
 
 	return {
 		page,
 		setPage,
+
 		totalPages,
+
 		filters,
 		setFilters,
 	}

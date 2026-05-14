@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import { FC, useMemo, useCallback } from 'react'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 import logger from '../../base/controllers/Logger.c'
@@ -14,7 +15,10 @@ export const ProyectViewFilters: FC = () => {
 
 	const updateFilter = useCallback(
 		(key: keyof typeof filters, value: string) => {
-			const next = { ...filters, [key]: value }
+			const next = {
+				...filters,
+				[key]: value,
+			}
 
 			logger.infoTag(LogTag.Maps, '[PROJECT] Filter change', {
 				key,
@@ -27,15 +31,15 @@ export const ProyectViewFilters: FC = () => {
 		[filters]
 	)
 
-	// =========================
-	// OPTIONS
-	// =========================
-
 	const clientOptions: SelectOption[] = useMemo(() => {
 		const values = Array.from(new Set(projects.map((p) => p.clientName).filter(Boolean)))
 
 		return [
-			{ value: 'all', label: 'Todos' },
+			{
+				value: 'all',
+				label: 'Todos',
+			},
+
 			...values.map((value) => ({
 				value: String(value),
 				label: String(value),
@@ -47,7 +51,11 @@ export const ProyectViewFilters: FC = () => {
 		const values = Array.from(new Set(projects.map((p) => p.status).filter(Boolean)))
 
 		return [
-			{ value: 'all', label: 'Todos' },
+			{
+				value: 'all',
+				label: 'Todos',
+			},
+
 			...values.map((value) => ({
 				value,
 				label: value,
@@ -59,7 +67,11 @@ export const ProyectViewFilters: FC = () => {
 		const values = Array.from(new Set(projects.map((p) => p.code).filter(Boolean)))
 
 		return [
-			{ value: 'all', label: 'Todos' },
+			{
+				value: 'all',
+				label: 'Todos',
+			},
+
 			...values.map((value) => ({
 				value: String(value),
 				label: String(value),
@@ -69,7 +81,6 @@ export const ProyectViewFilters: FC = () => {
 
 	return (
 		<div className="proyect-view-filters">
-			{/* SEARCH */}
 			<div className="proyect-view-search">
 				<label className="proyect-view-search__label">Buscar por nombre</label>
 
@@ -85,7 +96,6 @@ export const ProyectViewFilters: FC = () => {
 				</div>
 			</div>
 
-			{/* CLIENT */}
 			<div className="proyect-view-filters__field">
 				<label className="proyect-view-filters__label">Cliente</label>
 
@@ -98,7 +108,6 @@ export const ProyectViewFilters: FC = () => {
 				</select>
 			</div>
 
-			{/* STATUS */}
 			<div className="proyect-view-filters__field">
 				<label className="proyect-view-filters__label">Estado</label>
 
@@ -111,7 +120,6 @@ export const ProyectViewFilters: FC = () => {
 				</select>
 			</div>
 
-			{/* CODE */}
 			<div className="proyect-view-filters__field">
 				<label className="proyect-view-filters__label">Código</label>
 
@@ -124,13 +132,13 @@ export const ProyectViewFilters: FC = () => {
 				</select>
 			</div>
 
-			{/* ACTIONS */}
 			<div className="proyect-view-filters__refresh">
 				<button
 					className="proyect-view-filters__refresh-btn"
 					onClick={() => {
 						logger.infoTag(LogTag.Adapter, '[PROJECT] Manual refetch trigger')
-						refetch()
+
+						refetch?.()
 					}}
 					data-tooltip="Actualizar proyectos"
 				>

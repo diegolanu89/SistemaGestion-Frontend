@@ -1,5 +1,3 @@
-// models/IProyectViewContext.m.ts
-
 import { ProjectDto } from './ProyectViewDTO.m'
 
 export interface Filters {
@@ -16,6 +14,9 @@ export interface IProyectViewContext {
 	loading: boolean
 	setLoading: (value: boolean) => void
 
+	loadingText: string
+	setLoadingText: (value: string) => void
+
 	error: string | null
 	setError: (value: string | null) => void
 
@@ -31,6 +32,6 @@ export interface IProyectViewContext {
 	filters: Filters
 	setFilters: (filters: Filters) => void
 
-	refetch: () => Promise<void>
-	setRefetch: (fn: () => Promise<void>) => void
+	refetch?: () => Promise<void>
+	setRefetch: React.Dispatch<React.SetStateAction<() => Promise<void>>>
 }

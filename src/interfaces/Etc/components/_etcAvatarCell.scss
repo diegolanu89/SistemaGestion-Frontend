@@ -1,0 +1,44 @@
+@use '../../../sass/variables' as *;
+
+.etc-weekly-grid__avatar-cell {
+	width: 72px;
+	text-align: center;
+}
+
+.etc-weekly-grid__avatar {
+	width: 42px;
+	height: 42px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	margin: 0 auto;
+
+	border-radius: 50%;
+
+	font-size: 0.85rem;
+	font-weight: 700;
+
+	color: $color-text-inverse;
+
+	background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+
+	border: 1px solid $color-primary-opacity-15;
+
+	box-shadow:
+		0 4px 10px $color-primary-opacity-15,
+		inset 0 1px 1px rgba($color-bg, 0.25);
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+
+	&:hover {
+		transform: translateY(-2px);
+
+		box-shadow:
+			0 8px 18px rgba($color-primary, 0.2),
+			inset 0 1px 1px rgba($color-bg, 0.25);
+	}
+}

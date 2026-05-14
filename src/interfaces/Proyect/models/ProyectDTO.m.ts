@@ -123,3 +123,15 @@ export interface UpdateProjectIntakeDto {
 
 	RequiresClockifyCreation?: boolean
 }
+
+export interface PaginatedProjectIntakeResponseDto {
+	data: ProjectIntakeRecordDto[]
+
+	currentPage: number
+
+	perPage: number
+
+	total: number
+
+	lastPage: number
+}

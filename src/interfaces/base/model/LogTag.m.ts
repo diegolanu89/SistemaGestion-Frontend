@@ -26,4 +26,5 @@ export enum LogTag {
 	Cache = 'Cache',
 	AdapterERROR = 'Service Error',
 	Navigation = 'Navigation',
+	Security = 'Security',
 }

@@ -1,21 +1,51 @@
+/* eslint-disable no-empty */
+// services/LoginBDT.s
+
 import { Configuration } from '../models/Configuration.m'
-import { IUser } from '../models/IUser.m'
+
+import { IUser, IUserProfilePermissions } from '../models/IUser.m'
+
 import { LoginInterface } from '../models/LoginInterface.m'
 
 export class LoginBDT implements LoginInterface {
 	private readonly baseUrl = Configuration.API.BASE_URL
-	private readonly storageKey = Configuration.API.STORAGE_KEY
 
-	// ==========================
-	// LOGIN
-	// ==========================
+	private readonly userStorageKey = 'authUserData'
+
+	private saveUser(user: IUser): void {
+		localStorage.setItem(this.userStorageKey, JSON.stringify(user))
+	}
+
+	private removeUser(): void {
+		localStorage.removeItem(this.userStorageKey)
+	}
+
+	async getMyPermissions(): Promise<IUserProfilePermissions> {
+		const response = await fetch(`${this.baseUrl}/auth/permissions`, {
+			credentials: 'include',
+		})
+
+		if (!response.ok) {
+			throw new Error('ERROR_PROFILE_PERMISSIONS')
+		}
+
+		return (await response.json()) as IUserProfilePermissions
+	}
+
 	async login(email: string, password: string): Promise<IUser> {
 		const response = await fetch(`${this.baseUrl}${Configuration.API.ENDPOINTS.LOGIN}`, {
 			method: 'POST',
+
+			credentials: 'include',
+
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ email, password }),
+
+			body: JSON.stringify({
+				email,
+				password,
+			}),
 		})
 
 		if (!response.ok) {
@@ -24,54 +54,62 @@ export class LoginBDT implements LoginInterface {
 
 		const data = await response.json()
 
-		localStorage.setItem(this.storageKey, data.token)
+		const user = data.user as IUser
 
-		return data.user as IUser
-	}
+		try {
+			const permissions = await this.getMyPermissions()
 
-	// ==========================
-	// LOGOUT
-	// ==========================
-	async logout(): Promise<void> {
-		const token = localStorage.getItem(this.storageKey)
-
-		if (token) {
-			try {
-				await fetch(`${this.baseUrl}${Configuration.API.ENDPOINTS.LOGOUT}`, {
-					method: 'POST',
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				})
-			} catch {
-				// ignore
+			user.profilePermissions = permissions
+		} catch {
+			user.profilePermissions = {
+				profileId: user.profileId ?? 0,
+				permissions: [],
 			}
 		}
 
-		localStorage.removeItem(this.storageKey)
+		this.saveUser(user)
+
+		return user
 	}
 
-	// ==========================
-	// GET USER (/me)
-	// ==========================
+	async logout(): Promise<void> {
+		try {
+			await fetch(`${this.baseUrl}${Configuration.API.ENDPOINTS.LOGOUT}`, {
+				method: 'POST',
+
+				credentials: 'include',
+			})
+		} catch {}
+
+		this.removeUser()
+	}
+
 	async getUser(): Promise<IUser> {
-		const token = localStorage.getItem(this.storageKey)
-
-		if (!token) {
-			throw new Error('UNAUTHORIZED')
-		}
-
 		const response = await fetch(`${this.baseUrl}${Configuration.API.ENDPOINTS.ME}`, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
+			credentials: 'include',
 		})
 
 		if (!response.ok) {
-			localStorage.removeItem(this.storageKey)
+			this.removeUser()
+
 			throw new Error('UNAUTHORIZED')
 		}
 
-		return (await response.json()) as IUser
+		const user = (await response.json()) as IUser
+
+		try {
+			const permissions = await this.getMyPermissions()
+
+			user.profilePermissions = permissions
+		} catch {
+			user.profilePermissions = {
+				profileId: user.profileId ?? 0,
+				permissions: [],
+			}
+		}
+
+		this.saveUser(user)
+
+		return user
 	}
 }

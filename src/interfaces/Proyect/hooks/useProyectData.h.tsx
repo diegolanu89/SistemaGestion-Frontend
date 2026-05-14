@@ -1,59 +1,124 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // hooks/useProyectData.h.ts
 
 import { useEffect, useState } from 'react'
+
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
+
+import { ProjectIntakeRecordDto, PaginatedProjectIntakeResponseDto } from '../models/ProyectDTO.m'
+
 import { proyectAdapter } from '../services/ProyectAdapter.s'
+
 import { getCache, setCache } from '../utils/getCache'
-import { ProjectIntakeRecordDto } from '../models/ProyectDTO.m'
 
 import logger from '../../base/controllers/Logger.c'
+
 import { LogTag } from '../../base/model/LogTag.m'
+
 import { LogProyectData } from '../models/ELogProyectData.m'
 
-export const useProyectData = () => {
+export const useProyectData = (page: number, perPage: number) => {
+	// ==========================
+	// 🔹 STATE
+	// ==========================
+
 	const [data, setData] = useState<ProjectIntakeRecordDto[]>([])
+
+	const [total, setTotal] = useState<number>(0)
+
+	const [lastPage, setLastPage] = useState<number>(1)
+
 	const [loading, setLoading] = useState<boolean>(true)
+
+	// ==========================
+	// 🔹 CACHE KEY
+	// ==========================
+
+	const cacheKey = `${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}_${page}_${perPage}`
+
+	// ==========================
+	// 🔹 CACHE
+	// ==========================
+
+	const getCachedProjects = (): PaginatedProjectIntakeResponseDto | null => {
+		const cached = getCache<PaginatedProjectIntakeResponseDto>(cacheKey)
+
+		if (cached) {
+			logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_HIT} -> key=${cacheKey} count=${cached.data.length}`)
+
+			return cached
+		}
+
+		logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_MISS} -> key=${cacheKey}`)
+
+		return null
+	}
+
+	const saveProjectsCache = (response: PaginatedProjectIntakeResponseDto): void => {
+		setCache<PaginatedProjectIntakeResponseDto>(cacheKey, response, PROYECT_CONFIG.CACHE.TTL)
+
+		logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_SET} -> key=${cacheKey}`)
+	}
+
+	// ==========================
+	// 🔹 API
+	// ==========================
+
+	const fetchProjects = async (): Promise<PaginatedProjectIntakeResponseDto> => {
+		logger.infoTag(LogTag.Adapter, `${LogProyectData.FETCH_START} -> page=${page} perPage=${perPage}`)
+
+		const response = await proyectAdapter.list(page, perPage)
+
+		logger.infoTag(LogTag.Adapter, `${LogProyectData.FETCH_SUCCESS} -> count=${response.data.length} total=${response.total}`)
+
+		return response
+	}
+
+	// ==========================
+	// 🔹 MAIN FETCH
+	// ==========================
 
 	const fetchData = async (force: boolean = false): Promise<void> => {
 		setLoading(true)
 
 		try {
 			// ==========================
-			// 🔹 CACHE
+			// 🔹 CACHE FLOW
 			// ==========================
+
 			if (!force) {
-				const cached = getCache<ProjectIntakeRecordDto[]>(PROYECT_CONFIG.CACHE.KEYS.PROJECTS)
+				const cached = getCachedProjects()
 
 				if (cached) {
-					logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_HIT} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS} count=${cached.length}`)
+					setData(cached.data)
 
-					setData(cached)
+					setTotal(cached.total)
+
+					setLastPage(cached.lastPage)
+
 					setLoading(false)
+
 					return
 				}
-
-				logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_MISS} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}`)
 			} else {
 				logger.infoTag(LogTag.Cache, LogProyectData.CACHE_FORCE)
 			}
 
 			// ==========================
-			// 🔹 FETCH
+			// 🔹 API FLOW
 			// ==========================
-			logger.infoTag(LogTag.Adapter, LogProyectData.FETCH_START)
 
-			const res: ProjectIntakeRecordDto[] = await proyectAdapter.list()
+			const response = await fetchProjects()
 
-			logger.infoTag(LogTag.Adapter, `${LogProyectData.FETCH_SUCCESS} -> count=${res.length}`)
+			console.log('[PROYECT][HOOK] response', response)
 
-			setData(res)
+			setData(response.data)
 
-			// ==========================
-			// 🔹 CACHE SET
-			// ==========================
-			setCache<ProjectIntakeRecordDto[]>(PROYECT_CONFIG.CACHE.KEYS.PROJECTS, res, PROYECT_CONFIG.CACHE.TTL)
+			setTotal(response.total)
 
-			logger.infoTag(LogTag.Cache, `${LogProyectData.CACHE_SET} -> key=${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}`)
+			setLastPage(response.lastPage)
+
+			saveProjectsCache(response)
 		} catch (error: unknown) {
 			const err = error instanceof Error ? error : new Error(LogProyectData.ERROR_UNKNOWN)
 
@@ -64,22 +129,34 @@ export const useProyectData = () => {
 	}
 
 	// ==========================
-	// 🔥 REFETCH INTELIGENTE
+	// 🔹 REFETCH
 	// ==========================
-	const refetch = async (): Promise<void> => {
-		// 👉 acá podrías limpiar cache si querés hard invalidation
-		// clearCache(PROYECT_CONFIG.CACHE.KEYS.PROJECTS)
 
+	const refetch = async (): Promise<void> => {
 		await fetchData(true)
 	}
 
+	// ==========================
+	// 🔹 INITIAL LOAD
+	// ==========================
+
 	useEffect(() => {
 		void fetchData()
-	}, [])
+	}, [page, perPage])
+
+	// ==========================
+	// 🔹 EXPOSE
+	// ==========================
 
 	return {
 		data,
+
+		total,
+
+		lastPage,
+
 		loading,
+
 		refetch,
 	}
 }

@@ -1,3 +1,5 @@
+// models/LoginInterface.m
+
 import type { IUser } from './IUser.m'
 
 export interface LoginInterface {

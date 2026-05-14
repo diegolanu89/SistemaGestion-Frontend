@@ -6,3 +6,5 @@ export interface EstimatedProjectRefs {
 	clients: ClientRefDto[]
 	users: UserRefDto[]
 }
+
+export type EstimatedProjectMonthlyGridValues = Record<number, Record<string, number>>

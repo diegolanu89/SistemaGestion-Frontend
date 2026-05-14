@@ -51,13 +51,19 @@
 @use '../interfaces/ViewProyect/components/proyectViewFilter';
 @use '../interfaces/ViewProyect/components/proyectGrid';
 @use '../interfaces/ViewProyect/views/proyectItem';
+@use '../interfaces/ViewProyect/components/proyectHeaderView';
+@use '../interfaces/ViewProyect/components/proyectHeaderViewItem';
 
 /**ETC**/
 @use '../interfaces/Etc/views/etcLoadView';
+@use '../interfaces/Etc/views/etcWeeklyVersion';
 @use '../interfaces/Etc/components/etcHeader';
 @use '../interfaces/Etc/components/etcToolBar';
 @use '../interfaces/Etc/components/etcSummary';
 @use '../interfaces/Etc/components/etcTable';
+@use '../interfaces/Etc/components/etcWeeklyMetrics';
+@use '../interfaces/Etc/components/etcAvatarCell';
+@use '../interfaces/Etc/components/etcMonthSelector';
 
 /**ESTIMATED PROJECTS**/
 @use '../interfaces/EstimatedProjects/views/estimatedProject';

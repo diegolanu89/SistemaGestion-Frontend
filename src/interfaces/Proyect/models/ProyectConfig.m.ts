@@ -158,4 +158,8 @@ export const PROYECT_CONFIG = {
 		},
 		TTL: 1000 * 60 * 5,
 	},
+
+	PAGINATION: {
+		PER_PAGE: 6,
+	},
 }
