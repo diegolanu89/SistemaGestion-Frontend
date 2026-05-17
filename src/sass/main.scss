@@ -14,6 +14,7 @@
 @use '../interfaces/base/components/loading/authLoading';
 @use '../interfaces/base/components/RefreshButton/refreshButton';
 @use '../interfaces/base/components/alert/actionAlert';
+@use '../interfaces/base/components/MetricCard/metricCard';
 
 /**APP_BAR**/
 @use '../interfaces/AppBar/components/bar/_appBarSpacer';
@@ -70,3 +71,6 @@
 @use '../interfaces/EstimatedProjects/components/estimatedProjectTable';
 @use '../interfaces/EstimatedProjects/components/estimatedProjectForm';
 @use '../interfaces/EstimatedProjects/components/estimatedProjectGrid';
+
+/**DASHBOARD EVM**/
+@use '../interfaces/DashboardEvm/views/dashboardEvm';

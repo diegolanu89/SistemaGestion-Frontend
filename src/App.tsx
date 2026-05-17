@@ -22,6 +22,7 @@ import { SideBarView } from './interfaces/SideBar/views/SideBar.v'
 import ThemeContext from './interfaces/base/context/Theme.Context'
 import { useAppTheme } from './interfaces/base/hooks/useAppTheme.h'
 import { ProyectViewPublicRoutes } from './interfaces/ViewProyect/routes/routes'
+import { DashboardEvmRoutes } from './interfaces/DashboardEvm/routes/routes'
 
 const AppClient = () => {
 	const { toggleTheme, mode } = useAppTheme()
@@ -49,6 +50,7 @@ const AppClient = () => {
 												{ProyectPublicRoutes()}
 												{ProyectViewPublicRoutes()}
 												{EstimatedProjectRoutes()}
+												{DashboardEvmRoutes()}
 											</Route>
 										</Routes>
 									</main>
