@@ -22,7 +22,7 @@ export const useProyectRefs = () => {
 			if (!force) {
 				const cached = getCache<ProyectRefs>(PROYECT_CONFIG.CACHE.KEYS.REFS)
 
-				if (cached) {
+				if (cached && cached.clients !== undefined && cached.leaders !== undefined) {
 					logger.infoTag(LogTag.Cache, `${LogProyectRefs.CACHE_HIT}`)
 
 					setRefs(cached)
@@ -40,12 +40,14 @@ export const useProyectRefs = () => {
 			// ==========================
 			logger.infoTag(LogTag.Adapter, LogProyectRefs.FETCH_START)
 
-			const [statuses, categories, types] = await Promise.all([proyectAdapter.getStatuses(), proyectAdapter.getCategories(), proyectAdapter.getTypes()])
+			const { types, categories, statuses, clients, leaders } = await proyectAdapter.getOptions()
 
 			const data: ProyectRefs = {
 				statuses,
 				categories,
 				types,
+				clients,
+				leaders,
 			}
 
 			setRefs(data)

@@ -15,6 +15,14 @@ interface UserWireDto {
 	id: number
 	name: string
 	email: string
+	active: boolean
+}
+
+interface ClockifyUsersResponse {
+	success: boolean
+	data: {
+		data: UserWireDto[]
+	}
 }
 
 export class UserRefBDT implements IUserRef {
@@ -22,13 +30,13 @@ export class UserRefBDT implements IUserRef {
 		logger.infoTag(LogTag.Adapter, '[USERS][BDT] getUsers()')
 
 		try {
-			const wire = await HttpClient.request<UserWireDto[]>(`${BASE_URL}/users`)
+			const wire = await HttpClient.request<ClockifyUsersResponse>(`${BASE_URL}/clockify-users?active=true`)
 
-			return wire.map((u) => ({
+			return wire.data.data.map((u) => ({
 				Id: u.id,
 				Username: u.email,
 				FullName: u.name,
-				IsActive: true,
+				IsActive: u.active,
 			}))
 		} catch (error: unknown) {
 			const err = normalizeError(error)

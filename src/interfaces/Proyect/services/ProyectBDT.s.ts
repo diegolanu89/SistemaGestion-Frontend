@@ -7,6 +7,8 @@ import {
 	ProjectIntakeStatusRefDto,
 	ProjectIntakeCategoryRefDto,
 	ProjectIntakeTypeRefDto,
+	ProjectIntakeClientRefDto,
+	ProjectIntakeLeaderRefDto,
 	PaginatedProjectIntakeResponseDto,
 } from '../models/ProyectDTO.m'
 
@@ -26,6 +28,8 @@ import {
 	mapStatusRef,
 	mapTypeRef,
 } from '../models/ProyectIntakes.m'
+
+import { ProyectOptions } from '../models/IProyect.m'
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
@@ -187,68 +191,75 @@ export class ProyectBDT implements ProyectInterface {
 	// OPTIONS
 	// ==========================
 
-	private async fetchOptions(): Promise<{
-		types: ProjectIntakeTypeRefDto[]
-		categories: ProjectIntakeCategoryRefDto[]
-		statuses: ProjectIntakeStatusRefDto[]
-	}> {
-		const json = await HttpClient.request<{
-			success: boolean
-			data: {
-				types: ProjectIntakeTypeRefWire[]
-				categories: ProjectIntakeCategoryRefWire[]
-				statuses: ProjectIntakeStatusRefWire[]
+	// ==========================
+	// OPTIONS (única llamada)
+	// ==========================
+
+	async getOptions(): Promise<ProyectOptions> {
+		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] getOptions()')
+
+		try {
+			const json = await HttpClient.request<{
+				success: boolean
+				data: {
+					types: ProjectIntakeTypeRefWire[]
+					categories: ProjectIntakeCategoryRefWire[]
+					statuses: ProjectIntakeStatusRefWire[]
+					clients: Array<{ id: number; name: string; externalId?: string | null }>
+					leaders: Array<{ id: number; name: string; email: string }>
+				}
+			}>(`${ENDPOINT}/options`)
+
+			return {
+				types: json.data.types.map(mapTypeRef),
+				categories: json.data.categories.map(mapCategoryRef),
+				statuses: json.data.statuses.map(mapStatusRef),
+				clients: json.data.clients.map((c): ProjectIntakeClientRefDto => ({
+					Id: c.id,
+					Name: c.name,
+					ExternalId: c.externalId ?? null,
+				})),
+				leaders: json.data.leaders.map((l): ProjectIntakeLeaderRefDto => ({
+					Id: l.id,
+					Name: l.name,
+					Email: l.email,
+				})),
 			}
-		}>(`${ENDPOINT}/options`)
+		} catch (error: unknown) {
+			const err = normalizeError(error)
 
-		return {
-			types: json.data.types.map(mapTypeRef),
+			logger.errorTag(LogTag.Adapter, err)
 
-			categories: json.data.categories.map(mapCategoryRef),
-
-			statuses: json.data.statuses.map(mapStatusRef),
+			throw err
 		}
 	}
 
 	async getStatuses(): Promise<ProjectIntakeStatusRefDto[]> {
-		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] getStatuses()')
-
-		try {
-			const { statuses } = await this.fetchOptions()
-
-			return statuses
-		} catch (error: unknown) {
-			const err = normalizeError(error)
-
-			logger.errorTag(LogTag.Adapter, err)
-
-			throw err
-		}
+		return (await this.getOptions()).statuses
 	}
 
 	async getCategories(): Promise<ProjectIntakeCategoryRefDto[]> {
-		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] getCategories()')
-
-		try {
-			const { categories } = await this.fetchOptions()
-
-			return categories
-		} catch (error: unknown) {
-			const err = normalizeError(error)
-
-			logger.errorTag(LogTag.Adapter, err)
-
-			throw err
-		}
+		return (await this.getOptions()).categories
 	}
 
 	async getTypes(): Promise<ProjectIntakeTypeRefDto[]> {
-		logger.infoTag(LogTag.Adapter, '[PROYECT][BDT] getTypes()')
+		return (await this.getOptions()).types
+	}
+
+	// ==========================
+	// NEXT NUMBER
+	// ==========================
+
+	async getNextNumber(typeCode: string): Promise<string> {
+		logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] getNextNumber -> type=${typeCode}`)
 
 		try {
-			const { types } = await this.fetchOptions()
+			const json = await HttpClient.request<{
+				success: boolean
+				data: { nextNumber: string }
+			}>(`${ENDPOINT}/next-number?type=${typeCode}`)
 
-			return types
+			return json.data.nextNumber
 		} catch (error: unknown) {
 			const err = normalizeError(error)
 

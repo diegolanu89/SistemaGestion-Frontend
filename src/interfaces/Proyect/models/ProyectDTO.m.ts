@@ -35,6 +35,18 @@ export interface ProjectIntakeStatusRefDto {
 // 🔹 MAIN DTO
 // ==========================
 
+export interface ProjectIntakeClientRefDto {
+	Id: number
+	Name: string
+	ExternalId?: string | null
+}
+
+export interface ProjectIntakeLeaderRefDto {
+	Id: number
+	Name: string
+	Email: string
+}
+
 export interface ProjectIntakeRecordDto {
 	Id: number
 
@@ -55,6 +67,7 @@ export interface ProjectIntakeRecordDto {
 	ActualEndDate?: string | null
 
 	CommercialStatus?: string | null
+	LeaderClockifyUserId?: number | null
 	LeaderName?: string | null
 	Observations?: string | null
 
@@ -97,7 +110,7 @@ export interface CreateProjectIntakeDto {
 	ActualEndDate?: string
 
 	CommercialStatus?: string
-	LeaderName?: string
+	LeaderClockifyUserId?: number
 	Observations?: string
 
 	RequiresClockifyCreation?: boolean
@@ -118,7 +131,7 @@ export interface UpdateProjectIntakeDto {
 	ActualEndDate?: string
 
 	CommercialStatus?: string
-	LeaderName?: string
+	LeaderClockifyUserId?: number
 	Observations?: string
 
 	RequiresClockifyCreation?: boolean

@@ -45,6 +45,7 @@ export interface ProjectIntakeRecordWire {
 	estimatedEndDate?: string | null
 	actualEndDate?: string | null
 	commercialStatus?: string | null
+	leaderClockifyUserId?: number | null
 	leaderName?: string | null
 	observations?: string | null
 	requiresClockifyCreation: boolean
@@ -105,6 +106,7 @@ export const mapRecord = (w: ProjectIntakeRecordWire): ProjectIntakeRecordDto =>
 	EstimatedEndDate: w.estimatedEndDate ?? null,
 	ActualEndDate: w.actualEndDate ?? null,
 	CommercialStatus: w.commercialStatus ?? null,
+	LeaderClockifyUserId: w.leaderClockifyUserId ?? null,
 	LeaderName: w.leaderName ?? null,
 	Observations: w.observations ?? null,
 	RequiresClockifyCreation: w.requiresClockifyCreation,

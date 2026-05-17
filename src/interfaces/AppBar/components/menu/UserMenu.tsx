@@ -117,6 +117,13 @@ export const UserMenu = ({ controller }: Props) => {
 								<span className="user-menu__email">{user?.email}</span>
 
 								<div className="user-menu__meta">
+									{user?.profileName && (
+										<span className="user-menu__role">
+											<span className="material-icons">badge</span>
+											{user.profileName}
+										</span>
+									)}
+
 									<button className="user-menu__permissions-button" onClick={() => setIsPermissionsOpen(true)}>
 										<span className="material-icons">shield</span>
 

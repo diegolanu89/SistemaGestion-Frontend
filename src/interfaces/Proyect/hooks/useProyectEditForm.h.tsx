@@ -1,16 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // hooks/useProyectEditForm.h.ts
 
 import { useState } from 'react'
 import { UpdateProjectIntakeDto } from '../models/ProyectDTO.m'
 import { proyectAdapter } from '../services/ProyectAdapter.s'
 import { useProyectContext } from './useProyectContext.h'
+import { ApiError } from '../../base/services/HttpClient.s'
 
 export const useProyectEditForm = () => {
 	const { selectedProject, refetch, closeEdit, setEditStatus, setEditMessage } = useProyectContext()
 
 	const [form, setForm] = useState<UpdateProjectIntakeDto>({})
 	const [submitting, setSubmitting] = useState(false)
+	const [validationErrors, setValidationErrors] = useState<string[]>([])
 
 	const update =
 		<K extends keyof UpdateProjectIntakeDto>(key: K) =>
@@ -24,6 +25,7 @@ export const useProyectEditForm = () => {
 			setSubmitting(true)
 			setEditStatus('loading')
 			setEditMessage(null)
+			setValidationErrors([])
 
 			await proyectAdapter.update(selectedProject.Id, form)
 
@@ -38,8 +40,19 @@ export const useProyectEditForm = () => {
 				setEditMessage(null)
 			}, 1200)
 		} catch (error) {
-			setEditStatus('error')
-			setEditMessage('Error al actualizar el proyecto')
+			if (error instanceof ApiError && error.errors.length > 0) {
+				setValidationErrors(error.errors)
+				setEditStatus('idle')
+				setEditMessage(null)
+			} else {
+				setEditStatus('error')
+				setEditMessage('Error al actualizar el proyecto')
+
+				setTimeout(() => {
+					setEditStatus('idle')
+					setEditMessage(null)
+				}, 2500)
+			}
 		} finally {
 			setSubmitting(false)
 		}
@@ -51,5 +64,6 @@ export const useProyectEditForm = () => {
 		update,
 		submit,
 		submitting,
+		validationErrors,
 	}
 }

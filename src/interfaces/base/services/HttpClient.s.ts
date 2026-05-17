@@ -1,5 +1,17 @@
 // services/HttpClient.s.ts
 
+export class ApiError extends Error {
+	public readonly errors: string[]
+	public readonly statusCode: number
+
+	constructor(message: string, statusCode: number, errors: string[] = []) {
+		super(message)
+		this.name = 'ApiError'
+		this.statusCode = statusCode
+		this.errors = errors
+	}
+}
+
 export class HttpClient {
 	static async request<T>(url: string, options?: RequestInit): Promise<T> {
 		const response = await fetch(url, {
@@ -17,13 +29,17 @@ export class HttpClient {
 			localStorage.removeItem('authUserData')
 
 			window.location.href = '/'
-			throw new Error('UNAUTHORIZED')
+			throw new ApiError('UNAUTHORIZED', 401)
 		}
 
 		if (!response.ok) {
-			const error = await response.json().catch(() => null)
+			const body = await response.json().catch(() => null)
 
-			throw new Error(error?.message ?? 'REQUEST_ERROR')
+			throw new ApiError(
+				body?.message ?? 'REQUEST_ERROR',
+				response.status,
+				Array.isArray(body?.errors) ? (body.errors as string[]) : [],
+			)
 		}
 
 		return response.json()

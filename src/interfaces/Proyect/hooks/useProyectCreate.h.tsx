@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CreateProjectIntakeDto } from '../models/ProyectDTO.m'
 import { proyectAdapter } from '../services/ProyectAdapter.s'
 import { useProyectContext } from './useProyectContext.h'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { ProyectCreateLogMessages, ProyectCreateMessages } from '../models/EProyectCreateMessage.m'
+import { ApiError } from '../../base/services/HttpClient.s'
 
 type FormState = {
 	projectType?: string
@@ -22,7 +23,7 @@ type FormState = {
 	actualEndDate?: string | null
 
 	commercialStatus?: string | null
-	leaderName?: string | null
+	leaderClockifyUserId?: number | null
 	observations?: string | null
 
 	requiresClockifyCreation: boolean
@@ -38,6 +39,37 @@ export const useProyectCreateForm = () => {
 	})
 
 	const [submitting, setSubmitting] = useState(false)
+
+	const [validationErrors, setValidationErrors] = useState<string[]>([])
+
+	const [nextNumber, setNextNumber] = useState<string>('')
+	const [loadingNextNumber, setLoadingNextNumber] = useState(false)
+
+	useEffect(() => {
+		if (!form.projectType) {
+			setNextNumber('')
+			return
+		}
+
+		let cancelled = false
+
+		void (async () => {
+			setLoadingNextNumber(true)
+			try {
+				const result = await proyectAdapter.getNextNumber(form.projectType!)
+				if (!cancelled) setNextNumber(result)
+			} catch (error) {
+				logger.errorTag(LogTag.Adapter, '[PROYECT] getNextNumber error', error as Error)
+				if (!cancelled) setNextNumber('')
+			} finally {
+				if (!cancelled) setLoadingNextNumber(false)
+			}
+		})()
+
+		return () => {
+			cancelled = true
+		}
+	}, [form.projectType])
 
 	// ==========================
 	// UPDATE FORM
@@ -66,7 +98,7 @@ export const useProyectCreateForm = () => {
 		ActualEndDate: form.actualEndDate ?? undefined,
 
 		CommercialStatus: form.commercialStatus ?? undefined,
-		LeaderName: form.leaderName ?? undefined,
+		LeaderClockifyUserId: form.leaderClockifyUserId ?? undefined,
 		Observations: form.observations ?? undefined,
 
 		RequiresClockifyCreation: form.requiresClockifyCreation,
@@ -86,6 +118,7 @@ export const useProyectCreateForm = () => {
 			setSubmitting(true)
 			setCreateStatus('loading')
 			setCreateMessage(null)
+			setValidationErrors([])
 
 			const result = await proyectAdapter.create(payload)
 
@@ -104,13 +137,19 @@ export const useProyectCreateForm = () => {
 		} catch (error) {
 			logger.errorTag(LogTag.Adapter, ProyectCreateLogMessages.SUBMIT_ERROR, error as Error)
 
-			setCreateStatus('error')
-			setCreateMessage(ProyectCreateMessages.ERROR)
-
-			setTimeout(() => {
+			if (error instanceof ApiError && error.errors.length > 0) {
+				setValidationErrors(error.errors)
 				setCreateStatus('idle')
 				setCreateMessage(null)
-			}, 2500)
+			} else {
+				setCreateStatus('error')
+				setCreateMessage(ProyectCreateMessages.ERROR)
+
+				setTimeout(() => {
+					setCreateStatus('idle')
+					setCreateMessage(null)
+				}, 2500)
+			}
 		} finally {
 			setSubmitting(false)
 		}
@@ -122,5 +161,8 @@ export const useProyectCreateForm = () => {
 		update,
 		submit,
 		submitting,
+		validationErrors,
+		nextNumber,
+		loadingNextNumber,
 	}
 }
