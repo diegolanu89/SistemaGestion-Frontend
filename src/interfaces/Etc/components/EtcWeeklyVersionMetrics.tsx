@@ -9,6 +9,10 @@ export const EtcWeeklyVersionMetrics: FC = () => {
 
 	const colorClass = usePercentage >= 85 ? 'is-danger' : usePercentage >= 60 ? 'is-warning' : 'is-success'
 
+	const remaining = Math.max(0, bac - erc)
+
+	const noBac = bac <= 0
+
 	return (
 		<section className="etc-weekly-metrics">
 			{/* =========================
@@ -28,7 +32,7 @@ export const EtcWeeklyVersionMetrics: FC = () => {
 					</div>
 				</div>
 
-				<div className={`etc-weekly-mini-card etc-weekly-mini-card--erc ${colorClass}`}>
+				<div className={`etc-weekly-mini-card etc-weekly-mini-card--erc ${noBac ? '' : colorClass}`}>
 					<div className="etc-weekly-mini-card__icon">
 						<span className="material-icons">query_stats</span>
 					</div>
@@ -53,25 +57,42 @@ export const EtcWeeklyVersionMetrics: FC = () => {
 						<p>Porcentaje utilizado del BAC total del proyecto.</p>
 					</div>
 
-					<strong>{usePercentage.toFixed(1)}%</strong>
+					<strong>{noBac ? 'Sin BAC' : `${usePercentage.toFixed(1)}%`}</strong>
 				</div>
 
-				<div className="etc-weekly-progress">
-					<div className="etc-weekly-progress__bar">
-						<div
-							className={`etc-weekly-progress__fill ${colorClass}`}
-							style={{
-								width: `${Math.min(usePercentage, 100)}%`,
-							}}
-						/>
-					</div>
+				{noBac ? (
+					<div className="etc-weekly-progress">
+						<div className="etc-weekly-progress__bar">
+							<div
+								className="etc-weekly-progress__fill etc-weekly-progress__fill--no-bac"
+								style={{ width: erc > 0 ? '100%' : '0%' }}
+							/>
+						</div>
 
-					<div className="etc-weekly-progress__legend">
-						<span>{erc.toFixed(2)}h utilizadas</span>
+						<div className="etc-weekly-progress__legend">
+							<span>{erc.toFixed(2)}h comprometidas</span>
 
-						<span>{bac.toFixed(2)}h disponibles</span>
+							<span className="etc-weekly-progress__legend--warning">BAC no definido en el proyecto</span>
+						</div>
 					</div>
-				</div>
+				) : (
+					<div className="etc-weekly-progress">
+						<div className="etc-weekly-progress__bar">
+							<div
+								className={`etc-weekly-progress__fill ${colorClass}`}
+								style={{
+									width: `${Math.min(usePercentage, 100)}%`,
+								}}
+							/>
+						</div>
+
+						<div className="etc-weekly-progress__legend">
+							<span>{erc.toFixed(2)}h utilizadas</span>
+
+							<span>{remaining.toFixed(2)}h disponibles</span>
+						</div>
+					</div>
+				)}
 			</div>
 		</section>
 	)

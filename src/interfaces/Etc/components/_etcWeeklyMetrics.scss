@@ -230,6 +230,16 @@
 		&.is-danger {
 			background: linear-gradient(135deg, #ef4444, #dc2626);
 		}
+
+		&--no-bac {
+			background: repeating-linear-gradient(
+				45deg,
+				rgba(100, 116, 139, 0.25),
+				rgba(100, 116, 139, 0.25) 6px,
+				rgba(100, 116, 139, 0.08) 6px,
+				rgba(100, 116, 139, 0.08) 12px
+			);
+		}
 	}
 
 	&__legend {
@@ -240,5 +250,10 @@
 		font-size: 11px;
 
 		color: var(--color-text-secondary);
+
+		&--warning {
+			color: #f59e0b;
+			font-weight: 600;
+		}
 	}
 }
