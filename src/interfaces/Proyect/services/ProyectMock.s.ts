@@ -1,4 +1,4 @@
-import { ProyectInterface } from '../models/IProyect.m'
+import { ProyectInterface, ProjectIntakeFilters } from '../models/IProyect.m'
 import {
 	ProjectIntakeRecordDto,
 	CreateProjectIntakeDto,
@@ -24,9 +24,9 @@ const typesData = typesJson as unknown as ProjectIntakeTypeRefDto[]
 export class ProyectMock implements ProyectInterface {
 	private data: ProjectIntakeRecordDto[] = [...initialData]
 
-	async list(): Promise<ProjectIntakeRecordDto[]> {
+	async list(_page?: number, _perPage?: number, _filters?: ProjectIntakeFilters): Promise<any> {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] list()')
-		return [...this.data]
+		return { data: [...this.data], currentPage: 1, perPage: 10, total: this.data.length, lastPage: 1 }
 	}
 
 	async getById(id: number): Promise<ProjectIntakeRecordDto | null> {

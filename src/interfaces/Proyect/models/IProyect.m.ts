@@ -20,11 +20,18 @@ export interface ProyectOptions {
 	leaders: ProjectIntakeLeaderRefDto[]
 }
 
+export interface ProjectIntakeFilters {
+	search?: string
+	status?: string
+	category?: string
+	project_type?: string
+}
+
 export interface ProyectInterface {
 	// ==========================
 	// CRUD PROYECTOS
 	// ==========================
-	list(page: number, perPage: number): Promise<PaginatedProjectIntakeResponseDto>
+	list(page: number, perPage: number, filters?: ProjectIntakeFilters): Promise<PaginatedProjectIntakeResponseDto>
 
 	getById(id: number): Promise<ProjectIntakeRecordDto | null>
 

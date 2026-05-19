@@ -19,9 +19,13 @@ type CacheEntry = {
 	timestamp: number
 }
 
-const CACHE_KEY = 'projects_cache'
+const CACHE_KEY = 'projects_cache_v2'
 
 const ETC_CACHE_KEY = 'projects_etc_cache'
+
+// Limpia versiones anteriores del caché para evitar datos envenenados
+localStorage.removeItem('projects_cache')
+localStorage.removeItem('projects_etc_cache')
 
 const CACHE_TTL = 1000 * 60 * 5
 

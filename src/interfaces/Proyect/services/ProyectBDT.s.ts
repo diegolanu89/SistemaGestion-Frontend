@@ -1,4 +1,4 @@
-import { ProyectInterface } from '../models/IProyect.m'
+import { ProyectInterface, ProjectIntakeFilters } from '../models/IProyect.m'
 
 import {
 	ProjectIntakeRecordDto,
@@ -42,10 +42,19 @@ export class ProyectBDT implements ProyectInterface {
 	// LIST
 	// ==========================
 
-	async list(page: number = 1, perPage: number = 10): Promise<PaginatedProjectIntakeResponseDto> {
-		logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] list() -> page=${page} perPage=${perPage}`)
+	async list(page: number = 1, perPage: number = 10, filters?: ProjectIntakeFilters): Promise<PaginatedProjectIntakeResponseDto> {
+		logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] list() -> page=${page} perPage=${perPage}`, filters)
 
 		try {
+			const query = new URLSearchParams()
+			query.append('page', String(page))
+			query.append('per_page', String(perPage))
+
+			if (filters?.search)       query.append('search',       filters.search)
+			if (filters?.status)       query.append('status',       filters.status)
+			if (filters?.category)     query.append('category',     filters.category)
+			if (filters?.project_type) query.append('project_type', filters.project_type)
+
 			const json = await HttpClient.request<{
 				success: boolean
 
@@ -58,7 +67,7 @@ export class ProyectBDT implements ProyectInterface {
 				total: number
 
 				last_page: number
-			}>(`${ENDPOINT}?page=${page}&per_page=${perPage}`)
+			}>(`${ENDPOINT}?${query.toString()}`)
 
 			logger.infoTag(LogTag.Adapter, `[PROYECT][BDT] list success -> count=${json.data.length}`)
 
