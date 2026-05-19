@@ -13,6 +13,7 @@
 /**BASE APP**/
 @use '../interfaces/base/components/loading/authLoading';
 @use '../interfaces/base/components/RefreshButton/refreshButton';
+@use '../interfaces/base/components/ClearFiltersButton/clearFiltersButton';
 @use '../interfaces/base/components/alert/actionAlert';
 
 /**APP_BAR**/

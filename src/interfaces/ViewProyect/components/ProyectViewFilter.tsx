@@ -2,6 +2,7 @@
 
 import { FC, useMemo, useCallback } from 'react'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
+import { ProyectViewClearFilters } from './ProyectViewClearFilters'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 
@@ -133,6 +134,8 @@ export const ProyectViewFilters: FC = () => {
 			</div>
 
 			<div className="proyect-view-filters__refresh">
+				<ProyectViewClearFilters />
+
 				<button
 					className="proyect-view-filters__refresh-btn"
 					onClick={() => {
