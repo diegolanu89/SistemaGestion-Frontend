@@ -71,3 +71,7 @@
 @use '../interfaces/EstimatedProjects/components/estimatedProjectTable';
 @use '../interfaces/EstimatedProjects/components/estimatedProjectForm';
 @use '../interfaces/EstimatedProjects/components/estimatedProjectGrid';
+
+/**DASHBOARD HOURS**/
+@use '../interfaces/DashboardHours/components/dashboard-hor-header';
+//@use '../interfaces/DashboardHours/views/dashboardHours';
