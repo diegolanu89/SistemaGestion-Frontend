@@ -90,6 +90,18 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 	const perPage = PROYECT_CONFIG.PAGINATION.PER_PAGE
 
 	// ==========================
+	// FILTERS
+	// ==========================
+
+	const [search, setSearch] = useState<string>('')
+
+	const [status, setStatus] = useState<Status | 'all'>('all')
+
+	const [category, setCategory] = useState<Category | 'all'>('all')
+
+	const [type, setType] = useState<Type | 'all'>('all')
+
+	// ==========================
 	// DATA
 	// ==========================
 
@@ -101,7 +113,12 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 		loading: loadingData,
 
 		refetch: refetchData,
-	} = useProyectData(page, perPage)
+	} = useProyectData(page, perPage, {
+		search:       search       || undefined,
+		status:       status       !== 'all' ? status    : undefined,
+		category:     category     !== 'all' ? category  : undefined,
+		project_type: type         !== 'all' ? type      : undefined,
+	})
 
 	// ==========================
 	// REFS
@@ -116,44 +133,6 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 	} = useProyectRefs()
 
 	// ==========================
-	// FILTERS
-	// ==========================
-
-	const [search, setSearch] = useState<string>('')
-
-	const [status, setStatus] = useState<Status | 'all'>('all')
-
-	const [category, setCategory] = useState<Category | 'all'>('all')
-
-	const [type, setType] = useState<Type | 'all'>('all')
-
-	// ==========================
-	// FILTERED DATA
-	// ==========================
-
-	const filtered = useMemo(() => {
-		const searchLower = search.toLowerCase().trim()
-
-		return data.filter((p) => {
-			const title = p.ProjectName?.toLowerCase() ?? ''
-
-			const desc = p.Observations?.toLowerCase() ?? ''
-
-			const client = p.ClientName?.toLowerCase() ?? ''
-
-			const matchSearch = title.includes(searchLower) || desc.includes(searchLower) || client.includes(searchLower)
-
-			const matchStatus = status === 'all' || p.ProjectStatusCode === status
-
-			const matchCategory = category === 'all' || p.CategoryCode === category
-
-			const matchType = type === 'all' || p.ProjectType === type
-
-			return matchSearch && matchStatus && matchCategory && matchType
-		})
-	}, [data, search, status, category, type])
-
-	// ==========================
 	// RESET PAGE ON FILTERS
 	// ==========================
 
@@ -164,12 +143,9 @@ export const ProyectProvider = ({ children }: IProviderProps) => {
 	// ==========================
 	// PAGINATED
 	// ==========================
-	// ⚠️ IMPORTANTE:
-	// La paginación REAL ya viene del backend.
-	// Acá NO hay que hacer slice().
-	// ==========================
 
-	const paginated = filtered
+	const filtered  = data
+	const paginated = data
 
 	// ==========================
 	// LOADING

@@ -2,8 +2,6 @@ import { FC } from 'react'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { useProyectCreateForm } from '../hooks/useProyectCreate.h'
-import { PotencialClientDto } from '../models/PotencialClientDTO.m'
-import { usePotencialClients } from '../hooks/usePotencialClient.h'
 import { useIsSmallScreen } from '../../base/hooks/useSmallScreen.h'
 
 export const ProyectCreateForm: FC = () => {
@@ -11,8 +9,7 @@ export const ProyectCreateForm: FC = () => {
 	const { CREATE, ACTIONS } = PROYECT_CONFIG
 	const isSmallScreen = useIsSmallScreen()
 
-	const { form, update, submit, submitting } = useProyectCreateForm()
-	const { clients, loading: loadingClients } = usePotencialClients()
+	const { form, update, submit, submitting, validationErrors, nextNumber, loadingNextNumber } = useProyectCreateForm()
 
 	const selectedType = refs?.types.find((t) => t.Code === form.projectType)
 
@@ -35,7 +32,6 @@ export const ProyectCreateForm: FC = () => {
 					<p>{CREATE.CLOCKIFY.DESCRIPTION}</p>
 				</div>
 
-				{/* 🔹 Tooltip reemplazado */}
 				<label className="mui-switch" title={!isSmallScreen ? CREATE.CLOCKIFY.TOOLTIP : ''}>
 					<input type="checkbox" checked={form.requiresClockifyCreation} onChange={(e) => update('requiresClockifyCreation')(e.target.checked)} />
 					<span className="mui-switch__track">
@@ -45,6 +41,7 @@ export const ProyectCreateForm: FC = () => {
 			</div>
 
 			<div className="proyect-create-grid">
+				{/* Tipo de proyecto */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.PROJECT_TYPE.ICON}</span>
@@ -57,12 +54,78 @@ export const ProyectCreateForm: FC = () => {
 							.filter((t) => t.IsActive)
 							.map((t) => (
 								<option key={t.Code} value={t.Code}>
-									{t.Label}
+									{t.Label} {t.Code}.XXX
 								</option>
 							))}
 					</select>
 				</div>
 
+				{/* Nº de Proyecto de Desarrollo (disabled, auto-calculado) */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">tag</span>
+						Nº de Proyecto de Desarrollo
+					</label>
+
+					<input
+						className="proyect-create-input"
+						value={loadingNextNumber ? 'Cargando...' : (nextNumber ?? '')}
+						disabled
+						readOnly
+					/>
+				</div>
+
+				{/* Nº de Proyecto Comercial */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">{CREATE.FIELDS.SECONDARY_NUMBER.ICON}</span>
+						{CREATE.FIELDS.SECONDARY_NUMBER.LABEL}
+					</label>
+
+					<input
+						className="proyect-create-input"
+						value={form.secondaryProjectNumber ?? ''}
+						onChange={(e) => update('secondaryProjectNumber')(e.target.value)}
+					/>
+				</div>
+
+				{/* Fecha de alta de Nº de Proyecto de Desarrollo */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">{CREATE.FIELDS.REGISTRATION_DATE.ICON}</span>
+						{CREATE.FIELDS.REGISTRATION_DATE.LABEL}
+					</label>
+
+					<input
+						className="proyect-create-input"
+						type="date"
+						value={form.registrationDate ?? ''}
+						onChange={(e) => update('registrationDate')(e.target.value || null)}
+					/>
+				</div>
+
+				{/* Cliente */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">business</span>
+						Cliente
+					</label>
+
+					<select
+						className="proyect-create-select"
+						value={form.clientId ?? ''}
+						onChange={(e) => update('clientId')(e.target.value ? Number(e.target.value) : null)}
+					>
+						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
+						{(refs.clients ?? []).map((c) => (
+							<option key={c.Id} value={c.Id}>
+								{c.Name}
+							</option>
+						))}
+					</select>
+				</div>
+
+				{/* Proyecto */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.PROJECT_NAME.ICON}</span>
@@ -72,64 +135,14 @@ export const ProyectCreateForm: FC = () => {
 					<input className="proyect-create-input" value={form.projectName ?? ''} onChange={(e) => update('projectName')(e.target.value)} required />
 				</div>
 
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">business</span>
-						Cliente *
-					</label>
-
-					<select
-						className="proyect-create-select"
-						value={form.clientId ?? ''}
-						onChange={(e) => update('clientId')(e.target.value ? Number(e.target.value) : null)}
-						required
-					>
-						<option value="">{loadingClients ? 'Cargando clientes...' : CREATE.PLACEHOLDERS.SELECT}</option>
-
-						{clients.map((c: PotencialClientDto) => (
-							<option key={c.Id} value={c.Id}>
-								{c.Name}
-							</option>
-						))}
-					</select>
-				</div>
-
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">{CREATE.FIELDS.SECONDARY_NUMBER.ICON}</span>
-						{CREATE.FIELDS.SECONDARY_NUMBER.LABEL} *
-					</label>
-
-					<input
-						className="proyect-create-input"
-						value={form.secondaryProjectNumber ?? ''}
-						onChange={(e) => update('secondaryProjectNumber')(e.target.value)}
-						required
-					/>
-				</div>
-
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">{CREATE.FIELDS.REGISTRATION_DATE.ICON}</span>
-						{CREATE.FIELDS.REGISTRATION_DATE.LABEL} *
-					</label>
-
-					<input
-						className="proyect-create-input"
-						type="date"
-						value={form.registrationDate ?? ''}
-						onChange={(e) => update('registrationDate')(e.target.value || null)}
-						required
-					/>
-				</div>
-
+				{/* Categoría */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.CATEGORY.ICON}</span>
-						{CREATE.FIELDS.CATEGORY.LABEL} *
+						{CREATE.FIELDS.CATEGORY.LABEL}
 					</label>
 
-					<select className="proyect-create-select" value={form.categoryCode ?? ''} onChange={(e) => update('categoryCode')(e.target.value || null)} required>
+					<select className="proyect-create-select" value={form.categoryCode ?? ''} onChange={(e) => update('categoryCode')(e.target.value || null)}>
 						<option value="">{CREATE.PLACEHOLDERS.EMPTY}</option>
 						{refs.categories
 							.filter((c) => c.IsActive)
@@ -141,17 +154,17 @@ export const ProyectCreateForm: FC = () => {
 					</select>
 				</div>
 
+				{/* Estado del proyecto */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.STATUS.ICON}</span>
-						{CREATE.FIELDS.STATUS.LABEL} *
+						{CREATE.FIELDS.STATUS.LABEL}
 					</label>
 
 					<select
 						className="proyect-create-select"
 						value={form.projectStatusCode ?? ''}
 						onChange={(e) => update('projectStatusCode')(e.target.value || null)}
-						required
 					>
 						<option value="">{CREATE.PLACEHOLDERS.EMPTY}</option>
 						{refs.statuses
@@ -164,27 +177,27 @@ export const ProyectCreateForm: FC = () => {
 					</select>
 				</div>
 
-				{selectedType?.RequiresBusinessStatusDate && (
-					<div className="proyect-create-field">
-						<label className="proyect-create-label">
-							<span className="material-icons">today</span>
-							Fecha estado negocio *
-						</label>
+				{/* Fecha ingreso/perdido/cerrado */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">today</span>
+						Fecha ingreso/perdido/cerrado{selectedType?.RequiresBusinessStatusDate ? ' *' : ''}
+					</label>
 
-						<input
-							className="proyect-create-input"
-							type="date"
-							value={form.businessStatusDate ?? ''}
-							onChange={(e) => update('businessStatusDate')(e.target.value || null)}
-							required
-						/>
-					</div>
-				)}
+					<input
+						className="proyect-create-input"
+						type="date"
+						value={form.businessStatusDate ?? ''}
+						onChange={(e) => update('businessStatusDate')(e.target.value || null)}
+						required={selectedType?.RequiresBusinessStatusDate ?? false}
+					/>
+				</div>
 
+				{/* Fecha estimada de terminación */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">event_available</span>
-						Fecha estimada fin *
+						Fecha estimada de terminación
 					</label>
 
 					<input
@@ -192,38 +205,62 @@ export const ProyectCreateForm: FC = () => {
 						type="date"
 						value={form.estimatedEndDate ?? ''}
 						onChange={(e) => update('estimatedEndDate')(e.target.value || null)}
-						required
 					/>
 				</div>
 
-				{selectedType?.RequiresActualEndDate && (
-					<div className="proyect-create-field">
-						<label className="proyect-create-label">
-							<span className="material-icons">event_busy</span>
-							Fecha fin real *
-						</label>
+				{/* Fecha de fin del proyecto */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">event_busy</span>
+						Fecha de fin del proyecto{selectedType?.RequiresActualEndDate ? ' *' : ''}
+					</label>
 
-						<input
-							className="proyect-create-input"
-							type="date"
-							value={form.actualEndDate ?? ''}
-							onChange={(e) => update('actualEndDate')(e.target.value || null)}
-							required
-						/>
-					</div>
-				)}
+					<input
+						className="proyect-create-input"
+						type="date"
+						value={form.actualEndDate ?? ''}
+						onChange={(e) => update('actualEndDate')(e.target.value || null)}
+						required={selectedType?.RequiresActualEndDate ?? false}
+					/>
+				</div>
 
-				{selectedType?.RequiresCommercialFields && (
-					<div className="proyect-create-field">
-						<label className="proyect-create-label">
-							<span className="material-icons">business_center</span>
-							Estado comercial *
-						</label>
+				{/* Estado comercial */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">business_center</span>
+						Estado comercial{selectedType?.RequiresCommercialFields ? ' *' : ''}
+					</label>
 
-						<input className="proyect-create-input" value={form.commercialStatus ?? ''} onChange={(e) => update('commercialStatus')(e.target.value)} required />
-					</div>
-				)}
+					<input
+						className="proyect-create-input"
+						value={form.commercialStatus ?? ''}
+						onChange={(e) => update('commercialStatus')(e.target.value)}
+						required={selectedType?.RequiresCommercialFields ?? false}
+					/>
+				</div>
 
+				{/* Líder */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">person</span>
+						Líder
+					</label>
+
+					<select
+						className="proyect-create-select"
+						value={form.leaderClockifyUserId ?? ''}
+						onChange={(e) => update('leaderClockifyUserId')(e.target.value ? Number(e.target.value) : null)}
+					>
+						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
+						{(refs.leaders ?? []).map((l) => (
+							<option key={l.Id} value={l.Id}>
+								{l.Name}
+							</option>
+						))}
+					</select>
+				</div>
+
+				{/* Observaciones */}
 				<div className="proyect-create-field proyect-create-field--full">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.OBSERVATIONS.ICON}</span>
@@ -233,6 +270,17 @@ export const ProyectCreateForm: FC = () => {
 					<textarea className="proyect-create-textarea" rows={3} value={form.observations ?? ''} onChange={(e) => update('observations')(e.target.value)} />
 				</div>
 			</div>
+
+			{validationErrors.length > 0 && (
+				<ul className="proyect-create-errors">
+					{validationErrors.map((err, i) => (
+						<li key={i} className="proyect-create-error-item">
+							<span className="material-icons">error_outline</span>
+							{err}
+						</li>
+					))}
+				</ul>
+			)}
 
 			<div className="modal__actions">
 				<button type="button" className="proyect-create-btn proyect-create-btn--cancel" onClick={closeCreate}>

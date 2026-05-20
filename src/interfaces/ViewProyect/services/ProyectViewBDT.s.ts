@@ -2,12 +2,12 @@ import { HttpClient } from '../../base/services/HttpClient.s'
 
 import { ProjectDto, UpdateBacDto } from '../models/ProyectViewDTO.m'
 
-import { ProjectPaginatedResponse, ProyectViewInterface, RecalculateHoursResponse, UpdateBacResponse } from '../models/ProyectViewInterface.m'
+import { GetAllProjectsParams, ProjectPaginatedResponse, ProyectViewInterface, RecalculateHoursResponse, UpdateBacResponse } from '../models/ProyectViewInterface.m'
 
 const BASE_URL = `${import.meta.env.VITE_API_URL}/projects`
 
 export class ProyectViewBDT implements ProyectViewInterface {
-	async getAll(params?: { page?: number; per_page?: number; only_visible?: boolean }): Promise<ProjectPaginatedResponse> {
+	async getAll(params?: GetAllProjectsParams): Promise<ProjectPaginatedResponse> {
 		const query = new URLSearchParams()
 
 		if (params?.page) {
@@ -20,6 +20,22 @@ export class ProyectViewBDT implements ProyectViewInterface {
 
 		if (params?.only_visible !== undefined) {
 			query.append('only_visible', params.only_visible ? 'true' : 'false')
+		}
+
+		if (params?.search) {
+			query.append('search', params.search)
+		}
+
+		if (params?.client) {
+			query.append('client', params.client)
+		}
+
+		if (params?.status) {
+			query.append('status', params.status)
+		}
+
+		if (params?.code) {
+			query.append('code', params.code)
 		}
 
 		return await HttpClient.request<ProjectPaginatedResponse>(`${BASE_URL}?${query.toString()}`)

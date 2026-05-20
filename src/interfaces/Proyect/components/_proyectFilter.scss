@@ -148,19 +148,6 @@
 		}
 	}
 
-	&__clear-btn {
-		color: var(--color-error, #ef4444);
-		border-color: rgba(239, 68, 68, 0.25);
-
-		&:hover {
-			background: rgba(239, 68, 68, 0.08);
-			border-color: rgba(239, 68, 68, 0.4);
-		}
-
-		&:hover .material-icons {
-			transform: none;
-		}
-	}
 
 	@media (max-width: 900px) {
 		grid-template-columns: 1fr 1fr;

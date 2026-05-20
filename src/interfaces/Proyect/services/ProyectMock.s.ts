@@ -1,4 +1,4 @@
-import { ProyectInterface } from '../models/IProyect.m'
+import { ProyectInterface, ProjectIntakeFilters } from '../models/IProyect.m'
 import {
 	ProjectIntakeRecordDto,
 	CreateProjectIntakeDto,
@@ -24,9 +24,9 @@ const typesData = typesJson as unknown as ProjectIntakeTypeRefDto[]
 export class ProyectMock implements ProyectInterface {
 	private data: ProjectIntakeRecordDto[] = [...initialData]
 
-	async list(): Promise<ProjectIntakeRecordDto[]> {
+	async list(_page?: number, _perPage?: number, _filters?: ProjectIntakeFilters): Promise<any> {
 		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] list()')
-		return [...this.data]
+		return { data: [...this.data], currentPage: 1, perPage: 10, total: this.data.length, lastPage: 1 }
 	}
 
 	async getById(id: number): Promise<ProjectIntakeRecordDto | null> {
@@ -136,18 +136,31 @@ export class ProyectMock implements ProyectInterface {
 		logger.infoTag(LogTag.Adapter, `[PROYECT][MOCK] deleted -> id=${id}`)
 	}
 
+	async getOptions() {
+		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] getOptions()')
+		return {
+			types: typesData,
+			categories: categoriesData,
+			statuses: statusesData,
+			clients: [],
+			leaders: [],
+		}
+	}
+
 	async getStatuses(): Promise<ProjectIntakeStatusRefDto[]> {
-		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] getStatuses()')
 		return statusesData
 	}
 
 	async getCategories(): Promise<ProjectIntakeCategoryRefDto[]> {
-		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] getCategories()')
 		return categoriesData
 	}
 
 	async getTypes(): Promise<ProjectIntakeTypeRefDto[]> {
-		logger.infoTag(LogTag.Adapter, '[PROYECT][MOCK] getTypes()')
 		return typesData
+	}
+
+	async getNextNumber(typeCode: string): Promise<string> {
+		logger.infoTag(LogTag.Adapter, `[PROYECT][MOCK] getNextNumber -> type=${typeCode}`)
+		return `${typeCode}.001`
 	}
 }

@@ -397,19 +397,23 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 		logger.infoTag(LogTag.Adapter, '[ESTIMATED-PROYECT][BDT] getUsers()')
 
 		try {
-			const wire = await HttpClient.request<
-				Array<{
-					id: number
-					name: string
-					email: string
-				}>
-			>(`${BASE_URL}/users`)
+			const wire = await HttpClient.request<{
+				success: boolean
+				data: {
+					data: Array<{
+						id: number
+						name: string
+						email: string
+						active: boolean
+					}>
+				}
+			}>(`${BASE_URL}/clockify-users?active=true`)
 
-			return wire.map((u) => ({
+			return wire.data.data.map((u) => ({
 				Id: u.id,
 				Username: u.email,
 				FullName: u.name,
-				IsActive: true,
+				IsActive: u.active,
 			}))
 		} catch (error: unknown) {
 			const err = normalizeError(error)

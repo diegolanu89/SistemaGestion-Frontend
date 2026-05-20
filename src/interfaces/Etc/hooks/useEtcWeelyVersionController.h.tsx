@@ -1,6 +1,6 @@
 // hooks/useEtcWeeklyVersionController.h.ts
 
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import logger from '../../base/controllers/Logger.c'
@@ -8,21 +8,9 @@ import { LogTag } from '../../base/model/LogTag.m'
 
 import { etcAdapter } from '../service/EtcAdapter'
 
-import { userAdapter } from '../../Users/service/UserRefAdapter'
-
 import type { EtcEntryDto } from '../model/Etc.m'
 
-import { monthKeyOf } from '../../EstimatedProjects/utils/months'
-
-import { proyectViewAdapter } from '../../ViewProyect/services/ProyectViewAdapter.s'
-
-import type { ProjectDto } from '../../ViewProyect/models/ProyectViewDTO.m'
-
 import { useEtcContext } from './useEtcContext.h'
-
-interface GridValues {
-	[userId: number]: Record<string, number>
-}
 
 export const useEtcWeeklyVersionController = () => {
 	const navigate = useNavigate()
@@ -36,10 +24,8 @@ export const useEtcWeeklyVersionController = () => {
 		setLoading,
 
 		projectName,
-		setProjectName,
 
 		bac,
-		setBac,
 
 		search,
 		setSearch,
@@ -51,7 +37,6 @@ export const useEtcWeeklyVersionController = () => {
 		setMonthToAdd,
 
 		users,
-		setUsers,
 
 		selectedUserIds,
 		setSelectedUserIds,
@@ -59,104 +44,6 @@ export const useEtcWeeklyVersionController = () => {
 		values,
 		setValues,
 	} = useEtcContext()
-
-	// =========================
-	// INITIAL LOAD
-	// =========================
-
-	useEffect(() => {
-		let cancelled = false
-
-		void (async () => {
-			setLoading(true)
-
-			try {
-				const project: ProjectDto = await proyectViewAdapter.getById(projectId)
-
-				if (cancelled) {
-					return
-				}
-
-				setProjectName(project.name)
-
-				setBac(Number(project.bacTotalHours ?? 0))
-
-				const allUsers = await userAdapter.getUsers()
-
-				if (cancelled) {
-					return
-				}
-
-				setUsers(allUsers)
-
-				const response = await etcAdapter.getByProject(projectId)
-
-				if (cancelled) {
-					return
-				}
-
-				const records: EtcEntryDto[] = (response.records ?? []).map(
-					(record: { userName?: string | null; monthKey: string; monthLabel?: string | null; hours?: number | null }) => ({
-						userName: record.userName ?? 'Sin usuario',
-
-						monthKey: record.monthKey,
-
-						monthLabel: record.monthLabel ?? record.monthKey,
-
-						hours: Number(record.hours ?? 0),
-					})
-				)
-
-				const monthSet = new Set<string>()
-
-				records.forEach((r) => {
-					monthSet.add(r.monthKey)
-				})
-
-				if (monthSet.size > 0) {
-					setSelectedMonths(Array.from(monthSet).sort())
-				} else {
-					setSelectedMonths([monthKeyOf(new Date())])
-				}
-
-				const ids = new Set<number>()
-
-				const nextValues: GridValues = {}
-
-				allUsers.forEach((u) => {
-					const userRecords = records.filter((r) => r.userName === u.FullName)
-
-					if (userRecords.length <= 0) {
-						return
-					}
-
-					ids.add(u.Id)
-
-					nextValues[u.Id] = {}
-
-					userRecords.forEach((r) => {
-						nextValues[u.Id][r.monthKey] = Number(r.hours)
-					})
-				})
-
-				if (!cancelled) {
-					setSelectedUserIds(ids)
-
-					setValues(nextValues)
-				}
-			} catch (e: unknown) {
-				logger.errorTag(LogTag.Adapter, '[ETC WEEKLY] Load error', e)
-			} finally {
-				if (!cancelled) {
-					setLoading(false)
-				}
-			}
-		})()
-
-		return () => {
-			cancelled = true
-		}
-	}, [projectId, setLoading, setProjectName, setBac, setUsers, setSelectedMonths, setSelectedUserIds, setValues])
 
 	// =========================
 	// FILTERED USERS

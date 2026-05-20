@@ -5,16 +5,33 @@ import {
 	ProjectIntakeStatusRefDto,
 	ProjectIntakeCategoryRefDto,
 	ProjectIntakeTypeRefDto,
+	ProjectIntakeClientRefDto,
+	ProjectIntakeLeaderRefDto,
 	CreateProjectIntakeDto,
 	UpdateProjectIntakeDto,
 	PaginatedProjectIntakeResponseDto,
 } from './ProyectDTO.m'
 
+export interface ProyectOptions {
+	types: ProjectIntakeTypeRefDto[]
+	categories: ProjectIntakeCategoryRefDto[]
+	statuses: ProjectIntakeStatusRefDto[]
+	clients: ProjectIntakeClientRefDto[]
+	leaders: ProjectIntakeLeaderRefDto[]
+}
+
+export interface ProjectIntakeFilters {
+	search?: string
+	status?: string
+	category?: string
+	project_type?: string
+}
+
 export interface ProyectInterface {
 	// ==========================
 	// CRUD PROYECTOS
 	// ==========================
-	list(page: number, perPage: number): Promise<PaginatedProjectIntakeResponseDto>
+	list(page: number, perPage: number, filters?: ProjectIntakeFilters): Promise<PaginatedProjectIntakeResponseDto>
 
 	getById(id: number): Promise<ProjectIntakeRecordDto | null>
 
@@ -27,9 +44,13 @@ export interface ProyectInterface {
 	// ==========================
 	// REFS (DINÁMICOS)
 	// ==========================
+	getOptions(): Promise<ProyectOptions>
+
 	getStatuses(): Promise<ProjectIntakeStatusRefDto[]>
 
 	getCategories(): Promise<ProjectIntakeCategoryRefDto[]>
 
 	getTypes(): Promise<ProjectIntakeTypeRefDto[]>
+
+	getNextNumber(typeCode: string): Promise<string>
 }

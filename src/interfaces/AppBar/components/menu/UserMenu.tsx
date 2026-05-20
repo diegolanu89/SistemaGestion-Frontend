@@ -62,29 +62,34 @@ export const UserMenu = ({ controller }: Props) => {
 	// ==========================
 
 	const permissionMatrix = useMemo<PermissionMatrix[]>(() => {
-		// ==========================
-		// 🔹 REEMPLAZAR
-		// por tu matrix real desde utils
-		// ==========================
+		const perms = user?.profilePermissions?.permissions
 
-		return [
-			{
-				module: 'Proyectos',
-				permissions: ['Visualizar', 'Crear', 'Editar'],
-			},
-			{
-				module: 'Dashboard EVM',
-				permissions: ['Visualizar', 'Exportar'],
-			},
-			{
-				module: 'Clockify',
-				permissions: ['Sincronizar'],
-			},
-			{
-				module: 'Administración',
-				permissions: ['Usuarios', 'Roles'],
-			},
-		]
+		if (!perms || perms.length === 0) return []
+
+		const ACTION_LABELS: Record<number, string[]> = {
+			1: ['Leer'],
+			2: ['Leer', 'Editar'],
+			3: ['Leer', 'Editar', 'Crear'],
+		}
+
+		const grouped = new Map<string, Set<string>>()
+
+		for (const p of perms) {
+			if (!grouped.has(p.moduleCode)) {
+				grouped.set(p.moduleCode, new Set())
+			}
+
+			const labels = ACTION_LABELS[p.action.level] ?? [`Nivel ${p.action.level}`]
+
+			for (const label of labels) {
+				grouped.get(p.moduleCode)!.add(label)
+			}
+		}
+
+		return Array.from(grouped.entries()).map(([module, actions]) => ({
+			module,
+			permissions: Array.from(actions),
+		}))
 	}, [user])
 
 	return (
@@ -117,6 +122,13 @@ export const UserMenu = ({ controller }: Props) => {
 								<span className="user-menu__email">{user?.email}</span>
 
 								<div className="user-menu__meta">
+									{user?.profileName && (
+										<span className="user-menu__role">
+											<span className="material-icons">badge</span>
+											{user.profileName}
+										</span>
+									)}
+
 									<button className="user-menu__permissions-button" onClick={() => setIsPermissionsOpen(true)}>
 										<span className="material-icons">shield</span>
 
@@ -173,23 +185,27 @@ export const UserMenu = ({ controller }: Props) => {
 						{/* ========================== */}
 
 						<div className="permissions-modal__matrix">
-							{permissionMatrix.map((group) => (
-								<div key={group.module} className="permissions-modal__card">
-									<div className="permissions-modal__module">
-										<span className="material-icons">lock</span>
+							{permissionMatrix.length === 0 ? (
+								<p className="permissions-modal__empty">No hay permisos asignados para este perfil.</p>
+							) : (
+								permissionMatrix.map((group) => (
+									<div key={group.module} className="permissions-modal__card">
+										<div className="permissions-modal__module">
+											<span className="material-icons">lock</span>
 
-										<span>{group.module}</span>
-									</div>
+											<span>{group.module}</span>
+										</div>
 
-									<div className="permissions-modal__badges">
-										{group.permissions.map((permission) => (
-											<span key={permission} className="permissions-modal__badge">
-												{permission}
-											</span>
-										))}
+										<div className="permissions-modal__badges">
+											{group.permissions.map((permission) => (
+												<span key={permission} className="permissions-modal__badge">
+													{permission}
+												</span>
+											))}
+										</div>
 									</div>
-								</div>
-							))}
+								))
+							)}
 						</div>
 					</div>
 				</div>

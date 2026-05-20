@@ -4,8 +4,7 @@
 	gap: 20px;
 
 	width: 100%;
-	max-width: 1200px;
-	margin: 0 auto 24px auto;
+	margin: 0 0 24px 0;
 
 	padding: 18px 22px;
 	background: var(--color-surface);
@@ -68,6 +67,7 @@
 	&__refresh {
 		display: flex;
 		align-items: flex-end;
+		gap: 8px;
 		height: 100%;
 	}
 

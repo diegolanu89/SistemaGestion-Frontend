@@ -62,6 +62,11 @@ export const useEtcController = () => {
 
 				// =========================
 				// FALLBACK → ALLOCATIONS
+				// TODO: el projectId aquí viene de clockify-projects, pero getAllocations
+				// llama a potencial-projects/{id}/allocations que es una entidad distinta.
+				// Los IDs no son equivalentes entre ambas ramas. Revisar cómo mapear
+				// el proyecto en curso a su potencial-project correspondiente antes de
+				// usar este fallback, o definir un endpoint propio en clockify-projects.
 				// =========================
 
 				const allocations: AllocationWireDto[] = await estimatedProjectAdapter.getAllocations(projectId)

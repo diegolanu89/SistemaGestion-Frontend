@@ -7,6 +7,8 @@ import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 
 import { ProjectIntakeRecordDto, PaginatedProjectIntakeResponseDto } from '../models/ProyectDTO.m'
 
+import { ProjectIntakeFilters } from '../models/IProyect.m'
+
 import { proyectAdapter } from '../services/ProyectAdapter.s'
 
 import { getCache, setCache } from '../utils/getCache'
@@ -17,7 +19,7 @@ import { LogTag } from '../../base/model/LogTag.m'
 
 import { LogProyectData } from '../models/ELogProyectData.m'
 
-export const useProyectData = (page: number, perPage: number) => {
+export const useProyectData = (page: number, perPage: number, filters?: ProjectIntakeFilters) => {
 	// ==========================
 	// 🔹 STATE
 	// ==========================
@@ -34,7 +36,7 @@ export const useProyectData = (page: number, perPage: number) => {
 	// 🔹 CACHE KEY
 	// ==========================
 
-	const cacheKey = `${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}_${page}_${perPage}`
+	const cacheKey = `${PROYECT_CONFIG.CACHE.KEYS.PROJECTS}_${page}_${perPage}_${JSON.stringify(filters ?? {})}`
 
 	// ==========================
 	// 🔹 CACHE
@@ -67,7 +69,7 @@ export const useProyectData = (page: number, perPage: number) => {
 	const fetchProjects = async (): Promise<PaginatedProjectIntakeResponseDto> => {
 		logger.infoTag(LogTag.Adapter, `${LogProyectData.FETCH_START} -> page=${page} perPage=${perPage}`)
 
-		const response = await proyectAdapter.list(page, perPage)
+		const response = await proyectAdapter.list(page, perPage, filters)
 
 		logger.infoTag(LogTag.Adapter, `${LogProyectData.FETCH_SUCCESS} -> count=${response.data.length} total=${response.total}`)
 
@@ -142,7 +144,7 @@ export const useProyectData = (page: number, perPage: number) => {
 
 	useEffect(() => {
 		void fetchData()
-	}, [page, perPage])
+	}, [page, perPage, filters?.search, filters?.status, filters?.category, filters?.project_type])
 
 	// ==========================
 	// 🔹 EXPOSE

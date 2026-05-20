@@ -7,7 +7,7 @@ import { EtcWeeklyVersionMetrics } from '../components/EtcWeeklyVersionMetrics'
 import { EtcWeeklyVersionMonthSelector } from '../components/EtcWeeklyVersionMonthSelector'
 import { EtcWeeklyVersionResources } from '../components/EtcWeeklyVersionResources'
 import { EtcWeeklyVersionGrid } from '../components/EtcWeeklyVersionGrid'
-import { EtcWeeklyVersionHeader } from '../components/EtcWeeklyVersionHEader'
+import { EtcWeeklyVersionHeader } from '../components/EtcWeeklyVersionHeader'
 import { EtcWeeklyVersionActions } from '../components/EtcWeeklyVersionActions'
 
 import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionController.h'
