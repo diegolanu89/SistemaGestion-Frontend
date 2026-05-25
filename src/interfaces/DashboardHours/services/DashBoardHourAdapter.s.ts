@@ -3,19 +3,19 @@
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { resolveCapabilities } from '../../base/model/ResolveCapabilities.m'
-import { DashBoardHourInterface } from '../model/DashBoardHour.m'
-import { DashBoardHourBDT } from './DashBoardHourBTS.s'
+import { IDashboardHours } from '../model/IDashboardHours.m'
+import { DashboardHoursBDT } from './DashBoardHourBDT.s'
 import { DashBoardHourMock } from './DashBoardHourMock.s'
 
 export class DashBoardHourAdapterFactory {
-	static getAdapter(): DashBoardHourInterface {
+	static getAdapter(): IDashboardHours {
 		const { provider } = resolveCapabilities()
 
-		logger.infoTag(LogTag.Provider, `Using estimated-project provider: ${provider}`)
+		logger.infoTag(LogTag.Provider, `Using Dashboard provider: ${provider}`)
 
 		switch (provider) {
 			case 'ers':
-				return new DashBoardHourBDT()
+				return new DashboardHoursBDT()
 
 			case 'mock':
 			default:

@@ -73,5 +73,9 @@
 @use '../interfaces/EstimatedProjects/components/estimatedProjectGrid';
 
 /**DASHBOARD HOURS**/
+@use '../interfaces/DashboardHours/views/dashboardHours';
 @use '../interfaces/DashboardHours/components/dashboard-hor-header';
-//@use '../interfaces/DashboardHours/views/dashboardHours';
+@use '../interfaces/DashboardHours/components/dashboardHourFilters';
+@use '../interfaces/DashboardHours/components/dashboardHourToolbar';
+@use '../interfaces/DashboardHours/components/dashboardHoursTable';
+@use '../interfaces/DashboardHours/components/dashboard-filters-modal';

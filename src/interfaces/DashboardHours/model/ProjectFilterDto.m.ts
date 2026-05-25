@@ -9,6 +9,8 @@ export interface ProjectFilterDto {
 
 	ProjectId: number
 
+	Name?: string | null
+
 	CreatedAt?: string | null
 
 	UpdatedAt?: string | null
@@ -22,4 +24,6 @@ export interface ProjectFilterDto {
 
 export interface CreateProjectFilterDto {
 	ProjectIds: number[]
+
+	Name: string
 }

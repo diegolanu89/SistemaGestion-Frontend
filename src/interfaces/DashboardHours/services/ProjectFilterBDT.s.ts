@@ -44,6 +44,8 @@ export class ProjectFilterBDT implements IProjectFilters {
 
 				body: JSON.stringify({
 					projectIds: data.ProjectIds,
+
+					name: data.Name,
 				}),
 			})
 		} catch (error: unknown) {
