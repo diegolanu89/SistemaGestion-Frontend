@@ -1,8 +1,8 @@
 import { FC } from 'react'
-import { TrackingHistoryEntry } from '../../models/ProjectTrackingDTO.m'
+import { ProjectTrackingUpdateDto } from '../../models/ProjectTrackingDTO.m'
 
 interface Props {
-	history: TrackingHistoryEntry[]
+	updates: ProjectTrackingUpdateDto[]
 }
 
 const formatDate = (value: string | null): string => {
@@ -23,8 +23,8 @@ const formatDateTime = (value: string | null): string => {
 	return date.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
-export const TrackingHistoryTable: FC<Props> = ({ history }) => {
-	if (history.length === 0) {
+export const TrackingHistoryTable: FC<Props> = ({ updates }) => {
+	if (updates.length === 0) {
 		return <div className="tracking-modal__history-empty">El proyecto no tiene registros en el historial de cambios.</div>
 	}
 
@@ -39,11 +39,11 @@ export const TrackingHistoryTable: FC<Props> = ({ history }) => {
 			</thead>
 
 			<tbody>
-				{history.map((entry) => (
+				{updates.map((entry) => (
 					<tr key={entry.id}>
-						<td>{formatDate(entry.endDate)}</td>
-						<td>{entry.observations}</td>
-						<td>{formatDateTime(entry.registeredAt)}</td>
+						<td>{formatDate(entry.changeEndDate)}</td>
+						<td>{entry.observations ?? '—'}</td>
+						<td>{formatDateTime(entry.createdAt)}</td>
 					</tr>
 				))}
 			</tbody>

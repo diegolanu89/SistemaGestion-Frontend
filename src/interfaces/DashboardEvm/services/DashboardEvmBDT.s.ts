@@ -2,19 +2,31 @@ import { HttpClient } from '../../base/services/HttpClient.s'
 
 import { DashboardEvmInterface } from '../models/DashboardEvmInterface.m'
 import { DashboardEvmResponse } from '../models/DashboardEvmDTO.m'
-import { ProjectTrackingDto } from '../models/ProjectTrackingDTO.m'
+import { ProjectMetricsBatchResponse, ProjectMetricsDto } from '../models/ProjectMetricsDTO.m'
+import { ProjectTrackingDto, ProjectTrackingResponse } from '../models/ProjectTrackingDTO.m'
 
 const BASE_URL = `${import.meta.env.VITE_API_URL}/projects`
+const TRACKING_BASE_URL = `${import.meta.env.VITE_API_URL}/project-trackings`
 
 export class DashboardEvmBDT implements DashboardEvmInterface {
 	async getEvm(): Promise<DashboardEvmResponse> {
-		// TODO RF-10: el endpoint actual /projects/evm devuelve ProjectPaginatedResponse
-		// sin `changesCount`. Coordinar con backend para incluirlo.
+		// El endpoint devuelve además { current_page, per_page, last_page, from, to }
+		// pero a nivel front sólo consumimos { data, total }.
 		return await HttpClient.request<DashboardEvmResponse>(`${BASE_URL}/evm`)
 	}
 
-	async getTracking(projectId: number): Promise<ProjectTrackingDto> {
-		// TODO RF-10: endpoint a definir con backend.
-		return await HttpClient.request<ProjectTrackingDto>(`${BASE_URL}/${projectId}/tracking`)
+	async getMetricsBatch(projectIds: number[]): Promise<ProjectMetricsDto[]> {
+		if (projectIds.length === 0) return []
+
+		const query = new URLSearchParams({ project_ids: projectIds.join(',') })
+		const response = await HttpClient.request<ProjectMetricsBatchResponse>(`${BASE_URL}/metrics/batch?${query.toString()}`)
+
+		return response.metrics ?? []
+	}
+
+	async getTracking(projectId: number): Promise<ProjectTrackingDto | null> {
+		const response = await HttpClient.request<ProjectTrackingResponse>(`${TRACKING_BASE_URL}/${projectId}`)
+
+		return response.data
 	}
 }

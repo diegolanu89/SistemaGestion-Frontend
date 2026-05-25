@@ -13,9 +13,9 @@ import { ProjectTrackingModal } from '../components/tracking/ProjectTrackingModa
 
 export const DashboardEvmView: FC = () => {
 	const { loading, error, filters, setFilters, groups, summary, refetch } = useDashboardEvmController()
-	const { tracking, trackingLoading, trackingError, openTracking, closeTracking } = useProjectTracking()
+	const { selectedRow, tracking, trackingLoading, trackingError, openTracking, closeTracking } = useProjectTracking()
 
-	const showTracking = tracking !== null || trackingLoading || trackingError !== null
+	const showTracking = selectedRow !== null
 
 	return (
 		<div className="dashboard-evm">
@@ -34,7 +34,13 @@ export const DashboardEvmView: FC = () => {
 			</div>
 
 			{showTracking && (
-				<ProjectTrackingModal tracking={tracking} loading={trackingLoading} error={trackingError} onClose={closeTracking} />
+				<ProjectTrackingModal
+					selectedRow={selectedRow}
+					tracking={tracking}
+					loading={trackingLoading}
+					error={trackingError}
+					onClose={closeTracking}
+				/>
 			)}
 		</div>
 	)

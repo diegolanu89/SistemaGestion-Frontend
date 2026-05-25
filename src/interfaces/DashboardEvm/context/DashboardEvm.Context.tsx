@@ -18,6 +18,7 @@ export const DashboardEvmProvider = ({ children }: Props) => {
 
 	const [filters, setFilters] = useState<DashboardEvmFilters>(DEFAULT_DASHBOARD_EVM_FILTERS)
 
+	const [selectedRow, setSelectedRow] = useState<DashboardEvmRowDto | null>(null)
 	const [tracking, setTracking] = useState<ProjectTrackingDto | null>(null)
 	const [trackingLoading, setTrackingLoading] = useState<boolean>(false)
 	const [trackingError, setTrackingError] = useState<string | null>(null)
@@ -38,6 +39,9 @@ export const DashboardEvmProvider = ({ children }: Props) => {
 			filters,
 			setFilters,
 
+			selectedRow,
+			setSelectedRow,
+
 			tracking,
 			setTracking,
 
@@ -50,7 +54,7 @@ export const DashboardEvmProvider = ({ children }: Props) => {
 			refetch,
 			setRefetch,
 		}),
-		[rows, loading, error, filters, tracking, trackingLoading, trackingError, refetch]
+		[rows, loading, error, filters, selectedRow, tracking, trackingLoading, trackingError, refetch]
 	)
 
 	return <dashboardEvmContext.Provider value={value}>{children}</dashboardEvmContext.Provider>

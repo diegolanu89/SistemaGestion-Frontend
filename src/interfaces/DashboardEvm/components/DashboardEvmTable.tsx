@@ -1,10 +1,11 @@
 import { FC } from 'react'
 import { DashboardEvmComputedGroup } from '../hooks/useDashboardEvmController.h'
+import { DashboardEvmRowDto } from '../models/DashboardEvmDTO.m'
 import { DashboardEvmRow } from './DashboardEvmRow'
 
 interface Props {
 	groups: DashboardEvmComputedGroup[]
-	onOpenTracking: (projectId: number) => void
+	onOpenTracking: (row: DashboardEvmRowDto) => void
 }
 
 export const DashboardEvmTable: FC<Props> = ({ groups, onOpenTracking }) => {

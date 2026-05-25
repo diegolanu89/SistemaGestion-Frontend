@@ -1,11 +1,12 @@
 import { FC } from 'react'
 import { DashboardEvmComputedRow } from '../hooks/useDashboardEvmController.h'
+import { DashboardEvmRowDto } from '../models/DashboardEvmDTO.m'
 import { DashboardEvmChangeControlCell } from './DashboardEvmChangeControlCell'
 
 interface Props {
 	row: DashboardEvmComputedRow
 	clientName: string | null
-	onOpenTracking: (projectId: number) => void
+	onOpenTracking: (row: DashboardEvmRowDto) => void
 }
 
 const formatHours = (value: number): string => value.toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
@@ -32,7 +33,7 @@ export const DashboardEvmRow: FC<Props> = ({ row, clientName, onOpenTracking }) 
 			</td>
 
 			<td className="dashboard-evm-table__cc">
-				<DashboardEvmChangeControlCell count={project.changesCount} onOpen={() => onOpenTracking(project.id)} />
+				<DashboardEvmChangeControlCell count={project.changesCount} onOpen={() => onOpenTracking(project)} />
 			</td>
 
 			<td className="dashboard-evm-table__numeric">{formatHours(metrics.bac)}</td>

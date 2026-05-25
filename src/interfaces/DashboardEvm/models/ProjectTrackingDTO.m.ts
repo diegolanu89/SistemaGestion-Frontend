@@ -1,26 +1,36 @@
 /**
- * DTO del modal "Seguimiento de Proyectos: Planificación, Desvíos y Fechas Reales"
- * que el Dashboard EVM abre al hacer click en la columna Control de cambios.
+ * DTO del módulo "Seguimiento de Proyectos: Planificación, Desvíos y Fechas Reales"
+ * que el Dashboard EVM consume para:
+ *  - poblar la columna "Control de cambios" (cantidad de `updates`)
+ *  - abrir el modal de seguimiento (RF-10)
  *
- * TODO RF-10: coordinar con backend para que exponga GET /projects/:id/tracking
- * con esta forma. Mientras tanto, el mock lo provee.
+ * Shape real del backend `GET /api/project-trackings/{projectId}` envuelto en
+ * `{ success, data }`. La respuesta puede ser `data: null` si el proyecto no
+ * tiene tracking registrado.
  */
-export interface TrackingHistoryEntry {
+export interface ProjectTrackingUpdateDto {
 	id: number
-	endDate: string | null
-	observations: string
-	registeredAt: string
+	projectTrackingId: number
+	changeEndDate: string | null
+	observations: string | null
+	createdAt: string
+	updatedAt: string
 }
 
 export interface ProjectTrackingDto {
+	id: number
 	projectId: number
-	projectName: string
-	projectCode?: string | null
-
 	startDate: string | null
-	endDatePlanned: string | null
-	endDateActual: string | null
+	plannedEndDate: string | null
+	actualEndDate: string | null
 	implementationDate: string | null
+	createdAt: string
+	updatedAt: string
+	updates: ProjectTrackingUpdateDto[]
+}
 
-	history: TrackingHistoryEntry[]
+export interface ProjectTrackingResponse {
+	success: boolean
+	data: ProjectTrackingDto | null
+	message?: string
 }

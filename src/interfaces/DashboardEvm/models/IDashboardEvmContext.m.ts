@@ -16,6 +16,10 @@ export interface IDashboardEvmContext {
 	filters: DashboardEvmFilters
 	setFilters: Dispatch<SetStateAction<DashboardEvmFilters>>
 
+	/** Row del proyecto seleccionado para el modal de seguimiento (incluye nombre, código, etc.) */
+	selectedRow: DashboardEvmRowDto | null
+	setSelectedRow: Dispatch<SetStateAction<DashboardEvmRowDto | null>>
+
 	tracking: ProjectTrackingDto | null
 	setTracking: Dispatch<SetStateAction<ProjectTrackingDto | null>>
 

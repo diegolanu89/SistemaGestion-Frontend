@@ -23,12 +23,12 @@ export const TrackingDatesPanel: FC<Props> = ({ tracking }) => (
 
 		<div className="tracking-modal__date">
 			<span className="tracking-modal__date-label">Fecha fin planificada</span>
-			<strong>{formatDate(tracking.endDatePlanned)}</strong>
+			<strong>{formatDate(tracking.plannedEndDate)}</strong>
 		</div>
 
 		<div className="tracking-modal__date">
 			<span className="tracking-modal__date-label">Fecha fin real</span>
-			<strong>{formatDate(tracking.endDateActual)}</strong>
+			<strong>{formatDate(tracking.actualEndDate)}</strong>
 		</div>
 
 		<div className="tracking-modal__date">
