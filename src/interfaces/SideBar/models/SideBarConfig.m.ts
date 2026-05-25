@@ -7,7 +7,7 @@ import { DASHBOARD_HOURS_PATHS } from '../../DashboardHours/routes/paths'
 export const SIDEBAR = {
 	config: {
 		drawerWidth: 260,
-		title: 'Menú',
+		title: '',
 	},
 
 	styles: {

@@ -19,9 +19,11 @@ export const SideBarView: FC = () => {
 			</button>
 
 			<aside className={`sidebar ${isOpen ? 'is-open' : ''}`}>
-				<div className="sidebar__header">
-					<span className="sidebar__title">{SIDEBAR.config.title}</span>
-				</div>
+				{SIDEBAR.config.title && (
+					<div className="sidebar__header">
+						<span className="sidebar__title">{SIDEBAR.config.title}</span>
+					</div>
+				)}
 
 				<nav className="sidebar__menu">
 					{SIDEBAR.menu.map((item) => {
