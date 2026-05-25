@@ -78,6 +78,11 @@
 	.material-icons {
 		font-size: 20px;
 	}
+
+	> span:not(.material-icons) {
+		font-size: 16px;
+		font-weight: 700;
+	}
 }
 
 /* =========================
@@ -145,6 +150,17 @@
 
 .sidebar-item__text {
 	font-size: 14px;
+}
+
+/* Top-level direct items (e.g. Inicio) — same weight/size as module parents. */
+.sidebar__section > .sidebar-item .sidebar-item__text {
+	font-size: 16px;
+	font-weight: 700;
+}
+
+/* Children inside a module — lighter color so they read as secondary. */
+.sidebar__children .sidebar-item {
+	color: var(--color-text-secondary);
 }
 
 /* =========================

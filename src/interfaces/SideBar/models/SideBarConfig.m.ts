@@ -6,7 +6,7 @@ import { SideBarItem as SideBarItemType } from './SideBar.m'
 export const SIDEBAR = {
 	config: {
 		drawerWidth: 260,
-		title: 'Menú',
+		title: '',
 	},
 
 	styles: {

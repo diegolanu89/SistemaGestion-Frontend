@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from 'react-router-dom'
 import { useMemo, useState } from 'react'
-import { useCapabilities } from '../../base/context/Capabilities.Context'
 import { SIDEBAR } from '../../SideBar/models/SideBarConfig.m'
+import { useAuth } from '../../Login/hooks/useAuth.h'
+import { PermissionController } from '../../base/controllers/PermissionController.c'
 
 const STORAGE_KEY = 'feature_usage'
 
@@ -13,7 +14,7 @@ type ActionItem = {
 	icon: string
 	path: string
 	section: string
-	roles?: string[]
+	requiredPermission?: string
 	disabled?: boolean
 }
 
@@ -38,7 +39,7 @@ const flattenMenu = (): ActionItem[] => {
 				icon: child.icon ?? 'circle',
 				path: child.path,
 				section: section.label,
-				roles: undefined,
+				requiredPermission: child.requiredPermission,
 				disabled: false,
 			}))
 	)
@@ -46,26 +47,19 @@ const flattenMenu = (): ActionItem[] => {
 
 const FeatureGrid = () => {
 	const navigate = useNavigate()
-	const { role } = useCapabilities()
+	const { user } = useAuth()
 
 	const [usage, setUsageState] = useState<UsageMap>(() => getUsage())
 
 	const allActions = useMemo(() => flattenMenu(), [])
 
-	const filteredByRole = useMemo(() => {
-		return allActions.map((action) => {
-			const isAllowed = !action.roles || action.roles.includes(role)
-
-			return {
-				...action,
-				disabled: !isAllowed,
-			}
-		})
-	}, [allActions, role])
+	const allowedActions = useMemo(() => {
+		return allActions.filter((action) => PermissionController.hasPermission(user, action.requiredPermission))
+	}, [allActions, user])
 
 	const sorted = useMemo(() => {
-		return [...filteredByRole].sort((a, b) => (usage[b.path] || 0) - (usage[a.path] || 0))
-	}, [filteredByRole, usage])
+		return [...allowedActions].sort((a, b) => (usage[b.path] || 0) - (usage[a.path] || 0))
+	}, [allowedActions, usage])
 
 	const topActions = sorted.slice(0, 4)
 	const restActions = sorted.slice(4)
