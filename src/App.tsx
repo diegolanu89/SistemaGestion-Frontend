@@ -10,6 +10,7 @@ import { IdleProtectedRoutes } from './interfaces/Idle/routes/routes'
 import { LoginPublicRoutes } from './interfaces/Login/routes/routes'
 import { ProyectPublicRoutes } from './interfaces/Proyect/routes/routes'
 import { EstimatedProjectRoutes } from './interfaces/EstimatedProjects/routes/routes'
+import { ConfigurationsRoutes } from './interfaces/Configurations/routes/routes'
 import { IDLE_PATHS } from './interfaces/Idle/routes/paths'
 import { LOGIN_PATHS } from './interfaces/Login/routes/paths'
 import { SideBarView } from './interfaces/SideBar/views/SideBar.v'
@@ -48,6 +49,7 @@ const AppClient = () => {
 												{EstimatedProjectRoutes()}
 												{DashBoardHoursRoutes()}
 												{ProjectAssignmentRoutes()}
+												{ConfigurationsRoutes()}
 											</Route>
 
 											<Route path="*" element={<RouteNotFound />} />

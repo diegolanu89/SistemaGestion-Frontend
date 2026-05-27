@@ -95,3 +95,7 @@
 @use '../interfaces/ProjectAsignament/components/projectAssignmentList';
 @use '../interfaces/ProjectAsignament/components/projectAssignmentSearch';
 @use '../interfaces/ProjectAsignament/components/selectableProjectItem';
+
+/**CONFIGURATIONS**/
+@use '../interfaces/Configurations/views/_configurations';
+@use '../interfaces/Configurations/components/_configurationsTab';
