@@ -54,6 +54,10 @@
 @use '../interfaces/ViewProyect/views/proyectItem';
 @use '../interfaces/ViewProyect/components/proyectHeaderView';
 @use '../interfaces/ViewProyect/components/proyectHeaderViewItem';
+@use '../interfaces/ViewProyect/components/projectAccordion';
+@use '../interfaces/ViewProyect/components/section/projectHoursAccordion';
+@use '../interfaces/ViewProyect/components/section/projectChangesAccordion';
+@use '../interfaces/ViewProyect/components/section/projectTrackinAccordion';
 
 /**ETC**/
 @use '../interfaces/Etc/views/etcLoadView';

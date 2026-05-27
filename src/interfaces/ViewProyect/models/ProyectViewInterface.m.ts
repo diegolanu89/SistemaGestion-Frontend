@@ -2,7 +2,48 @@
 
 import { ProjectDto, UpdateBacDto } from './ProyectViewDTO.m'
 
-// 🔹 respuesta paginada EXACTA del backend
+// =========================================================
+// 🔹 PROJECT USER HOURS
+// =========================================================
+
+export interface ProjectUserHoursDto {
+	user_id: number
+
+	user_name: string
+
+	role_short?: string | null
+
+	leader_name?: string | null
+
+	months: Record<
+		string,
+		{
+			hours: number
+
+			expected: number
+		}
+	>
+
+	total_hours: number
+}
+
+// =========================================================
+// 🔹 PROJECT HOURS RESPONSE
+// =========================================================
+
+export interface ProjectHoursResponseDto {
+	project_id: number
+
+	months: string[]
+
+	month_hours: Record<string, number>
+
+	data: ProjectUserHoursDto[]
+}
+
+// =========================================================
+// 🔹 PAGINATED RESPONSE
+// =========================================================
 
 export interface ProjectPaginatedResponse {
 	data: ProjectDto[]
@@ -20,6 +61,10 @@ export interface ProjectPaginatedResponse {
 	to: number
 }
 
+// =========================================================
+// 🔹 RECALCULATE HOURS
+// =========================================================
+
 export interface RecalculateHoursResponse {
 	message: string
 
@@ -28,11 +73,19 @@ export interface RecalculateHoursResponse {
 	total_entries: number
 }
 
+// =========================================================
+// 🔹 UPDATE BAC
+// =========================================================
+
 export interface UpdateBacResponse {
 	message: string
 
 	project: ProjectDto
 }
+
+// =========================================================
+// 🔹 GET ALL PARAMS
+// =========================================================
 
 export interface GetAllProjectsParams {
 	page?: number
@@ -54,12 +107,18 @@ export interface GetAllProjectsParams {
 	code?: string
 }
 
+// =========================================================
+// 🔹 INTERFACE
+// =========================================================
+
 export interface ProyectViewInterface {
 	getAll(params?: GetAllProjectsParams): Promise<ProjectPaginatedResponse>
 
 	getEvm(): Promise<ProjectPaginatedResponse>
 
 	getById(id: number): Promise<ProjectDto>
+
+	getProjectHours(id: number): Promise<ProjectHoursResponseDto>
 
 	updateBac(id: number, data: UpdateBacDto): Promise<UpdateBacResponse>
 

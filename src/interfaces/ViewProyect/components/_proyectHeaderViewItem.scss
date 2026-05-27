@@ -1,11 +1,80 @@
+/* =========================================================
+🔹 PROJECT DETAIL ACCORDION
+========================================================= */
+
 .project-detail-metric,
 .project-detail-accordion {
 	background: var(--color-surface);
 
 	border: 1px solid var(--color-border);
 
+	border-radius: 18px;
+
 	box-shadow: 0 4px 12px var(--color-shadow-soft);
+
+	overflow: hidden;
 }
+
+.project-detail-accordion:not(.is-open) {
+	border-bottom: none;
+}
+
+.project-detail-accordion.is-open {
+	overflow: visible;
+}
+
+.project-detail-accordion__content {
+	display: grid;
+
+	grid-template-rows: 0fr;
+
+	opacity: 0;
+
+	padding: 0 20px;
+
+	overflow: hidden;
+
+	transition:
+		grid-template-rows 0.35s ease,
+		opacity 0.25s ease,
+		padding 0.25s ease;
+
+	& > div {
+		min-height: 0;
+	}
+}
+
+.project-detail-accordion__content.is-open {
+	grid-template-rows: 1fr;
+
+	opacity: 1;
+
+	padding: 20px;
+}
+
+.project-detail-accordion__content.is-closed {
+	grid-template-rows: 0fr;
+
+	opacity: 0;
+
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.project-detail-accordion__content--full {
+	width: 100%;
+
+	max-height: none !important;
+
+	overflow: visible !important;
+
+	padding-left: 0;
+	padding-right: 0;
+}
+
+/* =========================================================
+🔹 PROJECT DETAIL HEADER
+========================================================= */
 
 .project-detail-header {
 	display: flex;

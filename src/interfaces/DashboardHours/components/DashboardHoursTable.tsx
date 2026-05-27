@@ -8,6 +8,8 @@ import { DashboardHoursDetailDto, DashboardHoursRowDto } from '../model/Dashboar
 
 const PAGE_SIZE = 10
 
+type DashboardViewMode = 'details' | 'kpis'
+
 type CapacityStatus = 'success' | 'danger' | 'empty'
 
 const getCapacityStatus = (hours: number, max: number): CapacityStatus => {
@@ -44,6 +46,8 @@ export const DashboardHoursTable: FC = () => {
 	const [expandedUsers, setExpandedUsers] = useState<Record<number, boolean>>({})
 
 	const [page, setPage] = useState<number>(1)
+
+	const [viewMode, setViewMode] = useState<DashboardViewMode>('details')
 
 	const rows = useMemo(() => dashboard?.data ?? [], [dashboard])
 
@@ -197,6 +201,81 @@ export const DashboardHoursTable: FC = () => {
 	}
 
 	// =====================================================
+	// 🔹 KPI TABLE
+	// =====================================================
+
+	const renderKpiTable = () => {
+		return (
+			<div className="dashboard-hours-table__wrapper">
+				<table className="dashboard-hours-table">
+					<thead>
+						<tr>
+							<th>Usuario</th>
+
+							<th>Rol</th>
+
+							{months.map((monthKey) => (
+								<th key={monthKey}>
+									<div className="dashboard-hours-table__month-header">
+										<span>{monthKey}</span>
+
+										<small>{monthHours?.[monthKey] ?? 160}h</small>
+									</div>
+								</th>
+							))}
+						</tr>
+					</thead>
+
+					<tbody>
+						{paginatedRows.map((row) => (
+							<tr key={row.user_id} className="dashboard-hours-table__row">
+								<td className="dashboard-hours-table__cell">
+									<div className="dashboard-hours-table__user-main">
+										<strong className="dashboard-hours-table__user-name">{row.user_name}</strong>
+									</div>
+								</td>
+
+								<td className="dashboard-hours-table__cell">
+									<span className={`dashboard-hours-table__role ${getRoleClass(row.role_short)}`}>{row.role_short ?? 'N/A'}</span>
+								</td>
+
+								{months.map((monthKey) => {
+									const month = row.months?.[monthKey]
+
+									const hours = month?.hours ?? 0
+
+									const max = monthHours?.[monthKey] ?? 160
+
+									const percentage = max > 0 ? (hours / max) * 100 : 0
+
+									return (
+										<td key={`${row.user_id}-${monthKey}`} className="dashboard-hours-table__cell">
+											<div className="dashboard-hours-table__kpi-cell">
+												<strong>{percentage.toFixed(0)}%</strong>
+
+												<div className="dashboard-hours-table__kpi-bar">
+													<div
+														className={`dashboard-hours-table__kpi-fill ${percentage > 100 ? 'is-danger' : percentage > 70 ? 'is-warning' : 'is-success'}`}
+														style={{
+															width: `${Math.min(percentage, 100)}%`,
+														}}
+													/>
+												</div>
+
+												<small>{hours.toFixed(1)}h</small>
+											</div>
+										</td>
+									)
+								})}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		)
+	}
+
+	// =====================================================
 	// 🔹 EMPTY
 	// =====================================================
 
@@ -217,42 +296,62 @@ export const DashboardHoursTable: FC = () => {
 	return (
 		<div className="dashboard-hours-table-card">
 			<div className="dashboard-hours-table-card__header">
-				<div>
-					<h3>Dashboard de Horas</h3>
+				<div className="dashboard-hours-table-card__header-left">
+					<div>
+						<h3>Dashboard de Horas</h3>
 
-					<p>Visualización consolidada de capacidad y horas planificadas por usuario.</p>
+						<p>Visualización consolidada de capacidad y horas planificadas por usuario.</p>
+					</div>
+
+					<div className="dashboard-hours-table-card__view-toggle">
+						<button className={`dashboard-hours-table-card__view-btn ${viewMode === 'details' ? 'is-active' : ''}`} onClick={() => setViewMode('details')}>
+							<span className="material-icons">groups</span>
+
+							<span>Detalles por usuario</span>
+						</button>
+
+						<button className={`dashboard-hours-table-card__view-btn ${viewMode === 'kpis' ? 'is-active' : ''}`} onClick={() => setViewMode('kpis')}>
+							<span className="material-icons">monitoring</span>
+
+							<span>KPIs por usuario</span>
+						</button>
+					</div>
 				</div>
 
 				<span className="dashboard-hours-table-card__count">{rows.length} usuarios</span>
 			</div>
 
-			<div className="dashboard-hours-table__wrapper">
-				<table className="dashboard-hours-table">
-					<thead>
-						<tr>
-							<th>Usuario</th>
+			{viewMode === 'details' ? (
+				<div className="dashboard-hours-table__wrapper">
+					<table className="dashboard-hours-table">
+						<thead>
+							<tr>
+								<th>Usuario</th>
 
-							<th>Cliente</th>
+								<th>Cliente</th>
 
-							<th>Proyecto</th>
+								<th>Proyecto</th>
 
-							{months.map((monthKey) => (
-								<th key={monthKey}>
-									<div className="dashboard-hours-table__month-header">
-										<span>{monthKey}</span>
+								{months.map((monthKey) => (
+									<th key={monthKey}>
+										<div className="dashboard-hours-table__month-header">
+											<span>{monthKey}</span>
 
-										<small>{monthHours?.[monthKey] ?? 160}h</small>
-									</div>
-								</th>
-							))}
+											<small>{monthHours?.[monthKey] ?? 160}h</small>
+										</div>
+									</th>
+								))}
 
-							<th>Total</th>
-						</tr>
-					</thead>
+								<th>Total</th>
+							</tr>
+						</thead>
 
-					<tbody>{paginatedRows.map(renderMainRow)}</tbody>
-				</table>
-			</div>
+						<tbody>{paginatedRows.map(renderMainRow)}</tbody>
+					</table>
+				</div>
+			) : (
+				renderKpiTable()
+			)}
 
 			{totalPages > 1 && (
 				<div className="dashboard-hours-table__pagination">

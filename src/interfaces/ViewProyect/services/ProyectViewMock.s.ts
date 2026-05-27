@@ -1,4 +1,11 @@
-import { ProyectViewInterface, ProjectPaginatedResponse, RecalculateHoursResponse, UpdateBacResponse } from '../models/ProyectViewInterface.m'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+	ProyectViewInterface,
+	ProjectPaginatedResponse,
+	RecalculateHoursResponse,
+	UpdateBacResponse,
+	ProjectHoursResponseDto,
+} from '../models/ProyectViewInterface.m'
 import { ProjectDto } from '../models/ProyectViewDTO.m'
 
 import projectsPage1 from './mocks/proyects.page1.json'
@@ -7,6 +14,9 @@ import recalcResponse from './mocks/recalculate.response.json'
 import updateBacResponse from './mocks/updateBac.response.json'
 
 export class ProyectViewMock implements ProyectViewInterface {
+	getProjectHours(id: number): Promise<ProjectHoursResponseDto> {
+		throw new Error('Method not implemented.')
+	}
 	async getAll(): Promise<ProjectPaginatedResponse> {
 		return projectsPage1 as ProjectPaginatedResponse
 	}
