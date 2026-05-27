@@ -91,13 +91,37 @@
 .project-detail-metrics {
 	display: grid;
 
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 
 	gap: 14px;
 
 	position: relative;
 
 	z-index: 1;
+}
+
+/* =========================================================
+🔹 MINI KPI GROUP
+========================================================= */
+
+.project-detail-metrics__mini-kpis {
+	grid-column: span 2;
+
+	display: grid;
+
+	grid-template-columns: repeat(3, 1fr);
+
+	gap: 14px;
+
+	.project-detail-metric {
+		min-height: 132px;
+
+		padding: 14px;
+
+		strong {
+			font-size: 22px;
+		}
+	}
 }
 
 /* =========================================================
@@ -590,6 +614,10 @@
 	.project-detail-metrics {
 		grid-template-columns: repeat(3, 1fr);
 	}
+
+	.project-detail-metrics__mini-kpis {
+		grid-column: span 3;
+	}
 }
 
 @media (max-width: 800px) {
@@ -600,10 +628,20 @@
 	.project-detail-metrics {
 		grid-template-columns: repeat(2, 1fr);
 	}
+
+	.project-detail-metrics__mini-kpis {
+		grid-column: span 2;
+	}
 }
 
 @media (max-width: 520px) {
 	.project-detail-metrics {
+		grid-template-columns: 1fr;
+	}
+
+	.project-detail-metrics__mini-kpis {
+		grid-column: span 1;
+
 		grid-template-columns: 1fr;
 	}
 }

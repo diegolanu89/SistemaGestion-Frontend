@@ -19,13 +19,7 @@ interface MetricHeaderProps {
 	onInfo: (title: string, description: string) => void
 }
 
-const MetricHeader: FC<MetricHeaderProps> = ({
-	title,
-
-	description,
-
-	onInfo,
-}) => {
+const MetricHeader: FC<MetricHeaderProps> = ({ title, description, onInfo }) => {
 	return (
 		<div className="project-detail-metric__header">
 			<span className="project-detail-metric__label">{title}</span>
@@ -38,19 +32,10 @@ const MetricHeader: FC<MetricHeaderProps> = ({
 }
 
 export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
-	const {
-		changeRequests,
-
-		setChangeRequests,
-
-		changeRequestsLoading,
-
-		setChangeRequestsLoading,
-	} = useProyectViewContext()
+	const { changeRequests, setChangeRequests, changeRequestsLoading, setChangeRequestsLoading } = useProyectViewContext()
 
 	const [popover, setPopover] = useState<{
 		title: string
-
 		description: string
 	} | null>(null)
 
@@ -93,24 +78,16 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 	}, [changeRequests, project.id])
 
 	const approvedChangesHours = useMemo(() => {
-		return approvedChanges.reduce(
-			(acc, current) => acc + (current.bacHoursIncrement ?? 0),
-
-			0
-		)
+		return approvedChanges.reduce((acc, current) => acc + Number(current.bacHoursIncrement ?? 0), 0)
 	}, [approvedChanges])
 
 	const approvedChangesCost = useMemo(() => {
-		return approvedChanges.reduce(
-			(acc, current) => acc + (current.bacCostIncrement ?? 0),
-
-			0
-		)
+		return approvedChanges.reduce((acc, current) => acc + Number(current.bacCostIncrement ?? 0), 0)
 	}, [approvedChanges])
 
-	const adjustedBacHours = project.bacBaseHours + approvedChangesHours
+	const adjustedBacHours = Number(project.bacBaseHours ?? 0) + approvedChangesHours
 
-	const adjustedBacCost = (project.bacBaseCost ?? 0) + approvedChangesCost
+	const adjustedBacCost = Number(project.bacBaseCost ?? 0) + approvedChangesCost
 
 	const acTotal = adjustedBacHours * 0.62
 
@@ -138,9 +115,7 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 	if (changeRequestsLoading) {
 		return (
 			<div className="project-detail-metrics">
-				{Array.from({
-					length: 9,
-				}).map((_, index) => (
+				{Array.from({ length: 9 }).map((_, index) => (
 					<div key={index} className="project-detail-metric-skeleton">
 						<div className="project-detail-metric-skeleton__label" />
 
@@ -167,7 +142,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						onInfo={(title, description) =>
 							setPopover({
 								title,
-
 								description,
 							})
 						}
@@ -180,7 +154,7 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 					<div className="project-detail-metric__row">
 						<span>BAC Base</span>
 
-						<strong>{project.bacBaseHours.toFixed(1)}h</strong>
+						<strong>{Number(project.bacBaseHours ?? 0).toFixed(1)}h</strong>
 					</div>
 
 					<div className="project-detail-metric__row">
@@ -203,7 +177,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						onInfo={(title, description) =>
 							setPopover({
 								title,
-
 								description,
 							})
 						}
@@ -219,7 +192,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						onInfo={(title, description) =>
 							setPopover({
 								title,
-
 								description,
 							})
 						}
@@ -235,7 +207,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						onInfo={(title, description) =>
 							setPopover({
 								title,
-
 								description,
 							})
 						}
@@ -251,7 +222,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						onInfo={(title, description) =>
 							setPopover({
 								title,
-
 								description,
 							})
 						}
@@ -267,7 +237,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						onInfo={(title, description) =>
 							setPopover({
 								title,
-
 								description,
 							})
 						}
@@ -276,52 +245,51 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 					<strong>{vac.toFixed(1)}h</strong>
 				</div>
 
-				<div className={`project-detail-metric project-detail-metric--cpi ${cpiClass}`}>
-					<MetricHeader
-						title="CPI"
-						description="Cost Performance Index: mide la eficiencia de costos del proyecto."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
+				<div className="project-detail-metrics__mini-kpis">
+					<div className={`project-detail-metric project-detail-metric--cpi ${cpiClass}`}>
+						<MetricHeader
+							title="CPI"
+							description="Cost Performance Index: mide la eficiencia de costos del proyecto."
+							onInfo={(title, description) =>
+								setPopover({
+									title,
+									description,
+								})
+							}
+						/>
 
-								description,
-							})
-						}
-					/>
+						<strong>{cpi}</strong>
+					</div>
 
-					<strong>{cpi}</strong>
-				</div>
+					<div className={`project-detail-metric project-detail-metric--spi ${spiClass}`}>
+						<MetricHeader
+							title="SPI"
+							description="Schedule Performance Index: mide la eficiencia del cronograma respecto al avance esperado."
+							onInfo={(title, description) =>
+								setPopover({
+									title,
+									description,
+								})
+							}
+						/>
 
-				<div className={`project-detail-metric project-detail-metric--spi ${spiClass}`}>
-					<MetricHeader
-						title="SPI"
-						description="Schedule Performance Index: mide la eficiencia del cronograma respecto al avance esperado."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
+						<strong>{spi}</strong>
+					</div>
 
-								description,
-							})
-						}
-					/>
+					<div className="project-detail-metric project-detail-metric--advance">
+						<MetricHeader
+							title="Avance"
+							description="Porcentaje estimado de avance real considerando el valor ganado sobre el BAC ajustado."
+							onInfo={(title, description) =>
+								setPopover({
+									title,
+									description,
+								})
+							}
+						/>
 
-					<strong>{spi}</strong>
-				</div>
-
-				<div className="project-detail-metric project-detail-metric--advance">
-					<MetricHeader
-						title="Avance"
-						description="Porcentaje estimado de avance real considerando el valor ganado sobre el BAC ajustado."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
-
-								description,
-							})
-						}
-					/>
-
-					<strong>%{advance}</strong>
+						<strong>%{advance}</strong>
+					</div>
 				</div>
 			</div>
 
