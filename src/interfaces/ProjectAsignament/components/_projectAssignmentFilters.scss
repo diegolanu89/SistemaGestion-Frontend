@@ -1,0 +1,218 @@
+/* projectAssignmentFilters.scss */
+
+.project-assignment-filters {
+	display: grid;
+
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+
+	gap: 18px;
+
+	width: 100%;
+}
+
+/* =========================================================
+🔹 ITEM
+========================================================= */
+
+.project-assignment-filters__item {
+	display: flex;
+	align-items: flex-start;
+
+	gap: 16px;
+
+	padding: 18px;
+
+	border-radius: 20px;
+
+	border: 1px solid var(--color-border);
+
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+
+	color: var(--color-text-primary);
+
+	cursor: pointer;
+
+	position: relative;
+
+	overflow: hidden;
+
+	text-align: left;
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.25s ease,
+		border-color 0.25s ease,
+		background 0.25s ease;
+}
+
+/* =========================================================
+🔹 SHINE EFFECT
+========================================================= */
+
+.project-assignment-filters__item::before {
+	content: '';
+
+	position: absolute;
+
+	inset: 0;
+
+	background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+
+	transform: translateX(-120%);
+
+	transition: transform 0.7s ease;
+}
+
+.project-assignment-filters__item:hover::before {
+	transform: translateX(120%);
+}
+
+/* =========================================================
+🔹 HOVER
+========================================================= */
+
+.project-assignment-filters__item:hover {
+	transform: translateY(-3px);
+
+	border-color: var(--color-primary-opacity-20);
+
+	box-shadow: 0 10px 24px var(--color-shadow-soft);
+}
+
+/* =========================================================
+🔹 ACTIVE
+========================================================= */
+
+.project-assignment-filters__item:active {
+	transform: scale(0.98);
+}
+
+/* =========================================================
+🔹 SELECTED
+========================================================= */
+
+.project-assignment-filters__item.is-selected {
+	border-color: var(--color-primary-opacity-30);
+
+	background: linear-gradient(180deg, var(--color-primary-opacity-15) 0%, var(--color-primary-opacity-06) 100%);
+
+	box-shadow:
+		0 0 0 3px var(--color-primary-opacity-10),
+		0 12px 26px var(--color-primary-opacity-10);
+}
+
+/* =========================================================
+🔹 CHECKBOX
+========================================================= */
+
+.project-assignment-filters__checkbox {
+	width: 22px;
+	height: 22px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	border-radius: 7px;
+
+	border: 1px solid var(--color-border);
+
+	background: var(--color-surface);
+
+	flex-shrink: 0;
+
+	margin-top: 2px;
+
+	transition:
+		background 0.2s ease,
+		border-color 0.2s ease,
+		transform 0.2s ease;
+}
+
+.project-assignment-filters__item.is-selected .project-assignment-filters__checkbox {
+	background: var(--color-primary);
+
+	border-color: var(--color-primary);
+
+	transform: scale(1.05);
+}
+
+.project-assignment-filters__checkbox .material-icons {
+	font-size: 15px;
+
+	color: white;
+}
+
+/* =========================================================
+🔹 CONTENT
+========================================================= */
+
+.project-assignment-filters__content {
+	display: flex;
+	flex-direction: column;
+
+	gap: 8px;
+
+	min-width: 0;
+
+	flex: 1;
+}
+
+/* =========================================================
+🔹 TOP
+========================================================= */
+
+.project-assignment-filters__top {
+	display: flex;
+	align-items: center;
+
+	gap: 10px;
+}
+
+/* =========================================================
+🔹 ICON
+========================================================= */
+
+.project-assignment-filters__icon {
+	font-size: 22px;
+
+	color: var(--color-primary);
+
+	flex-shrink: 0;
+}
+
+/* =========================================================
+🔹 TITLE
+========================================================= */
+
+.project-assignment-filters__title {
+	font-size: 15px;
+
+	font-weight: 700;
+
+	color: var(--color-text-primary);
+}
+
+/* =========================================================
+🔹 DESCRIPTION
+========================================================= */
+
+.project-assignment-filters__description {
+	margin: 0;
+
+	font-size: 13px;
+
+	line-height: 1.45;
+
+	color: var(--color-text-secondary);
+}
+
+/* =========================================================
+🔹 RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+	.project-assignment-filters {
+		grid-template-columns: 1fr;
+	}
+}

@@ -1,0 +1,129 @@
+/* addProjectsModal.scss */
+
+.add-projects-modal {
+	position: fixed;
+
+	inset: 0;
+
+	z-index: 3000;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 24px;
+}
+
+.add-projects-modal__backdrop {
+	position: absolute;
+
+	inset: 0;
+
+	background: rgba(0, 0, 0, 0.45);
+
+	backdrop-filter: blur(6px);
+}
+
+.add-projects-modal__content {
+	position: relative;
+
+	width: 100%;
+	max-width: 1100px;
+
+	max-height: 90vh;
+
+	display: flex;
+	flex-direction: column;
+
+	gap: 20px;
+
+	padding: 28px;
+
+	border-radius: 28px;
+
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+
+	border: 1px solid var(--color-border);
+
+	overflow: hidden;
+}
+
+.add-projects-modal__header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.add-projects-modal__header h2 {
+	margin: 0;
+
+	font-size: 28px;
+
+	font-weight: 700;
+}
+
+.add-projects-modal__header p {
+	margin-top: 6px;
+
+	color: var(--color-text-secondary);
+}
+
+.add-projects-modal__header button {
+	width: 40px;
+	height: 40px;
+
+	border-radius: 12px;
+
+	border: none;
+
+	background: var(--color-hover);
+
+	cursor: pointer;
+}
+
+.add-projects-modal__filters,
+.add-projects-modal__search {
+	display: grid;
+
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+
+	gap: 14px;
+}
+
+.add-projects-modal__filters select,
+.add-projects-modal__search input {
+	height: 46px;
+
+	padding: 0 14px;
+
+	border-radius: 14px;
+
+	border: 1px solid var(--color-border);
+
+	background: var(--color-surface);
+
+	color: var(--color-text-primary);
+}
+
+.add-projects-modal__footer {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.add-projects-modal__footer button {
+	height: 46px;
+
+	padding: 0 20px;
+
+	border-radius: 14px;
+
+	border: none;
+
+	background: var(--color-primary);
+
+	color: #fff;
+
+	font-weight: 700;
+
+	cursor: pointer;
+}

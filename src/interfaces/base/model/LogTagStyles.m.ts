@@ -16,4 +16,5 @@ export const LOG_TAG_STYLES: Record<LogTag, string> = {
 	[LogTag.AdapterERROR]: 'color: #ff7043; font-weight: bold',
 	[LogTag.Navigation]: 'color:rgb(92, 70, 63); font-weight: bold',
 	[LogTag.Security]: 'color:rgb(115, 0, 255); font-weight: bold',
+	[LogTag.View]: 'color: #ff7043; font-weight: bold',
 }

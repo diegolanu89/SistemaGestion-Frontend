@@ -17,6 +17,8 @@ import ThemeContext from './interfaces/base/context/Theme.Context'
 import { useAppTheme } from './interfaces/base/hooks/useAppTheme.h'
 import { ProyectViewPublicRoutes } from './interfaces/ViewProyect/routes/routes'
 import { DashBoardHoursRoutes } from './interfaces/DashboardHours/routes/routes'
+import RouteNotFound from './interfaces/base/components/redirect/RouteNotFound'
+import { ProjectAssignmentRoutes } from './interfaces/ProjectAsignament/routes/routes'
 
 const AppClient = () => {
 	const { toggleTheme, mode } = useAppTheme()
@@ -45,7 +47,10 @@ const AppClient = () => {
 												{ProyectViewPublicRoutes()}
 												{EstimatedProjectRoutes()}
 												{DashBoardHoursRoutes()}
+												{ProjectAssignmentRoutes()}
 											</Route>
+
+											<Route path="*" element={<RouteNotFound />} />
 										</Routes>
 									</main>
 								</div>

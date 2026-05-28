@@ -1,0 +1,28 @@
+/* projectAssignment.scss */
+
+.project-assignment {
+	width: 100%;
+
+	display: flex;
+	flex-direction: column;
+
+	gap: 22px;
+
+	padding: 24px;
+
+	animation: projectAssignmentFade 0.35s ease;
+}
+
+@keyframes projectAssignmentFade {
+	from {
+		opacity: 0;
+
+		transform: translateY(8px);
+	}
+
+	to {
+		opacity: 1;
+
+		transform: translateY(0);
+	}
+}
