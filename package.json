@@ -19,7 +19,7 @@
 		"cypress:run": "cypress run",
 		"lint": "eslint .",
 		"format": "prettier --write .",
-		"sass": "sass --watch src/sass/main.scss src/css/appStyle.css",
+		"sass": "sass --watch src/sass/main.scss src/css/appStyle.css --poll",
 		"sass:build": "sass src/sass/main.scss src/css/appStyle.css",
 		"doc:md": "typedoc --options typedoc-markdown.json",
 		"doc:html": "typedoc",

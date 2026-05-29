@@ -1,8 +1,9 @@
 import { PROYECT_PATHS } from '../../Proyect/routes/paths'
 import { ESTIMATED_PROJECT_PATHS } from '../../EstimatedProjects/routes/paths'
+import { DASHBOARD_HOURS_PATHS } from '../../DashboardHours/routes/paths'
 
 import { SideBarItem as SideBarItemType } from './SideBar.m'
-import { DASHBOARD_HOURS_PATHS } from '../../DashboardHours/routes/paths'
+import { REPORTS_PATHS } from '../../reports/routes/paths'
 
 export const SIDEBAR = {
 	config: {
@@ -114,7 +115,7 @@ export const SIDEBAR = {
 				{
 					label: 'Reportes',
 					icon: 'description',
-					path: '/reporteria/reportes',
+					path: REPORTS_PATHS.REPORTS,
 
 					requiredPermission: 'REPORTS_ACCESS',
 				},

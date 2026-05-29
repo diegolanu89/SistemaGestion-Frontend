@@ -1,0 +1,290 @@
+.dotation-report__table-wrapper {
+	overflow-x: auto;
+
+	border-radius: 18px;
+
+	border: 1px solid var(--color-border);
+
+	background: var(--color-surface);
+
+	box-shadow: 0 4px 20px var(--color-shadow-soft);
+}
+
+.dotation-report__table {
+	width: 100%;
+
+	min-width: 1800px;
+
+	border-collapse: separate;
+
+	border-spacing: 0;
+
+	th {
+		position: sticky;
+
+		top: 0;
+
+		z-index: 5;
+
+		padding: 14px 16px;
+
+		text-align: center;
+
+		font-size: 12px;
+
+		font-weight: 700;
+
+		letter-spacing: 0.03em;
+
+		background: var(--color-bg-alt);
+
+		color: var(--color-text-secondary);
+
+		border-bottom: 1px solid var(--color-border);
+
+		white-space: nowrap;
+	}
+
+	td {
+		padding: 14px 16px;
+
+		text-align: center;
+
+		border-bottom: 1px solid var(--color-border);
+
+		vertical-align: top;
+
+		color: var(--color-text-primary);
+	}
+
+	td:first-child,
+	th:first-child {
+		text-align: left;
+	}
+
+	tbody tr {
+		transition:
+			background 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	tbody tr:hover {
+		background: var(--color-primary-opacity-04);
+	}
+
+	tbody tr:nth-child(even) {
+		background: rgba(255, 255, 255, 0.02);
+	}
+}
+
+/* ===================================================== */
+/* USER */
+/* ===================================================== */
+
+.dotation-report__user {
+	display: flex;
+	align-items: center;
+
+	font-weight: 700;
+
+	color: var(--color-text-primary);
+}
+
+.dotation-report__leader {
+	font-size: 13px;
+
+	color: var(--color-text-secondary);
+}
+
+/* ===================================================== */
+/* ROLE BADGES */
+/* ===================================================== */
+
+.dotation-report__role-badge {
+	display: inline-flex;
+
+	align-items: center;
+	justify-content: center;
+
+	min-width: 48px;
+
+	padding: 6px 12px;
+
+	border-radius: 999px;
+
+	font-size: 11px;
+
+	font-weight: 800;
+
+	text-transform: uppercase;
+
+	letter-spacing: 0.05em;
+
+	border: 1px solid transparent;
+}
+
+.dotation-report__role-badge.is-dev {
+	background: rgba(59, 130, 246, 0.15);
+
+	color: #2563eb;
+
+	border-color: rgba(59, 130, 246, 0.25);
+}
+
+.dotation-report__role-badge.is-qa {
+	background: rgba(16, 185, 129, 0.15);
+
+	color: #059669;
+
+	border-color: rgba(16, 185, 129, 0.25);
+}
+
+.dotation-report__role-badge.is-pm {
+	background: rgba(245, 158, 11, 0.15);
+
+	color: #d97706;
+
+	border-color: rgba(245, 158, 11, 0.25);
+}
+
+.dotation-report__role-badge.is-lead {
+	background: rgba(139, 92, 246, 0.15);
+
+	color: #7c3aed;
+
+	border-color: rgba(139, 92, 246, 0.25);
+}
+
+.dotation-report__role-badge.is-ba {
+	background: rgba(236, 72, 153, 0.15);
+
+	color: #db2777;
+
+	border-color: rgba(236, 72, 153, 0.25);
+}
+
+.dotation-report__role-badge.is-default {
+	background: var(--color-bg-alt);
+
+	color: var(--color-text-secondary);
+
+	border-color: var(--color-border);
+}
+
+/* ===================================================== */
+/* ASSIGNMENTS */
+/* ===================================================== */
+
+.dotation-report__assignments {
+	display: flex;
+
+	flex-direction: column;
+
+	gap: 10px;
+
+	min-width: 420px;
+
+	align-items: stretch;
+}
+
+.dotation-report__assignment-group {
+	display: flex;
+
+	flex-direction: column;
+
+	align-items: stretch;
+
+	gap: 10px;
+
+	padding: 12px;
+
+	border-radius: 14px;
+
+	background: var(--color-bg-alt);
+
+	border: 1px solid var(--color-border);
+}
+
+.dotation-report__assignment-client {
+	display: flex;
+
+	align-items: center;
+
+	min-height: 28px;
+
+	padding-bottom: 8px;
+
+	font-size: 12px;
+
+	font-weight: 800;
+
+	text-transform: uppercase;
+
+	letter-spacing: 0.05em;
+
+	color: var(--color-primary);
+
+	border-bottom: 1px solid var(--color-border);
+}
+
+.dotation-report__assignment-projects {
+	display: flex;
+
+	flex-wrap: wrap;
+
+	align-items: flex-start;
+
+	gap: 8px;
+}
+
+.dotation-report__assignment-project {
+	display: inline-flex;
+
+	align-items: center;
+
+	padding: 6px 12px;
+
+	border-radius: 999px;
+
+	font-size: 11px;
+
+	font-weight: 600;
+
+	background: var(--color-primary-opacity-08);
+
+	color: var(--color-primary);
+
+	border: 1px solid var(--color-primary-opacity-20);
+
+	transition:
+		background 0.2s ease,
+		transform 0.2s ease;
+}
+
+.dotation-report__assignment-project:hover {
+	transform: translateY(-1px);
+
+	background: var(--color-primary-opacity-12);
+}
+
+/* ===================================================== */
+/* HOURS */
+/* ===================================================== */
+
+.dotation-report__capacity-ok {
+	color: var(--color-success);
+
+	font-weight: 700;
+}
+
+.dotation-report__capacity-warning {
+	color: var(--color-warning);
+
+	font-weight: 700;
+}
+
+.dotation-report__capacity-danger {
+	color: var(--color-error);
+
+	font-weight: 800;
+}

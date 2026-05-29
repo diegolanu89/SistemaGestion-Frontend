@@ -86,7 +86,7 @@
 @use '../interfaces/DashboardHours/components/dashboard-filters-modal';
 
 /**ProjectAsignment**/
-@use '../interfaces/ProjectAsignament/views/projectAssignment';
+@use '../interfaces/ProjectAsignament/views/_projectAssignment';
 @use '../interfaces/ProjectAsignament/components/addProjectsModal';
 @use '../interfaces/ProjectAsignament/components/myProjectsSection';
 @use '../interfaces/ProjectAsignament/components/projectAssigHeader';
@@ -95,3 +95,12 @@
 @use '../interfaces/ProjectAsignament/components/projectAssignmentList';
 @use '../interfaces/ProjectAsignament/components/projectAssignmentSearch';
 @use '../interfaces/ProjectAsignament/components/selectableProjectItem';
+
+/** REPORTS **/
+
+@use '../interfaces/Reports/views/reports';
+@use '../interfaces/Reports/views/export';
+@use '../interfaces/Reports/views/dotacion';
+@use '../interfaces/Reports/components/reportHeader';
+@use '../interfaces/Reports/components/reportCard';
+@use '../interfaces/Reports/components/dotationReportTable';
