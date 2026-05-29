@@ -3,6 +3,7 @@ export enum LogTag {
 	//RA
 	// =========================
 	Adapter = 'Service API',
+	View = 'View',
 	SessionSocket = 'SessionSocket',
 	AuthSession = 'AuthSession',
 
@@ -27,4 +28,5 @@ export enum LogTag {
 	AdapterERROR = 'Service Error',
 	Navigation = 'Navigation',
 	Security = 'Security',
+	Performance = 'Performance',
 }

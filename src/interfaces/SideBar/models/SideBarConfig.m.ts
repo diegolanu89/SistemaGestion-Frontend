@@ -2,6 +2,7 @@ import { PROYECT_PATHS } from '../../Proyect/routes/paths'
 import { ESTIMATED_PROJECT_PATHS } from '../../EstimatedProjects/routes/paths'
 
 import { SideBarItem as SideBarItemType } from './SideBar.m'
+import { DASHBOARD_HOURS_PATHS } from '../../DashboardHours/routes/paths'
 
 export const SIDEBAR = {
 	config: {
@@ -98,7 +99,7 @@ export const SIDEBAR = {
 				{
 					label: 'Dashboard Horas',
 					icon: 'schedule',
-					path: '/analisis/dashboard-horas',
+					path: DASHBOARD_HOURS_PATHS.DASHBOARD_HOURS,
 
 					requiredPermission: 'DASHBOARD_HOURS_ACCESS',
 				},

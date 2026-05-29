@@ -1,0 +1,386 @@
+.project-assignment-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	padding: 22px;
+	border-radius: 24px;
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+	border: 1px solid var(--color-border);
+	cursor: pointer;
+	overflow: hidden;
+	transition:
+		transform 0.25s ease,
+		box-shadow 0.25s ease,
+		border-color 0.25s ease;
+}
+
+.project-assignment-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 4px;
+	background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-info) 100%);
+}
+
+.project-assignment-card:hover {
+	transform: translateY(-4px);
+	border-color: var(--color-primary-opacity-20);
+	box-shadow:
+		0 20px 40px rgba(0, 0, 0, 0.12),
+		0 8px 20px var(--color-primary-opacity-10);
+}
+
+.project-assignment-card:hover .project-assignment-card__detail .material-icons {
+	transform: translateX(4px);
+}
+
+.project-assignment-card__top,
+.project-assignment-card__content,
+.project-assignment-card__bottom {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.project-assignment-card__info {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+}
+
+.project-assignment-card__info h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.3;
+	color: var(--color-text-primary);
+}
+
+.project-assignment-card__info span,
+.project-assignment-card__footer-item {
+	font-size: 13px;
+	color: var(--color-text-secondary);
+}
+
+.project-assignment-card__code {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 14px;
+	border-radius: 999px;
+	background: var(--color-primary-opacity-10);
+	border: 1px solid var(--color-primary-opacity-20);
+	color: var(--color-primary);
+	font-size: 12px;
+	font-weight: 700;
+	white-space: nowrap;
+	letter-spacing: 0.5px;
+}
+
+.project-assignment-card__status {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	border-radius: 999px;
+	background: var(--color-hover);
+	border: 1px solid var(--color-border);
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--color-text-secondary);
+}
+
+.project-assignment-card__status-dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+}
+
+.project-assignment-card__status-dot.is-active {
+	background: var(--color-success);
+	box-shadow: 0 0 10px var(--color-success);
+}
+
+.project-assignment-card__status-dot.is-inactive {
+	background: var(--color-error);
+	box-shadow: 0 0 10px var(--color-error);
+}
+
+.project-assignment-card__detail,
+.project-assignment-card__footer-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.project-assignment-card__detail {
+	color: var(--color-primary);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.project-assignment-card__detail .material-icons,
+.project-assignment-card__footer-item .material-icons {
+	font-size: 18px;
+	color: var(--color-primary);
+	transition: transform 0.2s ease;
+}
+
+.project-assignment-card__bottom {
+	padding-top: 14px;
+	border-top: 1px solid var(--color-border);
+}
+
+.project-detail-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 5000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	animation: projectDetailFadeIn 0.2s ease;
+}
+
+.project-detail-modal__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.55);
+	backdrop-filter: blur(8px);
+}
+
+.project-detail-modal__content {
+	position: relative;
+	width: min(1100px, 94vw);
+	max-height: 90vh;
+	overflow-y: auto;
+	padding: 30px;
+	border-radius: 28px;
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+	border: 1px solid var(--color-border);
+	box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+	animation: projectDetailSlideUp 0.25s ease;
+}
+
+.project-detail-modal__header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 24px;
+	margin-bottom: 22px;
+}
+
+.project-detail-modal__eyebrow {
+	display: inline-flex;
+	margin-bottom: 8px;
+	color: var(--color-primary);
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 0.7px;
+	text-transform: uppercase;
+}
+
+.project-detail-modal__header h2 {
+	margin: 0;
+	font-size: 30px;
+	font-weight: 800;
+	color: var(--color-text-primary);
+}
+
+.project-detail-modal__header p {
+	margin: 6px 0 0;
+	color: var(--color-text-secondary);
+	font-size: 14px;
+}
+
+.project-detail-modal__header button {
+	width: 42px;
+	height: 42px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 14px;
+	border: 1px solid var(--color-border);
+	background: var(--color-hover);
+	color: var(--color-text-primary);
+	cursor: pointer;
+	transition:
+		transform 0.2s ease,
+		background 0.2s ease;
+}
+
+.project-detail-modal__header button:hover {
+	transform: rotate(90deg);
+	background: var(--color-primary-opacity-10);
+}
+
+.project-detail-modal__summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 24px;
+	padding: 16px;
+	border-radius: 18px;
+	background: var(--color-hover);
+	border: 1px solid var(--color-border);
+}
+
+.project-detail-modal__badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 9px 16px;
+	border-radius: 999px;
+	background: var(--color-primary-opacity-10);
+	border: 1px solid var(--color-primary-opacity-20);
+	color: var(--color-primary);
+	font-size: 13px;
+	font-weight: 800;
+	letter-spacing: 0.6px;
+}
+
+.project-detail-modal__status {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--color-text-secondary);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.project-detail-modal__section {
+	margin-top: 24px;
+}
+
+.project-detail-modal__section h3 {
+	margin: 0 0 14px;
+	font-size: 17px;
+	font-weight: 800;
+	color: var(--color-text-primary);
+}
+
+.project-detail-modal__grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 14px;
+}
+
+.project-detail-modal__grid--metrics {
+	grid-template-columns: repeat(5, 1fr);
+}
+
+.project-detail-modal__item,
+.project-detail-modal__metric {
+	min-width: 0;
+	padding: 16px;
+	border-radius: 16px;
+	background: var(--color-hover);
+	border: 1px solid var(--color-border);
+}
+
+.project-detail-modal__item label,
+.project-detail-modal__metric label {
+	display: block;
+	margin-bottom: 8px;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: var(--color-text-secondary);
+}
+
+.project-detail-modal__item strong,
+.project-detail-modal__metric strong {
+	display: block;
+	color: var(--color-text-primary);
+	font-size: 15px;
+	font-weight: 800;
+	overflow-wrap: anywhere;
+}
+
+.project-detail-modal__metric {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.project-detail-modal__metric .material-icons {
+	font-size: 24px;
+	color: var(--color-primary);
+}
+
+.project-detail-modal__content::-webkit-scrollbar {
+	width: 8px;
+}
+
+.project-detail-modal__content::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.project-detail-modal__content::-webkit-scrollbar-thumb {
+	background: var(--color-border);
+	border-radius: 20px;
+}
+
+@keyframes projectDetailFadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes projectDetailSlideUp {
+	from {
+		opacity: 0;
+		transform: translateY(16px) scale(0.98);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@media (max-width: 1000px) {
+	.project-detail-modal__grid--metrics {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 768px) {
+	.project-assignment-card__top,
+	.project-assignment-card__content,
+	.project-assignment-card__bottom,
+	.project-detail-modal__summary {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.project-detail-modal {
+		padding: 12px;
+	}
+
+	.project-detail-modal__content {
+		width: 100%;
+		max-height: 94vh;
+		padding: 22px;
+	}
+
+	.project-detail-modal__header h2 {
+		font-size: 24px;
+	}
+
+	.project-detail-modal__grid,
+	.project-detail-modal__grid--metrics {
+		grid-template-columns: 1fr;
+	}
+}

@@ -1,0 +1,175 @@
+.route-not-found {
+	width: 100%;
+
+	min-height: calc(100vh - var(--appbar-height));
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 32px;
+
+	background:
+		radial-gradient(circle at top, var(--color-primary-opacity-10) 0%, transparent 45%), linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-alt) 100%);
+
+	animation: routeFade 0.45s ease;
+}
+
+.route-not-found__card {
+	position: relative;
+
+	width: 100%;
+	max-width: 520px;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	gap: 18px;
+
+	padding: 42px 36px;
+
+	border-radius: 28px;
+
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+
+	border: 1px solid var(--color-border);
+
+	box-shadow: 0 10px 40px var(--color-shadow-soft);
+
+	backdrop-filter: blur(10px);
+
+	text-align: center;
+
+	overflow: hidden;
+}
+
+.route-not-found__card::before {
+	content: '';
+
+	position: absolute;
+
+	top: 0;
+	left: 0;
+	right: 0;
+
+	height: 4px;
+
+	background: linear-gradient(90deg, var(--color-primary) 0%, transparent 100%);
+
+	opacity: 0.9;
+}
+
+.route-not-found__icon {
+	font-size: 72px;
+
+	color: var(--color-primary);
+
+	opacity: 0.9;
+
+	animation: floatIcon 3s ease-in-out infinite;
+}
+
+.route-not-found h1 {
+	font-size: 82px;
+
+	font-weight: 800;
+
+	line-height: 1;
+
+	letter-spacing: -2px;
+
+	color: var(--color-primary);
+
+	margin: 0;
+}
+
+.route-not-found h2 {
+	font-size: 28px;
+
+	font-weight: 700;
+
+	color: var(--color-text-primary);
+
+	margin: 0;
+}
+
+.route-not-found p {
+	max-width: 380px;
+
+	font-size: 15px;
+
+	line-height: 1.6;
+
+	color: var(--color-text-secondary);
+
+	margin: 0;
+}
+
+.route-not-found button {
+	height: 46px;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 0 22px;
+
+	border-radius: 14px;
+
+	border: 1px solid var(--color-primary-opacity-30);
+
+	background: linear-gradient(180deg, var(--color-primary-opacity-20) 0%, var(--color-primary-opacity-10) 100%);
+
+	color: var(--color-primary);
+
+	font-size: 14px;
+	font-weight: 700;
+
+	cursor: pointer;
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.25s ease,
+		background 0.25s ease;
+}
+
+.route-not-found button:hover {
+	transform: translateY(-2px);
+
+	box-shadow: 0 8px 24px var(--color-primary-opacity-20);
+
+	background: linear-gradient(180deg, var(--color-primary-opacity-25) 0%, var(--color-primary-opacity-15) 100%);
+}
+
+.route-not-found button:active {
+	transform: scale(0.97);
+}
+
+@keyframes routeFade {
+	from {
+		opacity: 0;
+
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+
+		transform: translateY(0);
+	}
+}
+
+@keyframes floatIcon {
+	0% {
+		transform: translateY(0px);
+	}
+
+	50% {
+		transform: translateY(-6px);
+	}
+
+	100% {
+		transform: translateY(0px);
+	}
+}

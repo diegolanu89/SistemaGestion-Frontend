@@ -1,27 +1,24 @@
 import './css/appStyle.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-
 import { AuthProvider } from './interfaces/Login/context/Login.Context'
 import { ModalProvider } from './interfaces/base/context/Modal.Context'
 import { CapabilitiesProvider } from './interfaces/base/context/Capabilities.Context'
-
 import AppBarHeader from './interfaces/AppBar/views/AppBar.v'
 import ProtectedRoute from './interfaces/base/components/redirect/ProtectedRoute'
 import RedirectHome from './interfaces/base/components/redirect/RedirectHome'
-
 import { IdleProtectedRoutes } from './interfaces/Idle/routes/routes'
 import { LoginPublicRoutes } from './interfaces/Login/routes/routes'
 import { ProyectPublicRoutes } from './interfaces/Proyect/routes/routes'
 import { EstimatedProjectRoutes } from './interfaces/EstimatedProjects/routes/routes'
-
 import { IDLE_PATHS } from './interfaces/Idle/routes/paths'
 import { LOGIN_PATHS } from './interfaces/Login/routes/paths'
-
 import { SideBarView } from './interfaces/SideBar/views/SideBar.v'
-
 import ThemeContext from './interfaces/base/context/Theme.Context'
 import { useAppTheme } from './interfaces/base/hooks/useAppTheme.h'
 import { ProyectViewPublicRoutes } from './interfaces/ViewProyect/routes/routes'
+import { DashBoardHoursRoutes } from './interfaces/DashboardHours/routes/routes'
+import RouteNotFound from './interfaces/base/components/redirect/RouteNotFound'
+import { ProjectAssignmentRoutes } from './interfaces/ProjectAsignament/routes/routes'
 
 const AppClient = () => {
 	const { toggleTheme, mode } = useAppTheme()
@@ -49,7 +46,11 @@ const AppClient = () => {
 												{ProyectPublicRoutes()}
 												{ProyectViewPublicRoutes()}
 												{EstimatedProjectRoutes()}
+												{DashBoardHoursRoutes()}
+												{ProjectAssignmentRoutes()}
 											</Route>
+
+											<Route path="*" element={<RouteNotFound />} />
 										</Routes>
 									</main>
 								</div>

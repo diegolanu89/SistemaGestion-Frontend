@@ -13,7 +13,7 @@ import type { UserRefDto } from '../../EstimatedProjects/models/EstimatedProject
 import { monthKeyOf } from '../../EstimatedProjects/utils/months'
 
 import { proyectViewAdapter } from '../../ViewProyect/services/ProyectViewAdapter.s'
-import { userAdapter } from '../../Users/service/UserRefAdapter'
+import { userAdapter } from '../service/UserRefAdapter'
 import { etcAdapter } from '../service/EtcAdapter'
 
 import logger from '../../base/controllers/Logger.c'

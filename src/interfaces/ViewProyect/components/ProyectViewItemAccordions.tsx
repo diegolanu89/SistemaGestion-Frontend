@@ -1,53 +1,57 @@
-import { FC, useState } from 'react'
+import { FC, useRef, useState } from 'react'
+
 import { ProjectDto } from '../models/ProyectViewDTO.m'
+
+import ProjectChangesAccordion from './section/ProjectChangesAccordion'
+import ProjectHoursAccordion from './section/ProjectHoursAcccordion'
+import ProjectTrackingAccordion from './section/ProjectTrackingAccordion'
 
 interface Props {
 	project: ProjectDto
 }
 
-const sections = [
-	{
-		key: 'hours',
-		title: 'Visualización de horas',
-		subtitle: 'Consulta de horas cargadas, acumuladas y pendientes.',
-	},
-	{
-		key: 'tracking',
-		title: 'Seguimiento de proyecto',
-		subtitle: 'Planificación, desvíos y fechas reales.',
-	},
-	{
-		key: 'changes',
-		title: 'Control de cambios',
-		subtitle: 'Variaciones de alcance y ajustes sobre la línea base.',
-	},
-]
-
 export const ProyectViewItemAccordions: FC<Props> = ({ project }) => {
 	const [open, setOpen] = useState<Record<string, boolean>>({})
 
+	const refs = {
+		hours: useRef<HTMLDivElement | null>(null),
+		tracking: useRef<HTMLDivElement | null>(null),
+		changes: useRef<HTMLDivElement | null>(null),
+	}
+
+	const toggle = (key: keyof typeof refs) => {
+		const willOpen = !open[key]
+
+		setOpen((prev) => ({
+			...prev,
+			[key]: willOpen,
+		}))
+
+		if (willOpen) {
+			setTimeout(() => {
+				refs[key].current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+				})
+			}, 200)
+		}
+	}
+
 	return (
 		<div className="project-detail-accordions">
-			{sections.map((section) => {
-				const active = open[section.key]
+			<div ref={refs.hours}>
+				<ProjectHoursAccordion project={project} open={Boolean(open.hours)} onToggle={() => toggle('hours')} />
+			</div>
 
-				return (
-					<div className={`project-detail-accordion ${active ? 'is-open' : ''}`} key={section.key}>
-						<button className="project-detail-accordion__header" onClick={() => setOpen((prev) => ({ ...prev, [section.key]: !prev[section.key] }))}>
-							<div>
-								<strong>{section.title}</strong>
-								<span>{section.subtitle}</span>
-							</div>
+			<div ref={refs.tracking}>
+				<ProjectTrackingAccordion project={project} open={Boolean(open.tracking)} onToggle={() => toggle('tracking')} />
+			</div>
 
-							<span className="material-icons">expand_more</span>
-						</button>
-
-						<div className="project-detail-accordion__content">
-							<p>Información disponible para el proyecto {project.name}.</p>
-						</div>
-					</div>
-				)
-			})}
+			<div ref={refs.changes}>
+				<ProjectChangesAccordion project={project} open={Boolean(open.changes)} onToggle={() => toggle('changes')} />
+			</div>
 		</div>
 	)
 }
+
+export default ProyectViewItemAccordions

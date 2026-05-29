@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { ESTIMATED_PROJECT_CONFIG } from '../models/EstimatedProjectConfig.m'
-import { UserRefDto } from '../../Users/model/UserRefDTO.m'
+import { UserRefDto } from '../../Etc/model/UserRefDTO.m'
 
 interface Props {
 	filteredUsers: UserRefDto[]

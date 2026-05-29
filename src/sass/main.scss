@@ -15,6 +15,7 @@
 @use '../interfaces/base/components/RefreshButton/refreshButton';
 @use '../interfaces/base/components/ClearFiltersButton/clearFiltersButton';
 @use '../interfaces/base/components/alert/actionAlert';
+@use '../interfaces/base/components/redirect/routeNotFound';
 
 /**APP_BAR**/
 @use '../interfaces/AppBar/components/bar/_appBarSpacer';
@@ -54,6 +55,10 @@
 @use '../interfaces/ViewProyect/views/proyectItem';
 @use '../interfaces/ViewProyect/components/proyectHeaderView';
 @use '../interfaces/ViewProyect/components/proyectHeaderViewItem';
+@use '../interfaces/ViewProyect/components/projectAccordion';
+@use '../interfaces/ViewProyect/components/section/projectHoursAccordion';
+@use '../interfaces/ViewProyect/components/section/projectChangesAccordion';
+@use '../interfaces/ViewProyect/components/section/projectTrackinAccordion';
 
 /**ETC**/
 @use '../interfaces/Etc/views/etcLoadView';
@@ -71,3 +76,22 @@
 @use '../interfaces/EstimatedProjects/components/estimatedProjectTable';
 @use '../interfaces/EstimatedProjects/components/estimatedProjectForm';
 @use '../interfaces/EstimatedProjects/components/estimatedProjectGrid';
+
+/**DASHBOARD HOURS**/
+@use '../interfaces/DashboardHours/views/dashboardHours';
+@use '../interfaces/DashboardHours/components/dashboard-hor-header';
+@use '../interfaces/DashboardHours/components/dashboardHourFilters';
+@use '../interfaces/DashboardHours/components/dashboardHourToolbar';
+@use '../interfaces/DashboardHours/components/dashboardHoursTable';
+@use '../interfaces/DashboardHours/components/dashboard-filters-modal';
+
+/**ProjectAsignment**/
+@use '../interfaces/ProjectAsignament/views/projectAssignment';
+@use '../interfaces/ProjectAsignament/components/addProjectsModal';
+@use '../interfaces/ProjectAsignament/components/myProjectsSection';
+@use '../interfaces/ProjectAsignament/components/projectAssigHeader';
+@use '../interfaces/ProjectAsignament/components/projectAssignmentCard';
+@use '../interfaces/ProjectAsignament/components/projectAssignmentFilters';
+@use '../interfaces/ProjectAsignament/components/projectAssignmentList';
+@use '../interfaces/ProjectAsignament/components/projectAssignmentSearch';
+@use '../interfaces/ProjectAsignament/components/selectableProjectItem';
