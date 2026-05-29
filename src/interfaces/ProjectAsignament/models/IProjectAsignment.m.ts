@@ -5,45 +5,26 @@ import { Dispatch, SetStateAction } from 'react'
 import { ProjectDto } from '../../ViewProyect/models/ProyectViewDTO.m'
 
 import { ProjectUserHoursDto } from '../../ViewProyect/models/ProyectViewInterface.m'
+import { VisibleProjectDto } from './VisibleProject.m'
 
 export type ProjectAssignmentFilter = 'clients' | 'projects' | 'users' | 'time_entries'
 
 export interface IProjectAssignmentContext {
-	// =========================================================
-	// 🔹 GLOBAL
-	// =========================================================
-
 	loading: boolean
 
 	setLoading: Dispatch<SetStateAction<boolean>>
-
-	// =========================================================
-	// 🔹 AVAILABLE PROJECTS
-	// =========================================================
 
 	projects: ProjectDto[]
 
 	setProjects: Dispatch<SetStateAction<ProjectDto[]>>
 
-	// =========================================================
-	// 🔹 ASSIGNED PROJECTS
-	// =========================================================
+	assignedProjects: VisibleProjectDto[]
 
-	assignedProjects: ProjectDto[]
-
-	setAssignedProjects: Dispatch<SetStateAction<ProjectDto[]>>
-
-	// =========================================================
-	// 🔹 SELECTED PROJECT
-	// =========================================================
+	setAssignedProjects: Dispatch<SetStateAction<VisibleProjectDto[]>>
 
 	selectedProject: ProjectDto | null
 
 	setSelectedProject: Dispatch<SetStateAction<ProjectDto | null>>
-
-	// =========================================================
-	// 🔹 USERS
-	// =========================================================
 
 	users: ProjectUserHoursDto[]
 
@@ -53,17 +34,9 @@ export interface IProjectAssignmentContext {
 
 	setSelectedUserIds: Dispatch<SetStateAction<number[]>>
 
-	// =========================================================
-	// 🔹 SEARCH
-	// =========================================================
-
 	search: string
 
 	setSearch: Dispatch<SetStateAction<string>>
-
-	// =========================================================
-	// 🔹 FILTERS
-	// =========================================================
 
 	client: string
 
@@ -81,11 +54,11 @@ export interface IProjectAssignmentContext {
 
 	setSelectedFilters: Dispatch<SetStateAction<ProjectAssignmentFilter[]>>
 
-	// =========================================================
-	// 🔹 UI
-	// =========================================================
-
 	isModalOpen: boolean
 
 	setIsModalOpen: Dispatch<SetStateAction<boolean>>
+
+	loadVisibleProjects: () => Promise<number[]>
+
+	saveVisibleProjects: () => Promise<void>
 }

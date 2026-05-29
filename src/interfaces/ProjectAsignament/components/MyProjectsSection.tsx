@@ -1,5 +1,3 @@
-// components/MyProjectsSection.tsx
-
 import { FC } from 'react'
 
 import ProjectAssignmentList from './ProjectAssignmentList'
@@ -13,29 +11,13 @@ interface Props {
 const MyProjectsSection: FC<Props> = ({ onAddProjects }) => {
 	const { assignedProjects, selectedFilters } = useProjectAssignment()
 
-	// =========================================================
-	// 🔹 FILTERS
-	// =========================================================
-
 	const showProjects = selectedFilters.includes('projects')
 
-	// =========================================================
-	// 🔹 TOTAL
-	// =========================================================
-
 	const totalAssignedProjects = assignedProjects.length
-
-	// =========================================================
-	// 🔹 HIDE
-	// =========================================================
 
 	if (!showProjects) {
 		return null
 	}
-
-	// =========================================================
-	// 🔹 RENDER
-	// =========================================================
 
 	return (
 		<section className="my-projects-section">
@@ -44,14 +26,14 @@ const MyProjectsSection: FC<Props> = ({ onAddProjects }) => {
 					<h2>Mis proyectos</h2>
 
 					<span>
-						{totalAssignedProjects} {totalAssignedProjects === 1 ? 'proyecto asignado' : 'proyectos asignados'}
+						{totalAssignedProjects} {totalAssignedProjects === 1 ? 'proyecto visible' : 'proyectos visibles'}
 					</span>
 				</div>
 
 				<button type="button" className="my-projects-section__button" onClick={onAddProjects}>
-					<span className="material-icons">add</span>
+					<span className="material-icons">edit</span>
 
-					<span>Agregar proyectos</span>
+					<span>Administrar proyectos</span>
 				</button>
 			</div>
 

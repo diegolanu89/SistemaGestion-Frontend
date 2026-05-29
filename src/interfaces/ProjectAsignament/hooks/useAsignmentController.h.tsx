@@ -1,14 +1,13 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
+
 import { useProjectAssignment } from './useProjectAsignment.h'
+
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
+
 import { proyectViewAdapter } from '../../ViewProyect/services/ProyectViewAdapter.s'
 
 export const useProjectAssignmentController = () => {
-	// =========================================================
-	// 🔹 CONTEXT
-	// =========================================================
-
 	const {
 		setLoading,
 
@@ -16,7 +15,6 @@ export const useProjectAssignmentController = () => {
 		setProjects,
 
 		assignedProjects,
-		setAssignedProjects,
 
 		search,
 		client,
@@ -25,59 +23,59 @@ export const useProjectAssignmentController = () => {
 
 		isModalOpen,
 		setIsModalOpen,
+
+		loadVisibleProjects,
 	} = useProjectAssignment()
 
-	// =========================================================
-	// 🔹 LOAD PROJECTS
-	// =========================================================
+	const loadProjects = useCallback(async () => {
+		const startedAt = performance.now()
+
+		try {
+			setLoading(true)
+
+			logger.infoTag(LogTag.View, '[PROJECT_ASSIGNMENT] loading projects')
+
+			const response = await proyectViewAdapter.getAll({
+				page: 1,
+				per_page: 500,
+				only_visible: false,
+				search,
+				client,
+				code,
+				status,
+			})
+
+			logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] loaded ${response.data.length} projects`)
+
+			setProjects(response.data)
+		} catch (error: unknown) {
+			logger.errorTag(LogTag.View, error instanceof Error ? error.message : String(error))
+		} finally {
+			const elapsed = performance.now() - startedAt
+
+			logger.infoTag(LogTag.Performance, `[PROJECT_ASSIGNMENT] load completed in ${elapsed.toFixed(2)}ms`)
+
+			setLoading(false)
+		}
+	}, [search, client, code, status, setLoading, setProjects])
+
+	const refetch = useCallback(async () => {
+		logger.infoTag(LogTag.View, '[PROJECT_ASSIGNMENT] refetch requested')
+
+		await loadProjects()
+
+		await loadVisibleProjects()
+	}, [loadProjects, loadVisibleProjects])
 
 	useEffect(() => {
-		const loadProjects = async () => {
-			try {
-				setLoading(true)
+		const loadInitialData = async () => {
+			await loadProjects()
 
-				logger.infoTag(LogTag.View, '[PROJECT_ASSIGNMENT] loading projects')
-
-				const response = await proyectViewAdapter.getAll({
-					page: 1,
-
-					per_page: 50,
-
-					only_visible: true,
-
-					search,
-					client,
-					code,
-					status,
-				})
-
-				// =================================================
-				// 🔹 AVAILABLE PROJECTS
-				// =================================================
-
-				setProjects(response.data)
-
-				// =================================================
-				// 🔹 TEMP ASSIGNED PROJECTS
-				// =================================================
-
-				// TODO:
-				// Reemplazar por endpoint real de asignaciones
-
-				setAssignedProjects(response.data.slice(0, 2))
-			} catch (error) {
-				logger.errorTag(LogTag.View, JSON.stringify(error))
-			} finally {
-				setLoading(false)
-			}
+			await loadVisibleProjects()
 		}
 
-		void loadProjects()
-	}, [search, client, code, status, setLoading, setProjects, setAssignedProjects])
-
-	// =========================================================
-	// 🔹 ACTIONS
-	// =========================================================
+		void loadInitialData()
+	}, [loadProjects, loadVisibleProjects])
 
 	const openModal = () => {
 		setIsModalOpen(true)
@@ -86,10 +84,6 @@ export const useProjectAssignmentController = () => {
 	const closeModal = () => {
 		setIsModalOpen(false)
 	}
-
-	// =========================================================
-	// 🔹 RETURN
-	// =========================================================
 
 	return {
 		projects,
@@ -100,5 +94,7 @@ export const useProjectAssignmentController = () => {
 
 		openModal,
 		closeModal,
+
+		refetch,
 	}
 }

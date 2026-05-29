@@ -1,35 +1,58 @@
-// components/SelectableProjectList.tsx
-
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 
 import SelectableProjectItem from './SelectableProjectItem'
 
 import { useProjectAssignment } from '../hooks/useProjectAsignment.h'
 
-const SelectableProjectList: FC = () => {
+import logger from '../../base/controllers/Logger.c'
+
+import { LogTag } from '../../base/model/LogTag.m'
+
+interface Props {
+	search: string
+	code: string
+}
+
+const SelectableProjectList: FC<Props> = ({ search, code }) => {
 	const { projects } = useProjectAssignment()
 
-	// =========================================================
-	// 🔹 EMPTY
-	// =========================================================
+	const filteredProjects = useMemo(() => {
+		const normalizedSearch = search.trim().toLowerCase()
 
-	if (projects.length === 0) {
+		const normalizedCode = code.trim().toLowerCase()
+
+		const result = projects.filter((project) => {
+			const projectName = project.name?.toLowerCase() ?? ''
+
+			const projectCode = project.code?.toLowerCase() ?? ''
+
+			const matchesName = normalizedSearch.length === 0 || projectName.includes(normalizedSearch)
+
+			const matchesCode = normalizedCode.length === 0 || projectCode.includes(normalizedCode)
+
+			return matchesName && matchesCode
+		})
+
+		logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] filtered ${result.length}/${projects.length} projects`)
+
+		return result
+	}, [projects, search, code])
+
+	if (filteredProjects.length === 0) {
+		logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] no projects found`)
+
 		return (
 			<div className="selectable-project-list selectable-project-list--empty">
-				<span className="material-icons">folder_off</span>
+				<span className="material-icons">search_off</span>
 
-				<p>No hay proyectos disponibles.</p>
+				<p>No se encontraron proyectos para los filtros ingresados.</p>
 			</div>
 		)
 	}
 
-	// =========================================================
-	// 🔹 RENDER
-	// =========================================================
-
 	return (
 		<div className="selectable-project-list">
-			{projects.map((project) => (
+			{filteredProjects.map((project) => (
 				<SelectableProjectItem key={project.id} project={project} />
 			))}
 		</div>

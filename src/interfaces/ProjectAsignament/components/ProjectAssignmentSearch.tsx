@@ -1,5 +1,3 @@
-// components/ProjectAssignmentSearch.tsx
-
 import { FC, useEffect, useState } from 'react'
 
 import { useProjectAssignment } from '../hooks/useProjectAsignment.h'
@@ -15,10 +13,6 @@ const ProjectAssignmentSearch: FC = () => {
 		setCode,
 	} = useProjectAssignment()
 
-	// =========================================================
-	// 🔹 LOCAL STATE
-	// =========================================================
-
 	const [localSearch, setLocalSearch] = useState(search)
 
 	const [localCode, setLocalCode] = useState(code)
@@ -27,10 +21,6 @@ const ProjectAssignmentSearch: FC = () => {
 
 	const [isSearchingCode, setIsSearchingCode] = useState(false)
 
-	// =========================================================
-	// 🔹 SYNC
-	// =========================================================
-
 	useEffect(() => {
 		setLocalSearch(search)
 	}, [search])
@@ -38,10 +28,6 @@ const ProjectAssignmentSearch: FC = () => {
 	useEffect(() => {
 		setLocalCode(code)
 	}, [code])
-
-	// =========================================================
-	// 🔹 SEARCH NAME
-	// =========================================================
 
 	useEffect(() => {
 		if (localSearch === search) {
@@ -61,10 +47,6 @@ const ProjectAssignmentSearch: FC = () => {
 		return () => clearTimeout(timer)
 	}, [localSearch, search, setSearch])
 
-	// =========================================================
-	// 🔹 SEARCH CODE
-	// =========================================================
-
 	useEffect(() => {
 		if (localCode === code) {
 			setIsSearchingCode(false)
@@ -75,7 +57,7 @@ const ProjectAssignmentSearch: FC = () => {
 		setIsSearchingCode(true)
 
 		const timer = setTimeout(() => {
-			setCode(localCode)
+			setCode(localCode.toUpperCase())
 
 			setIsSearchingCode(false)
 		}, DEBOUNCE_MS)
@@ -83,16 +65,8 @@ const ProjectAssignmentSearch: FC = () => {
 		return () => clearTimeout(timer)
 	}, [localCode, code, setCode])
 
-	// =========================================================
-	// 🔹 RENDER
-	// =========================================================
-
 	return (
 		<div className="project-assignment-search">
-			{/* ================================================= */}
-			{/* 🔹 CODE */}
-			{/* ================================================= */}
-
 			<div className="project-assignment-search__group">
 				<label className="project-assignment-search__label">Búsqueda por código</label>
 
@@ -104,7 +78,7 @@ const ProjectAssignmentSearch: FC = () => {
 						type="text"
 						placeholder="Buscar por código"
 						value={localCode}
-						onChange={(event) => setLocalCode(event.target.value)}
+						onChange={(event) => setLocalCode(event.target.value.toUpperCase())}
 					/>
 
 					{isSearchingCode && (
@@ -114,10 +88,6 @@ const ProjectAssignmentSearch: FC = () => {
 					)}
 				</div>
 			</div>
-
-			{/* ================================================= */}
-			{/* 🔹 NAME */}
-			{/* ================================================= */}
 
 			<div className="project-assignment-search__group">
 				<label className="project-assignment-search__label">Búsqueda por nombre</label>

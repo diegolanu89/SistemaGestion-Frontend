@@ -1,27 +1,24 @@
+import { FC } from 'react'
+
 import ProjectAssignmentCard from './ProjectAssignmentCard'
+import { useVisibleProjectsController } from '../hooks/useVisibleProjectController.h'
 
-const MOCK_PROJECTS = [
-	{
-		id: 1,
-		name: 'BDT EVM Backend',
-		client: 'BDT',
-		code: 'EVM-001',
-		users: 8,
-	},
+const ProjectAssignmentList: FC = () => {
+	const { projects } = useVisibleProjectsController()
 
-	{
-		id: 2,
-		name: 'Dashboard Horas',
-		client: 'BDT',
-		code: 'HRS-002',
-		users: 5,
-	},
-]
+	if (projects.length === 0) {
+		return (
+			<div className="project-assignment-list project-assignment-list--empty">
+				<span className="material-icons">folder_off</span>
 
-const ProjectAssignmentList = () => {
+				<p>No tenés proyectos visibles configurados.</p>
+			</div>
+		)
+	}
+
 	return (
 		<div className="project-assignment-list">
-			{MOCK_PROJECTS.map((project) => (
+			{projects.map((project) => (
 				<ProjectAssignmentCard key={project.id} project={project} />
 			))}
 		</div>

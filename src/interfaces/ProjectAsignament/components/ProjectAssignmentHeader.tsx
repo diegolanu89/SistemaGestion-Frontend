@@ -1,30 +1,31 @@
 // components/ProjectAssignmentHeader.tsx
 
 import { FC } from 'react'
+import { useProjectAssignmentController } from '../hooks/useAsignmentController.h'
 
-interface Props {
-	total: number
+const ProjectAssignmentHeader: FC = () => {
+	const { projects, refetch } = useProjectAssignmentController()
 
-	onCreate: () => void
-}
+	const total = projects.length
 
-const ProjectAssignmentHeader: FC<Props> = ({ total, onCreate }) => {
 	return (
 		<div className="project-assignment-header">
 			<div className="project-assignment-header__content">
-				<h1>Asignación de Proyectos</h1>
+				<h1>Mis Proyectos</h1>
 
-				<p>Gestión y asignación de recursos sobre proyectos activos.</p>
+				<p>Consultá los proyectos asignados a tu usuario y mantené sincronizada la información disponible para los dashboards y reportes.</p>
 
 				<div className="project-assignment-header__meta">
-					<span>{total} proyectos visibles</span>
+					<span>
+						{total} {total === 1 ? 'proyecto disponible' : 'proyectos disponibles'}
+					</span>
 				</div>
 			</div>
 
-			<button type="button" className="project-assignment-header__button" onClick={onCreate}>
-				<span className="material-icons">add</span>
+			<button type="button" className="project-assignment-header__button" onClick={() => void refetch()}>
+				<span className="material-icons">refresh</span>
 
-				<span>Nueva asignación</span>
+				<span>Actualizar proyectos</span>
 			</button>
 		</div>
 	)

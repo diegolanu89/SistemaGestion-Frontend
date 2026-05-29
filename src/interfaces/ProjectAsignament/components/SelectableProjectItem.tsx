@@ -1,10 +1,14 @@
-// components/SelectableProjectItem.tsx
-
 import { FC } from 'react'
 
 import { useProjectAssignment } from '../hooks/useProjectAsignment.h'
 
 import { ProjectDto } from '../../ViewProyect/models/ProyectViewDTO.m'
+
+import logger from '../../base/controllers/Logger.c'
+
+import { LogTag } from '../../base/model/LogTag.m'
+
+import { VisibleProjectDto } from '../models/VisibleProject.m'
 
 interface Props {
 	project: ProjectDto
@@ -13,29 +17,36 @@ interface Props {
 const SelectableProjectItem: FC<Props> = ({ project }) => {
 	const { assignedProjects, setAssignedProjects } = useProjectAssignment()
 
-	// =========================================================
-	// 🔹 CHECKED
-	// =========================================================
-
-	const checked = assignedProjects.some((item) => item.id === project.id)
-
-	// =========================================================
-	// 🔹 TOGGLE
-	// =========================================================
+	const checked = assignedProjects.some((item) => Number(item.project_id) === Number(project.id))
 
 	const toggleProject = () => {
 		if (checked) {
-			setAssignedProjects((previous) => previous.filter((item) => item.id !== project.id))
+			logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] Removing visible project -> ${project.id} (${project.name})`)
+
+			setAssignedProjects((previous) => previous.filter((item) => Number(item.project_id) !== Number(project.id)))
 
 			return
 		}
 
-		setAssignedProjects((previous) => [...previous, project])
-	}
+		logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] Adding visible project -> ${project.id} (${project.name})`)
 
-	// =========================================================
-	// 🔹 RENDER
-	// =========================================================
+		const visibleProject: VisibleProjectDto = {
+			id: 0,
+			project_id: Number(project.id),
+			project: {
+				id: Number(project.id),
+				name: project.name,
+				code: project.code ?? '',
+				status: project.status ?? '',
+				client_name: project.clientName ?? '',
+				client: {
+					name: project.clientName ?? '',
+				},
+			},
+		}
+
+		setAssignedProjects((previous) => [...previous, visibleProject])
+	}
 
 	return (
 		<div className={`selectable-project-item ${checked ? 'is-selected' : ''}`} onClick={toggleProject}>
