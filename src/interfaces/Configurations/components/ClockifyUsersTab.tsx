@@ -267,7 +267,7 @@ const ClockifyUsersTab: React.FC = () => {
 			{error && <div className="conf-tab__error">{error}</div>}
 
 			<div className="conf-tab__filters">
-				<div className="conf-tab__filter-group">
+				<div className="conf-tab__filter-group conf-tab__filter-group--search">
 					<span className="conf-tab__filter-label">Buscar</span>
 					<div className="conf-tab__search-wrapper">
 						<span className="material-icons conf-tab__search-icon">search</span>

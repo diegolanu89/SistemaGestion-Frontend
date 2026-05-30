@@ -60,6 +60,11 @@
 		flex-direction: column;
 		gap: 6px;
 		min-width: 0;
+		flex: 1;
+
+		&--search {
+			flex: 2;
+		}
 	}
 
 	&__filter-label {
@@ -73,8 +78,7 @@
 	&__search-wrapper {
 		position: relative;
 		flex: 1;
-		min-width: 280px;
-		max-width: 480px;
+		min-width: 0;
 	}
 
 	&__search-icon {
@@ -117,7 +121,8 @@
 
 	&__filter-select {
 		height: 56px;
-		min-width: 140px;
+		width: 100%;
+		min-width: 120px;
 		padding: 0 40px 0 16px;
 		border-radius: 12px;
 		border: 1px solid var(--color-border);
