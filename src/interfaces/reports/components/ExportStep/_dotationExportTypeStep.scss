@@ -1,0 +1,141 @@
+/* =========================================================
+🔹 EXPORT TYPE STEP
+========================================================= */
+
+.dotation-export-modal__content {
+	display: flex;
+	flex-direction: column;
+
+	gap: 16px;
+}
+
+.dotation-export-modal__option {
+	width: 100%;
+
+	display: flex;
+	align-items: center;
+
+	gap: 18px;
+
+	padding: 20px;
+
+	border-radius: 18px;
+
+	border: 1px solid var(--color-border);
+
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+
+	cursor: pointer;
+
+	text-align: left;
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease,
+		border-color 0.2s ease;
+
+	&:hover {
+		transform: translateY(-2px);
+
+		box-shadow: 0 10px 28px var(--color-shadow-soft);
+	}
+
+	.material-icons {
+		font-size: 34px;
+
+		flex-shrink: 0;
+	}
+
+	div {
+		display: flex;
+		flex-direction: column;
+
+		gap: 6px;
+	}
+
+	strong {
+		font-size: 16px;
+
+		font-weight: 700;
+
+		color: var(--color-text-primary);
+	}
+
+	span {
+		color: var(--color-text-secondary);
+
+		font-size: 13px;
+
+		line-height: 1.5;
+	}
+}
+
+/* =========================================================
+🔹 EXCEL
+========================================================= */
+
+.dotation-export-modal__option.is-excel {
+	.material-icons {
+		color: #1d6f42;
+	}
+
+	&:hover {
+		border-color: rgba(29, 111, 66, 0.35);
+
+		background: linear-gradient(180deg, rgba(29, 111, 66, 0.06) 0%, var(--color-bg-alt) 100%);
+	}
+}
+
+/* =========================================================
+🔹 CSV
+========================================================= */
+
+.dotation-export-modal__option.is-csv {
+	.material-icons {
+		color: #2563eb;
+	}
+
+	&:hover {
+		border-color: rgba(37, 99, 235, 0.35);
+
+		background: linear-gradient(180deg, rgba(37, 99, 235, 0.06) 0%, var(--color-bg-alt) 100%);
+	}
+}
+
+/* =========================================================
+🔹 PDF
+========================================================= */
+
+.dotation-export-modal__option.is-pdf {
+	.material-icons {
+		color: #dc2626;
+	}
+
+	&:hover {
+		border-color: rgba(220, 38, 38, 0.35);
+
+		background: linear-gradient(180deg, rgba(220, 38, 38, 0.06) 0%, var(--color-bg-alt) 100%);
+	}
+}
+
+/* =========================================================
+🔹 RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+	.dotation-export-modal__option {
+		padding: 16px;
+
+		.material-icons {
+			font-size: 28px;
+		}
+
+		strong {
+			font-size: 14px;
+		}
+
+		span {
+			font-size: 12px;
+		}
+	}
+}

@@ -98,8 +98,6 @@
 
 /** REPORTS **/
 
-@use '../interfaces/Reports/views/reports';
-@use '../interfaces/Reports/views/export';
 @use '../interfaces/Reports/views/dotacion';
 @use '../interfaces/Reports/components/reportHeader';
 @use '../interfaces/Reports/components/reportCard';
@@ -109,4 +107,6 @@
 @use '../interfaces/Reports/components/dotacionFilters';
 @use '../interfaces/Reports/components/dotacionHeader';
 @use '../interfaces/Reports/components/dotacionSummary';
-@use '../interfaces/Reports/components/dotacionExportModal';
+@use '../interfaces/Reports/components/ExportStep/dotacionExportModal';
+@use '../interfaces/Reports/components/ExportStep/dotationExportConfiguration';
+@use '../interfaces/Reports/components/ExportStep/dotationExportTypeStep';

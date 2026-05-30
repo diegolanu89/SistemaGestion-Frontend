@@ -1,16 +1,19 @@
 import { FC, useMemo, useState } from 'react'
 
 import { useDotationReportController } from '../hooks/useDotacionReport.h'
+import { useReports } from '../hooks/useReport.h'
 
 import DotationHeader from '../components/DotacionHeader'
 import DotationFilters from '../components/DotacionFilters'
 import DotationSummary from '../components/DotacionSummary'
 import DotationReportTable from '../components/DotationReportTable'
 import DotationExportActions from '../components/DotacionExportActions'
-import DotationExportModal from '../components/DotacionExportModal'
+import DotationExportModal from '../components/ExportStep/DotacionExportModal'
 
 export const DotationReport: FC = () => {
 	const { loading, preview, summary, generatePreview } = useDotationReportController()
+
+	const { setSelectedFromDate, setSelectedToDate } = useReports()
 
 	const [fromDate, setFromDate] = useState('')
 
@@ -51,6 +54,10 @@ export const DotationReport: FC = () => {
 	}
 
 	const handleGenerate = async (): Promise<void> => {
+		setSelectedFromDate(fromDate)
+
+		setSelectedToDate(toDate)
+
 		await generatePreview(buildMonthKeys())
 	}
 

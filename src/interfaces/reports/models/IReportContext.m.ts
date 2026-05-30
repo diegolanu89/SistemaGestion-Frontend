@@ -1,6 +1,6 @@
-// IReportsContext.m.ts
-
 import { Dispatch, SetStateAction } from 'react'
+
+export type ExportType = 'excel' | 'csv' | 'pdf'
 
 export interface IReportsContext {
 	loading: boolean
@@ -10,4 +10,14 @@ export interface IReportsContext {
 	isExportModalOpen: boolean
 
 	setIsExportModalOpen: Dispatch<SetStateAction<boolean>>
+
+	exportType: ExportType | null
+
+	setExportType: Dispatch<SetStateAction<ExportType | null>>
+
+	selectedFromDate: string
+	setSelectedFromDate: Dispatch<SetStateAction<string>>
+
+	selectedToDate: string
+	setSelectedToDate: Dispatch<SetStateAction<string>>
 }
