@@ -3,9 +3,19 @@ import type { UserVacationPeriodDto, VacationEntryInput } from '../models/Vacaci
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
+function buildQuery(params: Record<string, string | number | boolean | undefined>): string {
+	const q = new URLSearchParams()
+	for (const [k, v] of Object.entries(params)) {
+		if (v !== undefined && v !== null && v !== '') q.set(k, String(v))
+	}
+	const s = q.toString()
+	return s ? `?${s}` : ''
+}
+
 export const vacacionesBDT = {
-	async list(): Promise<UserVacationPeriodDto[]> {
-		const res = await HttpClient.request<UserVacationPeriodDto[]>(`${BASE_URL}/user-vacation-periods`)
+	async list(params?: { search?: string }): Promise<UserVacationPeriodDto[]> {
+		const qs = buildQuery({ ...params })
+		const res = await HttpClient.request<UserVacationPeriodDto[]>(`${BASE_URL}/user-vacation-periods${qs}`)
 		return Array.isArray(res) ? res : []
 	},
 

@@ -3,14 +3,24 @@ import type { ProfileDto, AppUserDto, CreateAppUserDto, UpdateAppUserDto } from 
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
+function buildQuery(params: Record<string, string | number | boolean | undefined>): string {
+	const q = new URLSearchParams()
+	for (const [k, v] of Object.entries(params)) {
+		if (v !== undefined && v !== null && v !== '') q.set(k, String(v))
+	}
+	const s = q.toString()
+	return s ? `?${s}` : ''
+}
+
 export const appUsersBDT = {
 	async listProfiles(): Promise<ProfileDto[]> {
 		const res = await HttpClient.request<ProfileDto[]>(`${BASE_URL}/app/profiles`)
 		return Array.isArray(res) ? res : []
 	},
 
-	async listUsers(): Promise<AppUserDto[]> {
-		const res = await HttpClient.request<AppUserDto[]>(`${BASE_URL}/app/users`)
+	async listUsers(params?: { search?: string }): Promise<AppUserDto[]> {
+		const qs = buildQuery({ ...params })
+		const res = await HttpClient.request<AppUserDto[]>(`${BASE_URL}/app/users${qs}`)
 		return Array.isArray(res) ? res : []
 	},
 

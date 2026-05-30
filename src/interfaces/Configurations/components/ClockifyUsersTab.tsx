@@ -10,6 +10,7 @@ const ClockifyUsersTab: React.FC = () => {
 	const [users, setUsers] = useState<ClockifyUserDto[]>([])
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+	const [formError, setFormError] = useState<string | null>(null)
 	const [search, setSearch] = useState('')
 	const [showModal, setShowModal] = useState(false)
 	const [editingId, setEditingId] = useState<number | null>(null)
@@ -17,10 +18,13 @@ const ClockifyUsersTab: React.FC = () => {
 
 	const [formName, setFormName] = useState('')
 	const [formEmail, setFormEmail] = useState('')
-	const [formClockifyId, setFormClockifyId] = useState('')
 	const [formActive, setFormActive] = useState(true)
 	const [formMonthHours, setFormMonthHours] = useState<string>('160')
 	const [formRole, setFormRole] = useState<string>('')
+
+	const [filterOrigin, setFilterOrigin] = useState<'all' | 'clockify' | 'manual'>('all')
+	const [filterRole, setFilterRole] = useState('')
+	const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all')
 
 	const [syncing, setSyncing] = useState(false)
 	const [syncMessage, setSyncMessage] = useState<string | null>(null)
@@ -34,6 +38,22 @@ const ClockifyUsersTab: React.FC = () => {
 	const [capacityHoursByMonth, setCapacityHoursByMonth] = useState<Record<string, string>>({})
 	const [capacityLimitsByMonth, setCapacityLimitsByMonth] = useState<Record<string, number>>({})
 	const [capacityError, setCapacityError] = useState<string | null>(null)
+
+	const availableRoles = useMemo(() => {
+		const roles = new Set(users.map((u) => u.role).filter((r): r is string => !!r))
+		return Array.from(roles).sort()
+	}, [users])
+
+	const filteredUsers = useMemo(() => {
+		return users.filter((u) => {
+			if (filterOrigin === 'clockify' && !u.clockifyUserId) return false
+			if (filterOrigin === 'manual' && u.clockifyUserId) return false
+			if (filterRole && u.role !== filterRole) return false
+			if (filterStatus === 'active' && !u.active) return false
+			if (filterStatus === 'inactive' && u.active) return false
+			return true
+		})
+	}, [users, filterOrigin, filterRole, filterStatus])
 
 	const MONTH_RANGE = useMemo(() => {
 		const months: Array<{ monthKey: string; monthLabel: string }> = []
@@ -83,10 +103,10 @@ const ClockifyUsersTab: React.FC = () => {
 		setEditingId(null)
 		setFormName('')
 		setFormEmail('')
-		setFormClockifyId('')
 		setFormActive(true)
 		setFormMonthHours('160')
 		setFormRole('')
+		setFormError(null)
 		setShowModal(true)
 	}
 
@@ -94,10 +114,10 @@ const ClockifyUsersTab: React.FC = () => {
 		setEditingId(u.id)
 		setFormName(u.name)
 		setFormEmail(u.email ?? '')
-		setFormClockifyId(u.clockifyUserId ?? '')
 		setFormActive(u.active)
 		setFormMonthHours(u.defaultMonthHours != null ? String(u.defaultMonthHours) : '')
 		setFormRole(u.role ?? '')
+		setFormError(null)
 		setShowModal(true)
 	}
 
@@ -105,12 +125,11 @@ const ClockifyUsersTab: React.FC = () => {
 		e.preventDefault()
 		const monthHours = formMonthHours.trim() === '' ? null : Number(formMonthHours)
 		setSaving(true)
-		setError(null)
+		setFormError(null)
 		try {
 			const payload = {
 				name: formName.trim(),
 				email: formEmail.trim() || null,
-				clockifyUserId: formClockifyId.trim() || null,
 				active: formActive,
 				role: formRole.trim() || null,
 				defaultMonthHours: monthHours,
@@ -123,7 +142,7 @@ const ClockifyUsersTab: React.FC = () => {
 			setShowModal(false)
 			await loadData()
 		} catch (err: unknown) {
-			setError(err instanceof Error ? err.message : 'Error al guardar el usuario clocky')
+			setFormError(err instanceof Error ? err.message : 'Error al guardar el usuario clocky')
 		} finally {
 			setSaving(false)
 		}
@@ -247,24 +266,61 @@ const ClockifyUsersTab: React.FC = () => {
 
 			{error && <div className="conf-tab__error">{error}</div>}
 
-			<form onSubmit={(e) => { e.preventDefault(); loadData() }} className="conf-tab__filters">
-				<div className="conf-tab__search-wrapper">
-					<span className="material-icons conf-tab__search-icon">search</span>
-					<input
-						type="text"
-						className="conf-tab__search-input"
-						placeholder="Buscar por nombre o email..."
-						value={search}
-						onChange={(e) => setSearch(e.target.value)}
-					/>
+			<div className="conf-tab__filters">
+				<div className="conf-tab__filter-group">
+					<span className="conf-tab__filter-label">Buscar</span>
+					<div className="conf-tab__search-wrapper">
+						<span className="material-icons conf-tab__search-icon">search</span>
+						<input
+							type="text"
+							className="conf-tab__search-input"
+							placeholder="Nombre o email..."
+							value={search}
+							onChange={(e) => { setSearch(e.target.value); void loadData(e.target.value) }}
+						/>
+					</div>
 				</div>
-				<button type="submit" className="conf-btn conf-btn--secondary" disabled={loading}>Buscar</button>
+				<div className="conf-tab__filter-group">
+					<span className="conf-tab__filter-label">Origen</span>
+					<select
+						className="conf-tab__filter-select"
+						value={filterOrigin}
+						onChange={(e) => setFilterOrigin(e.target.value as 'all' | 'clockify' | 'manual')}
+					>
+						<option value="all">Todos</option>
+						<option value="clockify">Clockify</option>
+						<option value="manual">Manual</option>
+					</select>
+				</div>
+				<div className="conf-tab__filter-group">
+					<span className="conf-tab__filter-label">Función</span>
+					<select
+						className="conf-tab__filter-select"
+						value={filterRole}
+						onChange={(e) => setFilterRole(e.target.value)}
+					>
+						<option value="">Todas</option>
+						{availableRoles.map((r) => <option key={r} value={r}>{r}</option>)}
+					</select>
+				</div>
+				<div className="conf-tab__filter-group">
+					<span className="conf-tab__filter-label">Estado</span>
+					<select
+						className="conf-tab__filter-select"
+						value={filterStatus}
+						onChange={(e) => setFilterStatus(e.target.value as 'all' | 'active' | 'inactive')}
+					>
+						<option value="all">Todos</option>
+						<option value="active">Activo</option>
+						<option value="inactive">Inactivo</option>
+					</select>
+				</div>
 				<ClearFiltersButton
-					active={search.trim() !== ''}
-					onClear={() => { setSearch(''); void loadData('') }}
-					tooltip="Limpiar búsqueda"
+					active={search.trim() !== '' || filterOrigin !== 'all' || filterRole !== '' || filterStatus !== 'all'}
+					onClear={() => { setSearch(''); setFilterOrigin('all'); setFilterRole(''); setFilterStatus('all'); void loadData('') }}
+					tooltip="Limpiar filtros"
 				/>
-			</form>
+			</div>
 
 			{loading && !users.length ? (
 				<div className="conf-tab__loading">Cargando...</div>
@@ -283,10 +339,12 @@ const ClockifyUsersTab: React.FC = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{users.length === 0 ? (
-								<tr><td colSpan={7} style={{ textAlign: 'center', padding: 32 }}>No hay usuarios clocky. Usá &quot;Nuevo usuario clocky&quot; para crear uno.</td></tr>
+							{filteredUsers.length === 0 ? (
+								<tr><td colSpan={7} style={{ textAlign: 'center', padding: 32 }}>
+									{users.length === 0 ? 'No hay usuarios clocky. Usá "Nuevo usuario clocky" para crear uno.' : 'No hay usuarios que coincidan con los filtros.'}
+								</td></tr>
 							) : (
-								users.map((u) => (
+								filteredUsers.map((u) => (
 									<tr key={u.id}>
 										<td>{u.name}</td>
 										<td>{u.email ?? '-'}</td>
@@ -336,10 +394,6 @@ const ClockifyUsersTab: React.FC = () => {
 									<input type="email" className="conf-form__input" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} placeholder="usuario@ejemplo.com" required />
 								</div>
 								<div className="conf-form__group">
-									<label className="conf-form__label">Clockify user ID (opcional)</label>
-									<input type="text" className="conf-form__input" value={formClockifyId} onChange={(e) => setFormClockifyId(e.target.value)} placeholder="ID original de Clockify (dejar vacío si es manual)" />
-								</div>
-								<div className="conf-form__group">
 									<label className="conf-form__label">Horas estándar que trabaja por mes</label>
 									<input type="number" min={0} step={0.5} className="conf-form__input" value={formMonthHours} onChange={(e) => setFormMonthHours(e.target.value)} placeholder="Ej: 160" />
 								</div>
@@ -360,7 +414,7 @@ const ClockifyUsersTab: React.FC = () => {
 									</label>
 								</div>
 
-								{error && <div className="conf-tab__error">{error}</div>}
+								{formError && <div className="conf-tab__error">{formError}</div>}
 							</div>
 						</div>
 						<div className="modal__actions">

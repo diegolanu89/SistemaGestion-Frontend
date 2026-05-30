@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { userLeadersBDT } from '../services/UserLeadersBDT'
 import type { UserLeaderDto } from '../models/UserLeader.m'
 import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
@@ -7,6 +9,10 @@ const UserLeadersTab: React.FC = () => {
 	const [data, setData] = useState<UserLeaderDto[]>([])
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+	const [formError, setFormError] = useState<string | null>(null)
+	const [showDeleteModal, setShowDeleteModal] = useState(false)
+	const [itemToDelete, setItemToDelete] = useState<UserLeaderDto | null>(null)
+	const [deleting, setDeleting] = useState(false)
 	const [options, setOptions] = useState<Array<{ id: number; name: string; email: string }>>([])
 
 	const [showModal, setShowModal] = useState(false)
@@ -86,6 +92,7 @@ const UserLeadersTab: React.FC = () => {
 		setFormUserIds([])
 		setFormLeaderId(0)
 		setUserSearchQuery('')
+		setFormError(null)
 		setShowModal(true)
 	}
 
@@ -94,6 +101,7 @@ const UserLeadersTab: React.FC = () => {
 		setFormUserIds([item.userId])
 		setFormLeaderId(item.leaderId)
 		setUserSearchQuery('')
+		setFormError(null)
 		setShowModal(true)
 	}
 
@@ -110,12 +118,12 @@ const UserLeadersTab: React.FC = () => {
 	}
 
 	const handleSave = async () => {
-		if (!formLeaderId) { setError('Debe seleccionar un líder'); return }
-		if (editingId && formUserIds.length !== 1) { setError('En edición debe haber un solo usuario'); return }
-		if (!editingId && formUserIds.length === 0) { setError('Debe seleccionar al menos un usuario'); return }
+		if (!formLeaderId) { setFormError('Debe seleccionar un líder'); return }
+		if (editingId && formUserIds.length !== 1) { setFormError('En edición debe haber un solo usuario'); return }
+		if (!editingId && formUserIds.length === 0) { setFormError('Debe seleccionar al menos un usuario'); return }
 
+		setFormError(null)
 		setLoading(true)
-		setError(null)
 		try {
 			if (editingId) {
 				await userLeadersBDT.update(editingId, { leaderId: formLeaderId })
@@ -125,23 +133,31 @@ const UserLeadersTab: React.FC = () => {
 			setShowModal(false)
 			loadData()
 		} catch (err: unknown) {
-			setError(err instanceof Error ? err.message : 'Error al guardar')
+			setFormError(err instanceof Error ? err.message : 'Error al guardar')
 		} finally {
 			setLoading(false)
 		}
 	}
 
-	const handleDelete = async (id: number) => {
-		if (!confirm('¿Estás seguro de eliminar esta relación?')) return
-		setLoading(true)
+	const requestDelete = (item: UserLeaderDto) => {
+		setItemToDelete(item)
+		setShowDeleteModal(true)
+	}
+
+	const confirmDelete = async () => {
+		if (!itemToDelete?.id) return
+		setDeleting(true)
 		setError(null)
 		try {
-			await userLeadersBDT.remove(id)
+			await userLeadersBDT.remove(itemToDelete.id)
+			setShowDeleteModal(false)
+			setItemToDelete(null)
 			loadData()
 		} catch (err: unknown) {
 			setError(err instanceof Error ? err.message : 'Error al eliminar')
+			setShowDeleteModal(false)
 		} finally {
-			setLoading(false)
+			setDeleting(false)
 		}
 	}
 
@@ -255,7 +271,7 @@ const UserLeadersTab: React.FC = () => {
 												<button className="proyect-table__action proyect-table__action--edit" onClick={() => handleEdit(item)} data-tooltip="Editar">
 													<span className="material-icons">edit</span>
 												</button>
-												<button className="proyect-table__action proyect-table__action--delete" onClick={() => item.id && handleDelete(item.id)} data-tooltip="Eliminar">
+												<button className="proyect-table__action proyect-table__action--delete" onClick={() => requestDelete(item)} data-tooltip="Eliminar">
 													<span className="material-icons">delete</span>
 												</button>
 											</div>
@@ -325,7 +341,7 @@ const UserLeadersTab: React.FC = () => {
 									</select>
 								</div>
 
-								{error && <div className="conf-tab__error">{error}</div>}
+								{formError && <div className="conf-tab__error">{formError}</div>}
 							</div>
 						</div>
 						<div className="modal__actions">
@@ -335,6 +351,35 @@ const UserLeadersTab: React.FC = () => {
 					</div>
 				</div>
 			)}
+		{createPortal(
+			<AnimatePresence>
+				{showDeleteModal && itemToDelete && (
+					<motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+						<motion.div className="proyect-delete-modal" initial={{ scale: 0.94, opacity: 0, y: 10 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.94, opacity: 0, y: 10 }} transition={{ type: 'spring', stiffness: 280, damping: 22 }}>
+							<div className="proyect-delete-modal__header">
+								<span className="material-icons">report_problem</span>
+								<h2>Eliminar relación</h2>
+							</div>
+							<div className="proyect-delete-modal__content">
+								<p>Vas a eliminar:</p>
+								<p className="proyect-delete-modal__project">
+									{itemToDelete.user?.name ?? `ID: ${itemToDelete.userId}`} → {itemToDelete.leader?.name ?? `ID: ${itemToDelete.leaderId}`}
+								</p>
+								<div className="proyect-delete-modal__warning">
+									<span className="material-icons">warning</span>
+									<span>Esta acción es irreversible</span>
+								</div>
+							</div>
+							<div className="proyect-delete-modal__actions">
+								<button className="proyect-delete-btn proyect-delete-btn--cancel" onClick={() => setShowDeleteModal(false)} disabled={deleting}>Cancelar</button>
+								<button className="proyect-delete-btn proyect-delete-btn--confirm" onClick={() => void confirmDelete()} disabled={deleting}>{deleting ? 'Eliminando...' : 'Eliminar'}</button>
+							</div>
+						</motion.div>
+					</motion.div>
+				)}
+			</AnimatePresence>,
+			document.body
+		)}
 		</div>
 	)
 }
