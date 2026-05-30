@@ -5,13 +5,22 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 
-import { EvmMetrics } from '../../base/utils/evmCalculations'
-
 import { useDashboardEvmContext } from './useDashboardEvmContext.h'
-import { dashboardEvmAdapter } from '../services/DashboardEvmAdapter.s'
+import { dashboardEvmService } from '../services/DashboardEvmBDT.s'
 import { DashboardEvmRowDto } from '../models/DashboardEvmDTO.m'
 import { ProjectMetricsDto } from '../models/ProjectMetricsDTO.m'
 import { groupByClient, ClientGroup } from '../utils/groupByClient'
+
+/** Métricas EVM normalizadas que consume la UI (derivadas de ProjectMetricsDto). */
+export interface EvmMetrics {
+	bac: number
+	ac: number
+	etc: number
+	eac: number
+	vac: number
+	advance: number
+	changeControl: number
+}
 
 export interface DashboardEvmComputedRow {
 	row: DashboardEvmRowDto
@@ -71,7 +80,7 @@ export const useDashboardEvmController = () => {
 			logger.infoTag(LogTag.Adapter, '[DASHBOARD_EVM] Fetch start')
 
 			// 1) Lista base de proyectos del dashboard
-			const res = await dashboardEvmAdapter.getEvm()
+			const res = await dashboardEvmService.getEvm()
 			const baseRows = res.data
 
 			if (baseRows.length === 0) {
@@ -79,17 +88,19 @@ export const useDashboardEvmController = () => {
 				return
 			}
 
-			// 2) En paralelo: batch de métricas EVM reales + tracking por proyecto.
-			// El tracking se trae para conocer `updates.length` que va a "Control de cambios".
+			// 2) En paralelo: métricas EVM reales (batch) + change requests + tracking por proyecto.
+			// - change requests determinan el número de "Control de cambios"
+			// - tracking determina si la "S" del chip queda azul (tiene) o gris (no tiene)
 			// Es N+1 hasta que el back lo incluya en /projects/evm o /metrics/batch.
 			const ids = baseRows.map((r) => r.id)
 
-			const [metricsResult, trackingResults] = await Promise.all([
-				dashboardEvmAdapter.getMetricsBatch(ids).catch((e) => {
+			const [metricsResult, crResults, trackingResults] = await Promise.all([
+				dashboardEvmService.getMetricsBatch(ids).catch((e) => {
 					logger.errorTag(LogTag.Adapter, '[DASHBOARD_EVM] Metrics batch error', e)
 					return [] as ProjectMetricsDto[]
 				}),
-				Promise.allSettled(ids.map((id) => dashboardEvmAdapter.getTracking(id))),
+				Promise.allSettled(ids.map((id) => dashboardEvmService.getChangeRequests(id))),
+				Promise.allSettled(ids.map((id) => dashboardEvmService.getTracking(id))),
 			])
 
 			const metricsById = new Map<number, ProjectMetricsDto>()
@@ -97,26 +108,39 @@ export const useDashboardEvmController = () => {
 			metricsCacheRef.current = metricsById
 
 			const changesById = new Map<number, number>()
-			trackingResults.forEach((result, idx) => {
+			crResults.forEach((result, idx) => {
 				const projectId = ids[idx]
 				if (result.status === 'fulfilled') {
-					changesById.set(projectId, result.value?.updates.length ?? 0)
+					changesById.set(projectId, result.value.length)
 				} else {
-					logger.warnTag(LogTag.Adapter, '[DASHBOARD_EVM] Tracking error', { projectId, reason: result.reason })
+					logger.warnTag(LogTag.Adapter, '[DASHBOARD_EVM] Change requests error', { projectId, reason: result.reason })
 					changesById.set(projectId, 0)
 				}
 			})
 
-			// 3) Merge: cada row queda con changesCount real
+			const trackingById = new Map<number, boolean>()
+			trackingResults.forEach((result, idx) => {
+				const projectId = ids[idx]
+				if (result.status === 'fulfilled') {
+					trackingById.set(projectId, result.value !== null)
+				} else {
+					logger.warnTag(LogTag.Adapter, '[DASHBOARD_EVM] Tracking error', { projectId, reason: result.reason })
+					trackingById.set(projectId, false)
+				}
+			})
+
+			// 3) Merge: cada row queda con changesCount + hasTracking
 			const enriched: DashboardEvmRowDto[] = baseRows.map((row) => ({
 				...row,
 				changesCount: changesById.get(row.id) ?? 0,
+				hasTracking: trackingById.get(row.id) ?? false,
 			}))
 
 			logger.infoTag(LogTag.Adapter, '[DASHBOARD_EVM] Fetch success', {
 				count: enriched.length,
 				withMetrics: metricsById.size,
 				withChanges: Array.from(changesById.values()).filter((n) => n > 0).length,
+				withTracking: Array.from(trackingById.values()).filter(Boolean).length,
 			})
 
 			setRows(enriched)
@@ -147,8 +171,6 @@ export const useDashboardEvmController = () => {
 		const m = metricsCacheRef.current.get(row.id)
 		if (m) return metricsToEvm(m, row)
 
-		// Fallback: si el batch no devolvió la métrica (proyecto sin time entries
-		// o error del back), devolvemos ceros razonables tomando el BAC del row.
 		return {
 			bac: row.bacTotalHours,
 			ac: 0,

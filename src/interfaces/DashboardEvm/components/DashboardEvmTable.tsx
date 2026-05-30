@@ -5,10 +5,11 @@ import { DashboardEvmRow } from './DashboardEvmRow'
 
 interface Props {
 	groups: DashboardEvmComputedGroup[]
+	onOpenChanges: (row: DashboardEvmRowDto) => void
 	onOpenTracking: (row: DashboardEvmRowDto) => void
 }
 
-export const DashboardEvmTable: FC<Props> = ({ groups, onOpenTracking }) => {
+export const DashboardEvmTable: FC<Props> = ({ groups, onOpenChanges, onOpenTracking }) => {
 	if (groups.length === 0) {
 		return <div className="dashboard-evm-table__empty">No hay proyectos que coincidan con los filtros</div>
 	}
@@ -36,6 +37,7 @@ export const DashboardEvmTable: FC<Props> = ({ groups, onOpenTracking }) => {
 								key={row.row.id}
 								row={row}
 								clientName={idx === 0 ? group.clientName : null}
+								onOpenChanges={onOpenChanges}
 								onOpenTracking={onOpenTracking}
 							/>
 						))

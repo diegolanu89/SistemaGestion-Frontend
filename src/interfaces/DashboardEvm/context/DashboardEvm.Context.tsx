@@ -2,9 +2,10 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import { dashboardEvmContext } from '../hooks/useDashboardEvmContext.h'
 
-import { IDashboardEvmContext } from '../models/IDashboardEvmContext.m'
+import { DashboardEvmModalType, IDashboardEvmContext } from '../models/IDashboardEvmContext.m'
 import { DashboardEvmRowDto } from '../models/DashboardEvmDTO.m'
 import { DashboardEvmFilters, DEFAULT_DASHBOARD_EVM_FILTERS } from '../models/DashboardEvmFilters.m'
+import { ChangeRequestDto } from '../models/ChangeRequestDTO.m'
 import { ProjectTrackingDto } from '../models/ProjectTrackingDTO.m'
 
 interface Props {
@@ -19,6 +20,12 @@ export const DashboardEvmProvider = ({ children }: Props) => {
 	const [filters, setFilters] = useState<DashboardEvmFilters>(DEFAULT_DASHBOARD_EVM_FILTERS)
 
 	const [selectedRow, setSelectedRow] = useState<DashboardEvmRowDto | null>(null)
+	const [modalType, setModalType] = useState<DashboardEvmModalType>(null)
+
+	const [changeRequests, setChangeRequests] = useState<ChangeRequestDto[] | null>(null)
+	const [changeRequestsLoading, setChangeRequestsLoading] = useState<boolean>(false)
+	const [changeRequestsError, setChangeRequestsError] = useState<string | null>(null)
+
 	const [tracking, setTracking] = useState<ProjectTrackingDto | null>(null)
 	const [trackingLoading, setTrackingLoading] = useState<boolean>(false)
 	const [trackingError, setTrackingError] = useState<string | null>(null)
@@ -42,19 +49,41 @@ export const DashboardEvmProvider = ({ children }: Props) => {
 			selectedRow,
 			setSelectedRow,
 
+			modalType,
+			setModalType,
+
+			changeRequests,
+			setChangeRequests,
+			changeRequestsLoading,
+			setChangeRequestsLoading,
+			changeRequestsError,
+			setChangeRequestsError,
+
 			tracking,
 			setTracking,
-
 			trackingLoading,
 			setTrackingLoading,
-
 			trackingError,
 			setTrackingError,
 
 			refetch,
 			setRefetch,
 		}),
-		[rows, loading, error, filters, selectedRow, tracking, trackingLoading, trackingError, refetch]
+		[
+			rows,
+			loading,
+			error,
+			filters,
+			selectedRow,
+			modalType,
+			changeRequests,
+			changeRequestsLoading,
+			changeRequestsError,
+			tracking,
+			trackingLoading,
+			trackingError,
+			refetch,
+		]
 	)
 
 	return <dashboardEvmContext.Provider value={value}>{children}</dashboardEvmContext.Provider>

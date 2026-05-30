@@ -14,17 +14,16 @@ interface Props {
 }
 
 export const ProjectTrackingModal: FC<Props> = ({ selectedRow, tracking, loading, error, onClose }) => {
-	const title = selectedRow
-		? selectedRow.code
-			? `${selectedRow.code} - ${selectedRow.name}`
-			: selectedRow.name
-		: 'Seguimiento del proyecto'
+	const subtitle = selectedRow ? (selectedRow.code ? `${selectedRow.code} - ${selectedRow.name}` : selectedRow.name) : null
 
 	return (
 		<div className="modal-overlay" role="dialog" aria-modal="true">
 			<div className="modal tracking-modal">
 				<header className="modal__header">
-					<h2>{title}</h2>
+					<div className="tracking-modal__title">
+						<h2>Seguimiento: planificación y fechas</h2>
+						{subtitle && <span className="tracking-modal__subtitle">{subtitle}</span>}
+					</div>
 					<button type="button" onClick={onClose} aria-label="Cerrar">
 						✕
 					</button>
@@ -35,17 +34,11 @@ export const ProjectTrackingModal: FC<Props> = ({ selectedRow, tracking, loading
 
 					{!loading && error && <div className="tracking-modal__error">{error}</div>}
 
-					{!loading && !error && tracking === null && (
-						<div className="tracking-modal__history-empty">Este proyecto no tiene seguimiento registrado.</div>
-					)}
-
-					{!loading && !error && tracking && (
+					{!loading && !error && (
 						<>
 							<TrackingDatesPanel tracking={tracking} />
 
-							<h3 className="tracking-modal__history-title">Historial de desvíos / cambios</h3>
-
-							<TrackingHistoryTable updates={tracking.updates} />
+							<TrackingHistoryTable updates={tracking?.updates ?? []} />
 						</>
 					)}
 				</section>

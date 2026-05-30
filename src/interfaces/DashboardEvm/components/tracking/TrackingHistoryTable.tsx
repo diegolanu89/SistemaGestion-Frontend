@@ -11,7 +11,7 @@ const formatDate = (value: string | null): string => {
 	const date = new Date(value)
 	if (Number.isNaN(date.getTime())) return value
 
-	return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+	return date.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 const formatDateTime = (value: string | null): string => {
@@ -20,19 +20,26 @@ const formatDateTime = (value: string | null): string => {
 	const date = new Date(value)
 	if (Number.isNaN(date.getTime())) return value
 
-	return date.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+	return date.toLocaleString('es-AR', {
+		day: '2-digit',
+		month: '2-digit',
+		year: '2-digit',
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	})
 }
 
 export const TrackingHistoryTable: FC<Props> = ({ updates }) => {
 	if (updates.length === 0) {
-		return <div className="tracking-modal__history-empty">El proyecto no tiene registros en el historial de cambios.</div>
+		return <div className="tracking-modal__empty">No hay registros en el historial.</div>
 	}
 
 	return (
 		<table className="tracking-modal__history">
 			<thead>
 				<tr>
-					<th>Fecha fin</th>
+					<th>Fecha fin (c.c. / demoras)</th>
 					<th>Observaciones</th>
 					<th>Registrado</th>
 				</tr>

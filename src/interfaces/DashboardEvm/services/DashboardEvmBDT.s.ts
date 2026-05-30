@@ -3,6 +3,7 @@ import { HttpClient } from '../../base/services/HttpClient.s'
 import { DashboardEvmInterface } from '../models/DashboardEvmInterface.m'
 import { DashboardEvmResponse } from '../models/DashboardEvmDTO.m'
 import { ProjectMetricsBatchResponse, ProjectMetricsDto } from '../models/ProjectMetricsDTO.m'
+import { ChangeRequestDto } from '../models/ChangeRequestDTO.m'
 import { ProjectTrackingDto, ProjectTrackingResponse } from '../models/ProjectTrackingDTO.m'
 
 const BASE_URL = `${import.meta.env.VITE_API_URL}/projects`
@@ -10,8 +11,6 @@ const TRACKING_BASE_URL = `${import.meta.env.VITE_API_URL}/project-trackings`
 
 export class DashboardEvmBDT implements DashboardEvmInterface {
 	async getEvm(): Promise<DashboardEvmResponse> {
-		// El endpoint devuelve además { current_page, per_page, last_page, from, to }
-		// pero a nivel front sólo consumimos { data, total }.
 		return await HttpClient.request<DashboardEvmResponse>(`${BASE_URL}/evm`)
 	}
 
@@ -24,9 +23,14 @@ export class DashboardEvmBDT implements DashboardEvmInterface {
 		return response.metrics ?? []
 	}
 
+	async getChangeRequests(projectId: number): Promise<ChangeRequestDto[]> {
+		return await HttpClient.request<ChangeRequestDto[]>(`${BASE_URL}/${projectId}/change-requests`)
+	}
+
 	async getTracking(projectId: number): Promise<ProjectTrackingDto | null> {
 		const response = await HttpClient.request<ProjectTrackingResponse>(`${TRACKING_BASE_URL}/${projectId}`)
-
 		return response.data
 	}
 }
+
+export const dashboardEvmService: DashboardEvmInterface = new DashboardEvmBDT()
