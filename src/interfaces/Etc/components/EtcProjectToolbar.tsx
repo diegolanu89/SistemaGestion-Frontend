@@ -1,11 +1,16 @@
-import { FC, useState, useEffect } from 'react'
-import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionController.h'
+// components/EtcProjectToolbar.tsx
+
+import { FC, useEffect, useState } from 'react'
+
 import { useEtcContext } from '../hooks/useEtcContext.h'
+import { useEtcProjectController } from '../hooks/useEtcProjectController.h'
+
+import { proyectViewAdapter } from '../../ViewProyect/services/ProyectViewAdapter.s'
+
+import { ProjectDto } from '../../ViewProyect/models/ProyectViewDTO.m'
 
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
-
-import { proyectViewAdapter } from '../../ViewProyect/services/ProyectViewAdapter.s'
 
 type NotificationState = {
 	show: boolean
@@ -13,10 +18,14 @@ type NotificationState = {
 	message: string
 }
 
-export const EtcToolbar: FC = () => {
-	const { projectId, projectName, bac } = useEtcWeeklyVersionController()
+export const EtcProjectToolbar: FC = () => {
+	const { projectId, bac, setBac } = useEtcContext()
 
-	const { setBac } = useEtcContext()
+	const { loadProject } = useEtcProjectController()
+
+	const [projects, setProjects] = useState<ProjectDto[]>([])
+
+	const [loadingProjects, setLoadingProjects] = useState(false)
 
 	const [saving, setSaving] = useState(false)
 
@@ -31,6 +40,27 @@ export const EtcToolbar: FC = () => {
 	useEffect(() => {
 		setBacInput(String(bac))
 	}, [bac])
+
+	useEffect(() => {
+		void loadProjects()
+	}, [])
+
+	const loadProjects = async (): Promise<void> => {
+		try {
+			setLoadingProjects(true)
+
+			const response = await proyectViewAdapter.getAll({
+				page: 1,
+				per_page: 500,
+			})
+
+			setProjects(response.data)
+		} catch (error: unknown) {
+			logger.errorTag(LogTag.Adapter, error instanceof Error ? error : new Error(String(error)))
+		} finally {
+			setLoadingProjects(false)
+		}
+	}
 
 	const showNotification = (type: NotificationState['type'], message: string): void => {
 		setNotification({
@@ -63,21 +93,11 @@ export const EtcToolbar: FC = () => {
 				return
 			}
 
-			logger.infoTag(LogTag.Adapter, '[ETC] Saving BAC', {
-				projectId,
-				bac: bacValue,
-			})
-
 			await proyectViewAdapter.updateBac(projectId, {
 				bacBaseHours: bacValue,
 			})
 
 			setBac(bacValue)
-
-			logger.infoTag(LogTag.Adapter, '[ETC] BAC saved successfully', {
-				projectId,
-				bac: bacValue,
-			})
 
 			showNotification('success', 'BAC actualizado correctamente')
 		} catch (error: unknown) {
@@ -96,7 +116,28 @@ export const EtcToolbar: FC = () => {
 			<div className="etc-toolbar__field">
 				<label className="etc-toolbar__label">Proyecto</label>
 
-				<div className="etc-toolbar__readonly">{projectName}</div>
+				<select
+					className="etc-toolbar__input"
+					value={projectId || ''}
+					disabled={loadingProjects}
+					onChange={(event) => {
+						const id = Number(event.target.value)
+
+						if (!id) {
+							return
+						}
+
+						void loadProject(id)
+					}}
+				>
+					<option value="">Seleccionar proyecto...</option>
+
+					{projects.map((project) => (
+						<option key={project.id} value={project.id}>
+							{project.code} - {project.clientName} - {project.name}
+						</option>
+					))}
+				</select>
 			</div>
 
 			{/* BAC */}
@@ -104,13 +145,21 @@ export const EtcToolbar: FC = () => {
 			<div className="etc-toolbar__field">
 				<label className="etc-toolbar__label">BAC Base (horas)</label>
 
-				<input type="number" min="0" step="0.01" value={bacInput} onChange={(event) => setBacInput(event.target.value)} className="etc-toolbar__input" />
+				<input
+					type="number"
+					min="0"
+					step="0.01"
+					value={bacInput}
+					onChange={(event) => setBacInput(event.target.value)}
+					className="etc-toolbar__input"
+					disabled={!projectId}
+				/>
 			</div>
 
-			{/* ACTION */}
+			{/* ACTIONS */}
 
 			<div className="etc-toolbar__actions">
-				<button className="etc-toolbar__save-btn" onClick={() => void handleSave()} disabled={saving} data-tooltip="Guardar BAC del proyecto">
+				<button className="etc-toolbar__save-btn" onClick={() => void handleSave()} disabled={!projectId || saving}>
 					<span className="material-icons etc-toolbar__icon">{saving ? 'hourglass_top' : 'save'}</span>
 
 					<span>{saving ? 'Guardando...' : 'Guardar BAC'}</span>
@@ -128,4 +177,4 @@ export const EtcToolbar: FC = () => {
 	)
 }
 
-export default EtcToolbar
+export default EtcProjectToolbar

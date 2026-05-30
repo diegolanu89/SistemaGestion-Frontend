@@ -1,6 +1,4 @@
-// components/ProyectViewItemHeader.tsx
-
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { ProjectDto } from '../models/ProyectViewDTO.m'
@@ -10,6 +8,8 @@ import { PROYECT_PATHS_VIEWS } from '../routes/paths'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 
+import { useProyectViewController } from '../hooks/useProyectViewController.h'
+
 interface Props {
 	project: ProjectDto
 }
@@ -17,7 +17,11 @@ interface Props {
 export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 	const navigate = useNavigate()
 
-	const goToEtc = () => {
+	const { recalculateProjectHours } = useProyectViewController()
+
+	const [recalculating, setRecalculating] = useState(false)
+
+	const goToEtc = (): void => {
 		logger.infoTag(LogTag.Navigation, '[PROJECT] Navigate to ETC', {
 			projectId: project.id,
 		})
@@ -27,6 +31,20 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 				projectId: project.id,
 			},
 		})
+	}
+
+	const handleRecalculateHours = async (): Promise<void> => {
+		if (recalculating) {
+			return
+		}
+
+		try {
+			setRecalculating(true)
+
+			await recalculateProjectHours(project.id)
+		} finally {
+			setRecalculating(false)
+		}
 	}
 
 	return (
@@ -61,14 +79,10 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 				</div>
 
 				<div className="project-detail-header__actions">
-					<button data-tooltip="Sincronizar entradas de tiempo desde Clockify">
-						<span className="material-icons">refresh</span>
-					</button>
+					<button onClick={() => void handleRecalculateHours()} disabled={recalculating} data-tooltip="Recalcular horas cargadas del proyecto">
+						<span className="material-icons">{recalculating ? 'hourglass_top' : 'calculate'}</span>
 
-					<button data-tooltip="Recalcular horas cargadas del proyecto">
-						<span className="material-icons">calculate</span>
-
-						<span>Recalcular horas</span>
+						<span>{recalculating ? 'Recalculando...' : 'Recalcular horas'}</span>
 					</button>
 
 					<button onClick={goToEtc} data-tooltip="Abrir carga de estimación ETC">
@@ -81,3 +95,5 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 		</header>
 	)
 }
+
+export default ProyectViewItemHeader

@@ -4,6 +4,8 @@ import { DASHBOARD_HOURS_PATHS } from '../../DashboardHours/routes/paths'
 
 import { SideBarItem as SideBarItemType } from './SideBar.m'
 import { REPORTS_PATHS } from '../../reports/routes/paths'
+import { ETC_LOAD_PROJECT } from '../../Etc/routes/paths'
+import { PROYECT_PATHS_VIEWS } from '../../ViewProyect/routes/paths'
 
 export const SIDEBAR = {
 	config: {
@@ -59,9 +61,9 @@ export const SIDEBAR = {
 				},
 
 				{
-					label: 'Visualizar Proyectos',
+					label: 'Visualización de proyectos',
 					icon: 'visibility',
-					path: '/operaciones/visualizar-proyectos',
+					path: PROYECT_PATHS_VIEWS.PROYECT_VIEW,
 
 					requiredPermission: 'PROJECTS_ACCESS',
 				},
@@ -69,7 +71,7 @@ export const SIDEBAR = {
 				{
 					label: 'Carga de ETC a Proyecto',
 					icon: 'edit_note',
-					path: '/operaciones/carga-etc',
+					path: ETC_LOAD_PROJECT.ETC_LOAD,
 
 					requiredPermission: 'ETC_ACCESS',
 				},

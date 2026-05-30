@@ -26,11 +26,9 @@ interface Props {
 export const EtcProvider = ({ children }: Props) => {
 	const location = useLocation()
 
-	const projectId = Number(location.state?.projectId)
+	const initialProjectId = Number(location.state?.projectId ?? 0)
 
-	if (!projectId) {
-		throw new Error('EtcProvider: projectId no recibido por navigation state')
-	}
+	const [projectId, setProjectId] = useState<number>(initialProjectId)
 
 	// =========================
 	// BASE ETC
@@ -63,10 +61,14 @@ export const EtcProvider = ({ children }: Props) => {
 	const [values, setValues] = useState<GridValues>({})
 
 	// =========================
-	// INITIAL DATA LOAD (single point — avoids duplicate fetches)
+	// INITIAL DATA LOAD
 	// =========================
 
 	useEffect(() => {
+		if (!projectId) {
+			return
+		}
+
 		let cancelled = false
 
 		void (async () => {
@@ -78,7 +80,8 @@ export const EtcProvider = ({ children }: Props) => {
 				if (cancelled) return
 
 				setProjectName(project.name)
-				setBac(Number(project.bacTotalHours ?? 0))
+
+				setBac(Number(project.bacBaseHours ?? 0))
 
 				const allUsers = await userAdapter.getUsers()
 
@@ -93,13 +96,17 @@ export const EtcProvider = ({ children }: Props) => {
 				const records: EtcEntryDto[] = (response.records ?? []).map(
 					(record: { userName?: string | null; monthKey: string; monthLabel?: string | null; hours?: number | null }) => ({
 						userName: record.userName ?? 'Sin usuario',
+
 						monthKey: record.monthKey,
+
 						monthLabel: record.monthLabel ?? record.monthKey,
+
 						hours: Number(record.hours ?? 0),
 					})
 				)
 
 				const monthSet = new Set<string>()
+
 				records.forEach((r) => monthSet.add(r.monthKey))
 
 				if (monthSet.size > 0) {
@@ -109,15 +116,20 @@ export const EtcProvider = ({ children }: Props) => {
 				}
 
 				const ids = new Set<number>()
+
 				const nextValues: GridValues = {}
 
 				allUsers.forEach((u) => {
 					const userRecords = records.filter((r) => r.userName === u.FullName)
 
-					if (userRecords.length <= 0) return
+					if (userRecords.length <= 0) {
+						return
+					}
 
 					ids.add(u.Id)
+
 					nextValues[u.Id] = {}
+
 					userRecords.forEach((r) => {
 						nextValues[u.Id][r.monthKey] = Number(r.hours)
 					})
@@ -125,12 +137,15 @@ export const EtcProvider = ({ children }: Props) => {
 
 				if (!cancelled) {
 					setSelectedUserIds(ids)
+
 					setValues(nextValues)
 				}
 			} catch (e: unknown) {
 				logger.errorTag(LogTag.Adapter, '[ETC PROVIDER] Load error', e)
 			} finally {
-				if (!cancelled) setLoading(false)
+				if (!cancelled) {
+					setLoading(false)
+				}
 			}
 		})()
 
@@ -163,6 +178,7 @@ export const EtcProvider = ({ children }: Props) => {
 	const value = useMemo<IEtcContext>(
 		() => ({
 			projectId,
+			setProjectId,
 
 			entries,
 			setEntries,

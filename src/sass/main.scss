@@ -16,6 +16,7 @@
 @use '../interfaces/base/components/ClearFiltersButton/clearFiltersButton';
 @use '../interfaces/base/components/alert/actionAlert';
 @use '../interfaces/base/components/redirect/routeNotFound';
+@use '../interfaces/base/components/redirect/accesDenied';
 
 /**APP_BAR**/
 @use '../interfaces/AppBar/components/bar/_appBarSpacer';

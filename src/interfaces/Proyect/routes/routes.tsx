@@ -6,7 +6,7 @@ import ProtectedRoute from '../../base/components/redirect/ProtectedRoute'
 
 export const ProyectPublicRoutes = () => (
 	<>
-		<Route element={<ProtectedRoute redirectTo="/" permission="PROJECTS_CREATE" />}>
+		<Route element={<ProtectedRoute redirectTo="/" permission="PROJECTS_CREATE_ESPECIAL" />}>
 			<Route
 				path={PROYECT_PATHS.PROYECT}
 				element={
