@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { userLeadersBDT } from '../services/UserLeadersBDT'
 import type { UserLeaderDto } from '../models/UserLeader.m'
+import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
 
 const UserLeadersTab: React.FC = () => {
 	const [data, setData] = useState<UserLeaderDto[]>([])
@@ -158,15 +159,22 @@ const UserLeadersTab: React.FC = () => {
 
 			<div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
 				<div className="conf-tab__filters">
-					<div className="conf-modal__search-container" style={{ flex: 1, minWidth: 220, marginBottom: 0 }}>
+					<div className="conf-tab__search-wrapper">
+						<span className="material-icons conf-tab__search-icon">search</span>
 						<input
 							type="text"
+							className="conf-tab__search-input"
 							placeholder="Buscar líder para filtrar..."
 							value={filterLeaderSearch}
 							onChange={(e) => { setFilterLeaderSearch(e.target.value); if (!filterExpanded) setFilterExpanded(true) }}
 							onFocus={() => setFilterExpanded(true)}
 						/>
 					</div>
+					<ClearFiltersButton
+						active={filterLeaderSearch.trim() !== '' || filterLeaderIds.length > 0}
+						onClear={() => { setFilterLeaderSearch(''); setFilterLeaderIds([]); setFilterExpanded(false); setCurrentPage(1) }}
+						tooltip="Limpiar filtros"
+					/>
 				</div>
 
 				{filterLeaderIds.length > 0 && (

@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { clockifyUsersBDT } from '../services/ClockifyUsersBDT'
 import { workingDaysCalendarBDT } from '../services/WorkingDaysCalendarBDT'
 import type { ClockifyUserDto } from '../models/ClockifyUser.m'
-
-const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
 
 const ClockifyUsersTab: React.FC = () => {
 	const [users, setUsers] = useState<ClockifyUserDto[]>([])
@@ -15,7 +14,6 @@ const ClockifyUsersTab: React.FC = () => {
 	const [showModal, setShowModal] = useState(false)
 	const [editingId, setEditingId] = useState<number | null>(null)
 	const [saving, setSaving] = useState(false)
-	const [formErrors, setFormErrors] = useState<string[]>([])
 
 	const [formName, setFormName] = useState('')
 	const [formEmail, setFormEmail] = useState('')
@@ -49,11 +47,12 @@ const ClockifyUsersTab: React.FC = () => {
 		return months
 	}, [])
 
-	const loadData = async () => {
+	const loadData = async (searchOverride?: string) => {
 		setLoading(true)
 		setError(null)
+		const q = searchOverride !== undefined ? searchOverride : search
 		try {
-			const { users: data } = await clockifyUsersBDT.list({ search: search.trim() || undefined, per_page: 500 })
+			const { users: data } = await clockifyUsersBDT.list({ search: q.trim() || undefined, per_page: 500 })
 			setUsers(data)
 		} catch (err: unknown) {
 			setError(err instanceof Error ? err.message : 'Error al cargar los usuarios clocky')
@@ -88,7 +87,6 @@ const ClockifyUsersTab: React.FC = () => {
 		setFormActive(true)
 		setFormMonthHours('160')
 		setFormRole('')
-		setFormErrors([])
 		setShowModal(true)
 	}
 
@@ -100,27 +98,11 @@ const ClockifyUsersTab: React.FC = () => {
 		setFormActive(u.active)
 		setFormMonthHours(u.defaultMonthHours != null ? String(u.defaultMonthHours) : '')
 		setFormRole(u.role ?? '')
-		setFormErrors([])
 		setShowModal(true)
 	}
 
-	const validate = (): string[] => {
-		const errors: string[] = []
-		if (!formName.trim()) errors.push('El nombre es obligatorio')
-		if (!formEmail.trim()) errors.push('El email es obligatorio')
-		else if (!isValidEmail(formEmail.trim())) errors.push('El email no tiene un formato válido')
-		const monthHoursNum = formMonthHours.trim() === '' ? null : Number(formMonthHours)
-		if (monthHoursNum !== null && (isNaN(monthHoursNum) || monthHoursNum < 0)) {
-			errors.push('Las horas por mes deben ser un número válido (>= 0)')
-		}
-		return errors
-	}
-
-	const handleSave = async () => {
-		const errors = validate()
-		if (errors.length > 0) { setFormErrors(errors); return }
-		setFormErrors([])
-
+	const handleSave = async (e: React.FormEvent) => {
+		e.preventDefault()
 		const monthHours = formMonthHours.trim() === '' ? null : Number(formMonthHours)
 		setSaving(true)
 		setError(null)
@@ -266,8 +248,22 @@ const ClockifyUsersTab: React.FC = () => {
 			{error && <div className="conf-tab__error">{error}</div>}
 
 			<form onSubmit={(e) => { e.preventDefault(); loadData() }} className="conf-tab__filters">
-				<input type="text" placeholder="Buscar por nombre o email..." value={search} onChange={(e) => setSearch(e.target.value)} />
+				<div className="conf-tab__search-wrapper">
+					<span className="material-icons conf-tab__search-icon">search</span>
+					<input
+						type="text"
+						className="conf-tab__search-input"
+						placeholder="Buscar por nombre o email..."
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+				</div>
 				<button type="submit" className="conf-btn conf-btn--secondary" disabled={loading}>Buscar</button>
+				<ClearFiltersButton
+					active={search.trim() !== ''}
+					onClear={() => { setSearch(''); void loadData('') }}
+					tooltip="Limpiar búsqueda"
+				/>
 			</form>
 
 			{loading && !users.length ? (
@@ -320,20 +316,24 @@ const ClockifyUsersTab: React.FC = () => {
 			{/* ── MODAL CREAR / EDITAR ── */}
 			{showModal && (
 				<div className="modal-overlay" onClick={() => setShowModal(false)}>
-					<div className="modal conf-modal--sm" onClick={(e) => e.stopPropagation()}>
+					<form
+						className="modal conf-modal--sm"
+						onClick={(e) => e.stopPropagation()}
+						onSubmit={(e) => void handleSave(e)}
+					>
 						<div className="modal__header">
 							<h2>{editingId ? 'Editar usuario clocky' : 'Nuevo usuario clocky'}</h2>
-							<button onClick={() => setShowModal(false)}>×</button>
+							<button type="button" onClick={() => setShowModal(false)}>×</button>
 						</div>
 						<div className="modal__body">
 							<div className="conf-form">
 								<div className="conf-form__group">
 									<label className="conf-form__label">Nombre *</label>
-									<input type="text" className="conf-form__input" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Nombre del recurso" />
+									<input type="text" className="conf-form__input" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Nombre del recurso" required />
 								</div>
 								<div className="conf-form__group">
 									<label className="conf-form__label">Email *</label>
-									<input type="email" className="conf-form__input" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} placeholder="usuario@ejemplo.com" />
+									<input type="email" className="conf-form__input" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} placeholder="usuario@ejemplo.com" required />
 								</div>
 								<div className="conf-form__group">
 									<label className="conf-form__label">Clockify user ID (opcional)</label>
@@ -360,25 +360,14 @@ const ClockifyUsersTab: React.FC = () => {
 									</label>
 								</div>
 
-								{formErrors.length > 0 && (
-									<ul className="proyect-create-errors">
-										{formErrors.map((err, i) => (
-											<li key={i} className="proyect-create-error-item">
-												<span className="material-icons">error_outline</span>
-												{err}
-											</li>
-										))}
-									</ul>
-								)}
-
 								{error && <div className="conf-tab__error">{error}</div>}
 							</div>
 						</div>
 						<div className="modal__actions">
-							<button className="conf-btn conf-btn--secondary" onClick={() => setShowModal(false)}>Cancelar</button>
-							<button className="conf-btn conf-btn--primary" onClick={handleSave} disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
+							<button type="button" className="conf-btn conf-btn--secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+							<button type="submit" className="conf-btn conf-btn--primary" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
 						</div>
-					</div>
+					</form>
 				</div>
 			)}
 

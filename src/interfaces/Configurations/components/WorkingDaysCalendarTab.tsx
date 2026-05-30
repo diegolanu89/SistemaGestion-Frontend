@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { workingDaysCalendarBDT } from '../services/WorkingDaysCalendarBDT'
 import type { WorkingDaysCalendarDto } from '../models/WorkingDaysCalendar.m'
+import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
 
 type FormState = Partial<WorkingDaysCalendarDto>
 
@@ -46,18 +47,13 @@ const WorkingDaysCalendarTab: React.FC = () => {
 		return data.filter((item) => item.monthKey.includes(filterMonth))
 	}, [data, filterMonth])
 
-	const sortedData = useMemo(() => {
+	const currentMonthKey = useMemo(() => {
 		const now = new Date()
-		const currentKey = now.getFullYear() * 12 + (now.getMonth() + 1)
-		return [...filteredData].sort((a, b) => {
-			const keyA = a.year * 12 + a.month
-			const keyB = b.year * 12 + b.month
-			const aFuture = keyA >= currentKey
-			const bFuture = keyB >= currentKey
-			if (aFuture && !bFuture) return -1
-			if (!aFuture && bFuture) return 1
-			return keyA - keyB
-		})
+		return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+	}, [])
+
+	const sortedData = useMemo(() => {
+		return [...filteredData].sort((a, b) => a.year * 12 + a.month - (b.year * 12 + b.month))
 	}, [filteredData])
 
 	const paginatedData = useMemo(() => {
@@ -142,7 +138,21 @@ const WorkingDaysCalendarTab: React.FC = () => {
 			{error && <div className="conf-tab__error">{error}</div>}
 
 			<div className="conf-tab__filters">
-				<input type="text" placeholder="Filtrar por mes (ej: 2025-03)" value={filterMonth} onChange={(e) => { setFilterMonth(e.target.value); setCurrentPage(1) }} />
+				<div className="conf-tab__search-wrapper">
+					<span className="material-icons conf-tab__search-icon">search</span>
+					<input
+						type="text"
+						className="conf-tab__search-input"
+						placeholder="Filtrar por mes (ej: 2025-03)"
+						value={filterMonth}
+						onChange={(e) => { setFilterMonth(e.target.value); setCurrentPage(1) }}
+					/>
+				</div>
+				<ClearFiltersButton
+					active={filterMonth.trim() !== ''}
+					onClear={() => { setFilterMonth(''); setCurrentPage(1) }}
+					tooltip="Limpiar filtro"
+				/>
 			</div>
 
 			{loading && !data.length ? (
@@ -156,6 +166,7 @@ const WorkingDaysCalendarTab: React.FC = () => {
 									<th>Mes key</th>
 									<th>Año</th>
 									<th>Mes (1-12)</th>
+									<th>Mes</th>
 									<th>Total Días</th>
 									<th>Días Laborales</th>
 									<th>Horas Mes</th>
@@ -165,10 +176,11 @@ const WorkingDaysCalendarTab: React.FC = () => {
 							</thead>
 							<tbody>
 								{paginatedData.map((item) => (
-									<tr key={item.id}>
+									<tr key={item.id} className={item.monthKey === currentMonthKey ? 'conf-tab__table-row--current' : ''}>
 										<td>{item.monthKey}</td>
 										<td>{item.year}</td>
 										<td>{item.month}</td>
+										<td>{item.monthLabel ?? '-'}</td>
 										<td>{item.totalDays}</td>
 										<td>{item.workingDays}</td>
 										<td>{item.hoursMonth ?? 0}</td>
