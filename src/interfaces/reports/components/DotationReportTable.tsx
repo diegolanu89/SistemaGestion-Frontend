@@ -1,47 +1,26 @@
 import { FC } from 'react'
 
-import { DashboardHoursResponseDto } from '../../DashboardHours/model/DashboardHoursDTO.m'
+import { DotationPreviewDto } from '../models/DotacionPreviewDTO.m'
+
+import { getRoleClass } from '../utils/getRoleClass'
 
 interface Props {
-	reportData: DashboardHoursResponseDto
+	preview: DotationPreviewDto
 }
 
-const getRoleClass = (role?: string | null): string => {
-	switch ((role ?? '').toLowerCase()) {
-		case 'dev':
-		case 'developer':
-		case 'des':
-			return 'is-dev'
-
-		case 'qa':
-			return 'is-qa'
-
-		case 'pm':
-			return 'is-pm'
-
-		case 'ld':
-		case 'lead':
-		case 'líder':
-		case 'lider':
-			return 'is-lead'
-
-		case 'af':
-		case 'ba':
-		case 'analista':
-			return 'is-ba'
-
-		default:
-			return 'is-default'
+const DotationReportTable: FC<Props> = ({ preview }) => {
+	if (!preview.rows.length) {
+		return null
 	}
-}
 
-const DotationReportTable: FC<Props> = ({ reportData }) => {
+	const months = Object.keys(preview.rows[0].months)
+
 	return (
 		<div className="dotation-report__preview">
 			<div className="dotation-report__preview-header">
-				<h2>Dotación Detallada</h2>
+				<h2>Dotación Consolidada</h2>
 
-				<span>{reportData.data.length} registros</span>
+				<span>{preview.rows.length} recursos</span>
 			</div>
 
 			<div className="dotation-report__table-wrapper">
@@ -54,101 +33,135 @@ const DotationReportTable: FC<Props> = ({ reportData }) => {
 
 							<th>Rol</th>
 
-							<th>Asignaciones</th>
+							<th>Estado</th>
 
-							<th>Total Horas</th>
+							<th>Bench</th>
 
-							{reportData.months.map((month) => (
+							<th>Horas</th>
+
+							<th>Capacidad</th>
+
+							<th>% Util.</th>
+
+							<th>Desvío</th>
+
+							<th>Forecast ETC</th>
+
+							<th>Cap. Futura</th>
+
+							<th>Dif. Futura</th>
+
+							<th>Clientes</th>
+
+							<th>Proyectos</th>
+
+							{months.map((month) => (
 								<th key={month}>{month}</th>
 							))}
 						</tr>
 					</thead>
 
 					<tbody>
-						{reportData.data.map((row) => {
-							const totalHours = Object.values(row.months).reduce((acc, month) => acc + month.hours, 0)
+						{preview.rows.map((row) => (
+							<tr key={`${row.userId}-${row.userName}`}>
+								<td>
+									<div className="dotation-report__user">
+										<strong>{row.userName}</strong>
+									</div>
+								</td>
 
-							const groupedAssignments = (row.details ?? []).reduce(
-								(acc, detail) => {
-									const client = detail.client_name ?? 'Sin cliente'
+								<td>
+									<div className="dotation-report__leader">{row.leader}</div>
+								</td>
 
-									if (!acc[client]) {
-										acc[client] = []
+								<td>
+									<span className={`dotation-report__role-badge ${getRoleClass(row.role)}`}>{row.role}</span>
+								</td>
+
+								<td>
+									<span className={`dotation-report__status dotation-report__status--${row.status}`}>{row.status}</span>
+								</td>
+
+								<td>
+									<span className={row.isBench ? 'dotation-report__capacity-warning' : 'dotation-report__capacity-ok'}>{row.isBench ? 'Sí' : 'No'}</span>
+								</td>
+
+								<td>
+									<strong>{row.totalHours.toFixed(1)}</strong>
+								</td>
+
+								<td>{row.capacity.toFixed(1)}</td>
+
+								<td
+									className={
+										row.utilization > 100
+											? 'dotation-report__capacity-danger'
+											: row.utilization > 80
+												? 'dotation-report__capacity-warning'
+												: 'dotation-report__capacity-ok'
 									}
+								>
+									{row.utilization.toFixed(1)}%
+								</td>
 
-									if (detail.project_name && !acc[client].includes(detail.project_name)) {
-										acc[client].push(detail.project_name)
-									}
+								<td className={row.deviation < 0 ? 'dotation-report__capacity-danger' : 'dotation-report__capacity-ok'}>{row.deviation.toFixed(1)}</td>
 
-									return acc
-								},
-								{} as Record<string, string[]>
-							)
+								<td>{row.forecastEtc.toFixed(1)}</td>
 
-							return (
-								<tr key={`${row.user_id}-${row.user_name}`}>
-									<td>
-										<div className="dotation-report__user">
-											<strong>{row.user_name}</strong>
-										</div>
-									</td>
+								<td>{row.futureCapacity.toFixed(1)}</td>
 
-									<td>
-										<div className="dotation-report__leader">{row.leader_name ?? '-'}</div>
-									</td>
+								<td className={row.futureDifference >= 0 ? 'dotation-report__capacity-ok' : 'dotation-report__capacity-danger'}>
+									{row.futureDifference.toFixed(1)}
+								</td>
 
-									<td>
-										<span className={`dotation-report__role-badge ${getRoleClass(row.role_short)}`}>{row.role_short ?? '-'}</span>
-									</td>
+								<td>
+									<div className="dotation-report__chips">
+										{row.clients.length > 0 ? (
+											row.clients.map((client) => (
+												<span key={client} className="dotation-report__chip">
+													{client}
+												</span>
+											))
+										) : (
+											<span>-</span>
+										)}
+									</div>
+								</td>
 
-									<td>
-										<div className="dotation-report__assignments">
-											{Object.entries(groupedAssignments).length > 0 ? (
-												Object.entries(groupedAssignments).map(([client, projects]) => (
-													<div key={client} className="dotation-report__assignment-group">
-														<div className="dotation-report__assignment-client">{client}</div>
+								<td>
+									<div className="dotation-report__chips">
+										{row.projects.length > 0 ? (
+											row.projects.map((project) => (
+												<span key={project} className="dotation-report__chip">
+													{project}
+												</span>
+											))
+										) : (
+											<span>-</span>
+										)}
+									</div>
+								</td>
 
-														<div className="dotation-report__assignment-projects">
-															{projects.map((project) => (
-																<span key={`${client}-${project}`} className="dotation-report__assignment-project">
-																	{project}
-																</span>
-															))}
-														</div>
-													</div>
-												))
-											) : (
-												<span>-</span>
-											)}
-										</div>
-									</td>
+								{months.map((month) => {
+									const hours = row.months[month]?.hours ?? 0
 
-									<td>
-										<strong>{totalHours.toFixed(1)}</strong>
-									</td>
+									const className =
+										hours >= 160
+											? 'dotation-report__capacity-danger'
+											: hours >= 120
+												? 'dotation-report__capacity-warning'
+												: hours > 0
+													? 'dotation-report__capacity-ok'
+													: ''
 
-									{reportData.months.map((month) => {
-										const hours = row.months?.[month]?.hours ?? 0
-
-										let className = ''
-
-										if (hours >= 160) {
-											className = 'dotation-report__capacity-danger'
-										} else if (hours >= 120) {
-											className = 'dotation-report__capacity-warning'
-										} else if (hours > 0) {
-											className = 'dotation-report__capacity-ok'
-										}
-
-										return (
-											<td key={`${row.user_id}-${month}`} className={className}>
-												{hours > 0 ? hours.toFixed(1) : '-'}
-											</td>
-										)
-									})}
-								</tr>
-							)
-						})}
+									return (
+										<td key={`${row.userId}-${month}`} className={className}>
+											{hours > 0 ? hours.toFixed(1) : '-'}
+										</td>
+									)
+								})}
+							</tr>
+						))}
 					</tbody>
 				</table>
 			</div>

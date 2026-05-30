@@ -1,0 +1,85 @@
+.dotation-report__filters-card {
+	display: grid;
+
+	grid-template-columns: 1fr 1fr auto;
+
+	gap: 20px;
+
+	padding: 24px;
+
+	border-radius: 20px;
+
+	border: 1px solid var(--color-border);
+
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+
+	box-shadow: 0 8px 30px var(--color-shadow-soft);
+}
+
+.dotation-report__field {
+	display: flex;
+	flex-direction: column;
+
+	gap: 8px;
+
+	label {
+		font-size: 13px;
+		font-weight: 700;
+	}
+}
+
+.dotation-report__date-input {
+	display: flex;
+	align-items: center;
+
+	gap: 12px;
+
+	height: 54px;
+
+	padding: 0 16px;
+
+	border-radius: 14px;
+
+	border: 1px solid var(--color-border);
+
+	background: var(--color-surface);
+
+	.material-icons {
+		color: var(--color-primary);
+	}
+
+	input {
+		width: 100%;
+
+		border: none;
+
+		background: transparent;
+
+		outline: none;
+	}
+}
+
+.dotation-report__generate {
+	height: 54px;
+
+	align-self: end;
+
+	display: flex;
+	align-items: center;
+
+	gap: 10px;
+
+	padding: 0 22px;
+
+	border: none;
+
+	border-radius: 14px;
+
+	cursor: pointer;
+
+	font-weight: 700;
+
+	color: white;
+
+	background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}

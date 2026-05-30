@@ -1,16 +1,16 @@
 import { FC, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
-import { REPORTS_PATHS } from '../routes/paths'
+import { useDotationReportController } from '../hooks/useDotacionReport.h'
 
-import { useDotationReportController } from '../hooks/useDotacionReprot.h'
-
+import DotationHeader from '../components/DotacionHeader'
+import DotationFilters from '../components/DotacionFilters'
+import DotationSummary from '../components/DotacionSummary'
 import DotationReportTable from '../components/DotationReportTable'
+import DotationExportActions from '../components/DotacionExportActions'
+import DotationExportModal from '../components/DotacionExportModal'
 
 export const DotationReport: FC = () => {
-	const navigate = useNavigate()
-
-	const { loading, reportData, summary, generatePreview } = useDotationReportController()
+	const { loading, preview, summary, generatePreview } = useDotationReportController()
 
 	const [fromDate, setFromDate] = useState('')
 
@@ -50,137 +50,33 @@ export const DotationReport: FC = () => {
 		return result
 	}
 
-	const handleGenerate = async () => {
+	const handleGenerate = async (): Promise<void> => {
 		await generatePreview(buildMonthKeys())
 	}
 
 	return (
 		<div className="dotation-report">
-			<div className="dotation-report__header">
-				<button type="button" className="dotation-report__back" onClick={() => navigate(REPORTS_PATHS.REPORTS)}>
-					<span className="material-icons">arrow_back</span>
-				</button>
+			<DotationHeader />
 
-				<div>
-					<h1>Generación de Dotación</h1>
+			<DotationFilters
+				fromDate={fromDate}
+				toDate={toDate}
+				loading={loading}
+				isValidRange={isValidRange}
+				onFromDateChange={setFromDate}
+				onToDateChange={setToDate}
+				onGenerate={() => void handleGenerate()}
+			/>
 
-					<p>Visualizá y analizá la dotación consolidada utilizando la misma información utilizada por el Dashboard de Horas.</p>
-				</div>
-			</div>
-
-			<div className="dotation-report__filters-card">
-				<div className="dotation-report__field">
-					<label>Fecha Desde</label>
-
-					<div className="dotation-report__date-input">
-						<span className="material-icons">calendar_month</span>
-
-						<input type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} />
-					</div>
-				</div>
-
-				<div className="dotation-report__field">
-					<label>Fecha Hasta</label>
-
-					<div className="dotation-report__date-input">
-						<span className="material-icons">calendar_month</span>
-
-						<input type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} />
-					</div>
-				</div>
-
-				<button type="button" className="dotation-report__generate" onClick={() => void handleGenerate()} disabled={!isValidRange || loading}>
-					<span className="material-icons">analytics</span>
-
-					<span>{loading ? 'Generando vista previa...' : 'Generar Vista Previa'}</span>
-				</button>
-			</div>
-
-			{reportData && summary && (
+			{preview && summary && (
 				<>
-					<div className="dotation-report__summary">
-						<div className="dotation-report__metric">
-							<span className="material-icons">groups</span>
+					<DotationSummary summary={summary} />
 
-							<div>
-								<strong>{summary.users}</strong>
+					<DotationExportActions disabled={loading} />
 
-								<span>Usuarios</span>
-							</div>
-						</div>
+					<DotationReportTable preview={preview} />
 
-						<div className="dotation-report__metric">
-							<span className="material-icons">folder</span>
-
-							<div>
-								<strong>{summary.projects}</strong>
-
-								<span>Proyectos</span>
-							</div>
-						</div>
-
-						<div className="dotation-report__metric">
-							<span className="material-icons">business</span>
-
-							<div>
-								<strong>{summary.clients}</strong>
-
-								<span>Clientes</span>
-							</div>
-						</div>
-
-						<div className="dotation-report__metric">
-							<span className="material-icons">schedule</span>
-
-							<div>
-								<strong>{summary.totalHours.toFixed(0)}</strong>
-
-								<span>Horas</span>
-							</div>
-						</div>
-
-						<div className="dotation-report__metric">
-							<span className="material-icons">inventory_2</span>
-
-							<div>
-								<strong>{summary.availability.toFixed(0)}</strong>
-
-								<span>Disponibilidad</span>
-							</div>
-						</div>
-
-						<div className="dotation-report__metric">
-							<span className="material-icons">trending_up</span>
-
-							<div>
-								<strong>{summary.need.toFixed(0)}</strong>
-
-								<span>Necesidad</span>
-							</div>
-						</div>
-
-						<div className={`dotation-report__metric ${summary.difference >= 0 ? 'is-positive' : 'is-negative'}`}>
-							<span className="material-icons">{summary.difference >= 0 ? 'check_circle' : 'warning'}</span>
-
-							<div>
-								<strong>{summary.difference.toFixed(0)}</strong>
-
-								<span>Diferencia</span>
-							</div>
-						</div>
-
-						<div className="dotation-report__metric">
-							<span className="material-icons">person</span>
-
-							<div>
-								<strong>{summary.fte}</strong>
-
-								<span>FTE</span>
-							</div>
-						</div>
-					</div>
-
-					<DotationReportTable reportData={reportData} />
+					<DotationExportModal preview={preview} />
 				</>
 			)}
 		</div>

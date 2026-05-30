@@ -1,0 +1,125 @@
+/* ===================================================== */
+/* EXPORT */
+/* ===================================================== */
+
+.dotation-report__export-actions {
+	width: 100%;
+}
+
+.dotation-report__export-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	gap: 24px;
+
+	padding: 22px 24px;
+
+	border-radius: 20px;
+
+	border: 1px solid var(--color-border);
+
+	background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
+
+	box-shadow: 0 6px 24px var(--color-shadow-soft);
+}
+
+.dotation-report__export-info {
+	display: flex;
+	align-items: center;
+
+	gap: 18px;
+
+	.material-icons {
+		font-size: 42px;
+
+		color: var(--color-primary);
+
+		flex-shrink: 0;
+	}
+
+	h3 {
+		margin: 0;
+
+		font-size: 18px;
+
+		font-weight: 800;
+
+		color: var(--color-text-primary);
+	}
+
+	p {
+		margin: 4px 0 0 0;
+
+		font-size: 13px;
+
+		color: var(--color-text-secondary);
+	}
+}
+
+.dotation-report__export-btn {
+	height: 52px;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	gap: 10px;
+
+	padding: 0 24px;
+
+	border: none;
+
+	border-radius: 14px;
+
+	background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+
+	color: white;
+
+	font-size: 14px;
+
+	font-weight: 700;
+
+	cursor: pointer;
+
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+
+	.material-icons {
+		font-size: 20px;
+	}
+
+	&:hover:not(:disabled) {
+		transform: translateY(-2px);
+
+		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+	}
+
+	&:active:not(:disabled) {
+		transform: translateY(0);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+
+		cursor: not-allowed;
+	}
+}
+
+/* ===================================================== */
+/* MOBILE */
+/* ===================================================== */
+
+@media (max-width: 768px) {
+	.dotation-report__export-card {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.dotation-report__export-btn {
+		width: 100%;
+	}
+}

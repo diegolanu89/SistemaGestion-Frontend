@@ -115,7 +115,7 @@ export const SIDEBAR = {
 				{
 					label: 'Reportes',
 					icon: 'description',
-					path: REPORTS_PATHS.REPORTS,
+					path: REPORTS_PATHS.DOTATION,
 
 					requiredPermission: 'REPORTS_ACCESS',
 				},
