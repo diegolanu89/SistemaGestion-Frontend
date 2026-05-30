@@ -171,6 +171,10 @@ const UserLeadersTab: React.FC = () => {
 				</button>
 			</div>
 
+			<p className="conf-tab__hint">
+				Definí qué usuarios pertenecen al equipo de cada líder. Cada relación determina la estructura de equipos reflejada en los reportes.
+			</p>
+
 			{error && <div className="conf-tab__error">{error}</div>}
 
 			<div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

@@ -213,6 +213,10 @@ const WorkingDaysCalendarTab: React.FC = () => {
 				</button>
 			</div>
 
+			<p className="conf-tab__hint">
+				Configurá las características de cada mes: días laborales, feriados y horas. Base para el cálculo de capacidad mensual en los reportes de horas.
+			</p>
+
 			{error && <div className="conf-tab__error">{error}</div>}
 
 			<div className="conf-tab__filters">
