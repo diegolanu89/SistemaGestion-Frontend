@@ -111,5 +111,10 @@
 @use '../interfaces/Reports/components/ExportStep/dotacionExportModal';
 @use '../interfaces/Reports/components/ExportStep/dotationExportConfiguration';
 @use '../interfaces/Reports/components/ExportStep/dotationExportTypeStep';
+
 /**DASHBOARD EVM**/
 @use '../interfaces/DashboardEvm/views/dashboardEvm';
+
+/**CONFIGURATIONS**/
+@use '../interfaces/Configurations/views/_configurations';
+@use '../interfaces/Configurations/components/_configurationsTab';
