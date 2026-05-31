@@ -20,6 +20,10 @@ export const ProyectCreateForm: FC = () => {
 			className="proyect-create-form"
 			onSubmit={(e) => {
 				e.preventDefault()
+				if (!e.currentTarget.checkValidity()) {
+					e.currentTarget.reportValidity()
+					return
+				}
 				void submit()
 			}}
 		>
@@ -205,6 +209,7 @@ export const ProyectCreateForm: FC = () => {
 						type="date"
 						value={form.estimatedEndDate ?? ''}
 						onChange={(e) => update('estimatedEndDate')(e.target.value || null)}
+						required
 					/>
 				</div>
 
