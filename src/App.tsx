@@ -10,6 +10,7 @@ import { IdleProtectedRoutes } from './interfaces/Idle/routes/routes'
 import { LoginPublicRoutes } from './interfaces/Login/routes/routes'
 import { ProyectPublicRoutes } from './interfaces/Proyect/routes/routes'
 import { EstimatedProjectRoutes } from './interfaces/EstimatedProjects/routes/routes'
+import { ConfigurationsRoutes } from './interfaces/Configurations/routes/routes'
 import { IDLE_PATHS } from './interfaces/Idle/routes/paths'
 import { LOGIN_PATHS } from './interfaces/Login/routes/paths'
 import { SideBarView } from './interfaces/SideBar/views/SideBar.v'
@@ -19,6 +20,9 @@ import { ProyectViewPublicRoutes } from './interfaces/ViewProyect/routes/routes'
 import { DashBoardHoursRoutes } from './interfaces/DashboardHours/routes/routes'
 import RouteNotFound from './interfaces/base/components/redirect/RouteNotFound'
 import { ProjectAssignmentRoutes } from './interfaces/ProjectAsignament/routes/routes'
+import { ReportsPublicRoutes } from './interfaces/reports/routes/routes'
+import { EtcProyectViewPublicRoutes } from './interfaces/Etc/routes/routes'
+import { DashboardEvmRoutes } from './interfaces/DashboardEvm/routes/routes'
 
 const AppClient = () => {
 	const { toggleTheme, mode } = useAppTheme()
@@ -45,9 +49,13 @@ const AppClient = () => {
 												{IdleProtectedRoutes()}
 												{ProyectPublicRoutes()}
 												{ProyectViewPublicRoutes()}
+												{EtcProyectViewPublicRoutes()}
 												{EstimatedProjectRoutes()}
 												{DashBoardHoursRoutes()}
 												{ProjectAssignmentRoutes()}
+												{ReportsPublicRoutes()}
+												{DashboardEvmRoutes()}
+												{ConfigurationsRoutes()}
 											</Route>
 
 											<Route path="*" element={<RouteNotFound />} />

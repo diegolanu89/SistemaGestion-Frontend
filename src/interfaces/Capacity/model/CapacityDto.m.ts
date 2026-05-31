@@ -35,6 +35,12 @@ export interface CapacityLimitDto {
 	availableHours: number
 }
 
+export interface CapacityLimitMonthDto {
+	capacity: number
+	etc_hours: number
+	other_potencial_hours: number
+	available: number
+}
 export interface CapacityLimitsResponseDto {
-	limits: CapacityLimitDto[]
+	limits: Record<string, Record<string, CapacityLimitMonthDto>>
 }

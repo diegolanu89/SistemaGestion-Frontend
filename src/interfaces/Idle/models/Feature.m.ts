@@ -6,7 +6,7 @@ export class Feature {
 			TITLE: 'Panel de acceso',
 			DESCRIPTION: 'Seleccioná un módulo para continuar',
 			ICON: BDT,
-			ICON_ALT: 'TrackFit Logo',
+			ICON_ALT: 'Logo',
 		},
 
 		LAYOUT: {

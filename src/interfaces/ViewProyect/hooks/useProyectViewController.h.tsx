@@ -261,6 +261,39 @@ export const useProyectViewController = () => {
 		},
 		[page, perPage, filters.search, filters.client, filters.status, filters.code]
 	)
+	const recalculateProjectHours = async (projectId: number): Promise<void> => {
+		try {
+			setLoading(true)
+
+			setLoadingText('Recalculando horas del proyecto...')
+
+			logger.infoTag(LogTag.Adapter, '[PROJECT] Recalculate start', {
+				projectId,
+			})
+
+			await proyectViewAdapter.recalculateHours(projectId)
+
+			logger.infoTag(LogTag.Adapter, '[PROJECT] Recalculate success', {
+				projectId,
+			})
+
+			// Limpia cachés para forzar refresco real
+			localStorage.removeItem(CACHE_KEY)
+
+			localStorage.removeItem(ETC_CACHE_KEY)
+
+			await fetchProjects(true)
+		} catch (error: unknown) {
+			logger.errorTag(LogTag.Adapter, '[PROJECT] Recalculate error', error)
+
+			setError('Error al recalcular horas del proyecto')
+		} finally {
+			setLoading(false)
+
+			setLoadingText('Cargando proyectos...')
+		}
+	}
+
 	useEffect(() => {
 		setRefetch(() => async () => {
 			await fetchProjects(true)
@@ -301,5 +334,6 @@ export const useProyectViewController = () => {
 
 		filters,
 		setFilters,
+		recalculateProjectHours,
 	}
 }

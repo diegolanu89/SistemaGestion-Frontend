@@ -9,44 +9,89 @@ export interface GridValues {
 }
 
 export interface IEtcContext {
+	/* =========================================
+	🔹 PROJECT
+	========================================= */
+
 	projectId: number
 
+	setProjectId: Dispatch<SetStateAction<number>>
+
+	projectName: string
+
+	setProjectName: Dispatch<SetStateAction<string>>
+
+	bac: number
+
+	setBac: Dispatch<SetStateAction<number>>
+
+	/* =========================================
+	🔹 ETC
+	========================================= */
+
 	entries: EtcEntryDto[]
+
 	setEntries: Dispatch<SetStateAction<EtcEntryDto[]>>
 
 	updateEntry: (index: number, hours: number) => void
+
+	/* =========================================
+	🔹 ERRORS
+	========================================= */
 
 	errors: {
 		message: string
 		userName?: string
 		monthKey?: string
 	}[]
+
 	setErrors: Dispatch<SetStateAction<IEtcContext['errors']>>
 
+	/* =========================================
+	🔹 LOADING
+	========================================= */
+
 	loading: boolean
+
 	setLoading: Dispatch<SetStateAction<boolean>>
 
-	projectName: string
-	setProjectName: Dispatch<SetStateAction<string>>
-
-	bac: number
-	setBac: Dispatch<SetStateAction<number>>
+	/* =========================================
+	🔹 SEARCH
+	========================================= */
 
 	search: string
+
 	setSearch: Dispatch<SetStateAction<string>>
 
+	/* =========================================
+	🔹 MONTHS
+	========================================= */
+
 	selectedMonths: string[]
+
 	setSelectedMonths: Dispatch<SetStateAction<string[]>>
 
 	monthToAdd: string
+
 	setMonthToAdd: Dispatch<SetStateAction<string>>
 
+	/* =========================================
+	🔹 USERS
+	========================================= */
+
 	users: UserRefDto[]
+
 	setUsers: Dispatch<SetStateAction<UserRefDto[]>>
 
 	selectedUserIds: Set<number>
+
 	setSelectedUserIds: Dispatch<SetStateAction<Set<number>>>
 
+	/* =========================================
+	🔹 GRID
+	========================================= */
+
 	values: GridValues
+
 	setValues: Dispatch<SetStateAction<GridValues>>
 }

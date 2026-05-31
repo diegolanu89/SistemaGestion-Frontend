@@ -1,0 +1,157 @@
+/* =========================================================
+🔒 ACCESS DENIED
+========================================================= */
+
+.access-denied {
+	min-height: 100vh;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 24px;
+
+	background: radial-gradient(circle at top, rgba(220, 38, 38, 0.08), transparent 45%), var(--color-bg);
+}
+
+.access-denied__card {
+	width: 100%;
+	max-width: 520px;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	gap: 16px;
+
+	padding: 40px;
+
+	border-radius: 24px;
+
+	background: var(--color-surface);
+
+	border: 1px solid var(--color-border);
+
+	box-shadow:
+		0 20px 40px rgba(0, 0, 0, 0.15),
+		0 8px 20px var(--color-shadow-soft);
+
+	text-align: center;
+}
+
+.access-denied__icon {
+	font-size: 72px !important;
+
+	color: #dc2626;
+}
+
+.access-denied__card h1 {
+	margin: 0;
+
+	font-size: 72px;
+
+	font-weight: 800;
+
+	line-height: 1;
+
+	color: #dc2626;
+}
+
+.access-denied__card h2 {
+	margin: 0;
+
+	font-size: 28px;
+
+	font-weight: 700;
+
+	color: var(--color-text-primary);
+}
+
+.access-denied__card p {
+	margin: 0;
+
+	font-size: 15px;
+
+	line-height: 1.6;
+
+	color: var(--color-text-secondary);
+}
+
+.access-denied__permission {
+	display: flex;
+	flex-direction: column;
+
+	gap: 6px;
+
+	padding: 14px 18px;
+
+	border-radius: 14px;
+
+	background: rgba(220, 38, 38, 0.08);
+
+	border: 1px solid rgba(220, 38, 38, 0.15);
+
+	span {
+		font-size: 12px;
+
+		text-transform: uppercase;
+
+		letter-spacing: 0.5px;
+
+		color: var(--color-text-secondary);
+	}
+
+	strong {
+		font-size: 14px;
+
+		font-family: monospace;
+
+		color: #dc2626;
+	}
+}
+
+.access-denied__card button {
+	height: 48px;
+
+	padding: 0 24px;
+
+	border: none;
+
+	border-radius: 14px;
+
+	cursor: pointer;
+
+	font-weight: 700;
+
+	color: white;
+
+	background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+
+	&:hover {
+		transform: translateY(-2px);
+
+		box-shadow: 0 10px 24px var(--color-shadow-soft);
+	}
+}
+
+/* =========================================================
+📱 RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+	.access-denied__card {
+		padding: 28px;
+	}
+
+	.access-denied__card h1 {
+		font-size: 56px;
+	}
+
+	.access-denied__card h2 {
+		font-size: 22px;
+	}
+}

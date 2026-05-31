@@ -1,17 +1,12 @@
-// base/components/navigation/ProtectedRoute.tsx
-
 import { Navigate, Outlet } from 'react-router-dom'
-
 import { useAuth } from '../../../Login/hooks/useAuth.h'
-
 import logger from '../../controllers/Logger.c'
-
 import { LogTag } from '../../model/LogTag.m'
 import { PermissionUtils } from '../../../Login/utils/PermissionUtils'
+import AccessDeniedView from './AccesDeniedView'
 
 interface ProtectedRouteProps {
 	redirectTo: string
-
 	permission?: string
 }
 
@@ -46,7 +41,7 @@ const ProtectedRoute = ({ redirectTo, permission }: ProtectedRouteProps): JSX.El
 		if (!allowed) {
 			logger.warnTag(LogTag.Security, `[ROUTE] access denied -> ${permission}`)
 
-			return <Navigate to={redirectTo} replace />
+			return <AccessDeniedView requiredPermission={permission} />
 		}
 
 		logger.infoTag(LogTag.Security, `[ROUTE] access granted -> ${permission}`)

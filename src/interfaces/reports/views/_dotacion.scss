@@ -1,0 +1,17 @@
+.dotation-report {
+	width: 100%;
+	max-width: 1600px;
+
+	margin: 0 auto;
+
+	display: flex;
+	flex-direction: column;
+
+	gap: 24px;
+}
+
+@media (max-width: 1024px) {
+	.dotation-report {
+		gap: 20px;
+	}
+}
