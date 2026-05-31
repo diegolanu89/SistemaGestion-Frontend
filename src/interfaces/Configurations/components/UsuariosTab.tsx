@@ -51,7 +51,10 @@ const UsuariosTab: React.FC = () => {
 		}
 	}
 
-	useEffect(() => { void loadProfiles(); void loadUsers() }, []) // eslint-disable-line react-hooks/exhaustive-deps
+	useEffect(() => {
+		void loadProfiles()
+		void loadUsers()
+	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	const filteredUsers = useMemo(() => {
 		return users.filter((u) => {
@@ -88,7 +91,15 @@ const UsuariosTab: React.FC = () => {
 
 	const handleSave = async (e: React.FormEvent) => {
 		e.preventDefault()
-		if (formPassword && formPassword !== formPasswordConfirm) { setFormError('Las contraseñas no coinciden'); return }
+		if (formPassword && formPassword !== formPasswordConfirm) {
+			setFormError('Las contraseñas no coinciden')
+			return
+		}
+
+		if (formProfileId === '') {
+			setFormError('Debe seleccionar un perfil')
+			return
+		}
 
 		setFormError(null)
 		setSaving(true)
@@ -96,7 +107,7 @@ const UsuariosTab: React.FC = () => {
 			if (editingId) {
 				const payload: Parameters<typeof appUsersBDT.update>[1] = {
 					name: formName.trim(),
-					profileId: formProfileId === '' ? null : (formProfileId as number),
+					profileId: formProfileId,
 					active: formActive,
 				}
 				if (formPassword) {
@@ -110,7 +121,7 @@ const UsuariosTab: React.FC = () => {
 					email: formEmail.trim(),
 					password: formPassword,
 					passwordConfirmation: formPasswordConfirm,
-					profileId: formProfileId === '' ? null : (formProfileId as number),
+					profileId: formProfileId,
 					active: formActive,
 				})
 			}
@@ -155,9 +166,7 @@ const UsuariosTab: React.FC = () => {
 				</button>
 			</div>
 
-			<p className="conf-tab__hint">
-				Alta, baja y modificación de personas (usuarios con login). Asigná un perfil a cada usuario.
-			</p>
+			<p className="conf-tab__hint">Alta, baja y modificación de personas (usuarios con login). Asigná un perfil a cada usuario.</p>
 
 			{error && <div className="conf-tab__error">{error}</div>}
 
@@ -171,7 +180,10 @@ const UsuariosTab: React.FC = () => {
 							className="conf-tab__search-input"
 							placeholder="Nombre o correo..."
 							value={search}
-							onChange={(e) => { setSearch(e.target.value); void loadUsers(e.target.value) }}
+							onChange={(e) => {
+								setSearch(e.target.value)
+								void loadUsers(e.target.value)
+							}}
 						/>
 					</div>
 				</div>
@@ -183,16 +195,16 @@ const UsuariosTab: React.FC = () => {
 						onChange={(e) => setFilterProfileId(e.target.value ? Number(e.target.value) : '')}
 					>
 						<option value="">Todos</option>
-						{profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+						{profiles.map((p) => (
+							<option key={p.id} value={p.id}>
+								{p.name}
+							</option>
+						))}
 					</select>
 				</div>
 				<div className="conf-tab__filter-group">
 					<span className="conf-tab__filter-label">Estado</span>
-					<select
-						className="conf-tab__filter-select"
-						value={filterStatus}
-						onChange={(e) => setFilterStatus(e.target.value as 'all' | 'active' | 'inactive')}
-					>
+					<select className="conf-tab__filter-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value as 'all' | 'active' | 'inactive')}>
 						<option value="all">Todos</option>
 						<option value="active">Activo</option>
 						<option value="inactive">Inactivo</option>
@@ -200,7 +212,12 @@ const UsuariosTab: React.FC = () => {
 				</div>
 				<ClearFiltersButton
 					active={search.trim() !== '' || filterProfileId !== '' || filterStatus !== 'all'}
-					onClear={() => { setSearch(''); setFilterProfileId(''); setFilterStatus('all'); void loadUsers('') }}
+					onClear={() => {
+						setSearch('')
+						setFilterProfileId('')
+						setFilterStatus('all')
+						void loadUsers('')
+					}}
 					tooltip="Limpiar filtros"
 				/>
 			</div>
@@ -221,9 +238,11 @@ const UsuariosTab: React.FC = () => {
 						</thead>
 						<tbody>
 							{filteredUsers.length === 0 ? (
-								<tr><td colSpan={5} style={{ textAlign: 'center', padding: 40 }}>
-									{users.length === 0 ? 'No hay usuarios. Usá "Alta de usuario" para agregar personas.' : 'No hay usuarios que coincidan con los filtros.'}
-								</td></tr>
+								<tr>
+									<td colSpan={5} style={{ textAlign: 'center', padding: 40 }}>
+										{users.length === 0 ? 'No hay usuarios. Usá "Alta de usuario" para agregar personas.' : 'No hay usuarios que coincidan con los filtros.'}
+									</td>
+								</tr>
 							) : (
 								filteredUsers.map((u) => (
 									<tr key={u.id}>
@@ -251,42 +270,76 @@ const UsuariosTab: React.FC = () => {
 
 			{showModal && (
 				<div className="modal-overlay" onClick={() => setShowModal(false)}>
-					<form
-						className="modal conf-modal--sm"
-						onClick={(e) => e.stopPropagation()}
-						onSubmit={(e) => void handleSave(e)}
-					>
+					<form className="modal conf-modal--sm" onClick={(e) => e.stopPropagation()} onSubmit={(e) => void handleSave(e)}>
 						<div className="modal__header">
 							<h2>{editingId ? 'Editar usuario' : 'Alta de usuario'}</h2>
-							<button type="button" onClick={() => setShowModal(false)}>×</button>
+							<button type="button" onClick={() => setShowModal(false)}>
+								×
+							</button>
 						</div>
 						<div className="modal__body">
 							<div className="conf-form">
 								<div className="conf-form__group">
 									<label className="conf-form__label">Nombre *</label>
-									<input type="text" className="conf-form__input" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Nombre completo" required />
+									<input
+										type="text"
+										className="conf-form__input"
+										value={formName}
+										onChange={(e) => setFormName(e.target.value)}
+										placeholder="Nombre completo"
+										required
+									/>
 								</div>
 								<div className="conf-form__group">
 									<label className="conf-form__label">Correo *</label>
-									<input type="email" className="conf-form__input" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} placeholder="usuario@ejemplo.com" disabled={!!editingId} required={!editingId} />
+									<input
+										type="email"
+										className="conf-form__input"
+										value={formEmail}
+										onChange={(e) => setFormEmail(e.target.value)}
+										placeholder="usuario@ejemplo.com"
+										disabled={!!editingId}
+										required={!editingId}
+									/>
 								</div>
 								<div className="conf-form__group">
-									<label className="conf-form__label">
-										Contraseña {editingId ? '(dejar en blanco para no cambiar)' : '*'}
-									</label>
-									<input type="password" className="conf-form__input" value={formPassword} onChange={(e) => setFormPassword(e.target.value)} placeholder={editingId ? '••••••••' : 'Mínimo 8 caracteres'} required={!editingId} minLength={!editingId ? 8 : undefined} />
+									<label className="conf-form__label">Contraseña {editingId ? '(dejar en blanco para no cambiar)' : '*'}</label>
+									<input
+										type="password"
+										className="conf-form__input"
+										value={formPassword}
+										onChange={(e) => setFormPassword(e.target.value)}
+										placeholder={editingId ? '••••••••' : 'Mínimo 8 caracteres'}
+										required={!editingId}
+										minLength={!editingId ? 8 : undefined}
+									/>
 								</div>
 								{(!editingId || formPassword) && (
 									<div className="conf-form__group">
 										<label className="conf-form__label">Confirmar contraseña *</label>
-										<input type="password" className="conf-form__input" value={formPasswordConfirm} onChange={(e) => setFormPasswordConfirm(e.target.value)} placeholder="••••••••" required />
+										<input
+											type="password"
+											className="conf-form__input"
+											value={formPasswordConfirm}
+											onChange={(e) => setFormPasswordConfirm(e.target.value)}
+											placeholder="••••••••"
+											required
+										/>
 									</div>
 								)}
 								<div className="conf-form__group">
 									<label className="conf-form__label">Perfil</label>
-									<select className="conf-form__select" value={formProfileId === '' ? '' : formProfileId} onChange={(e) => setFormProfileId(e.target.value === '' ? '' : Number(e.target.value))}>
+									<select
+										className="conf-form__select"
+										value={formProfileId === '' ? '' : formProfileId}
+										onChange={(e) => setFormProfileId(e.target.value === '' ? '' : Number(e.target.value))}
+									>
 										<option value="">Sin perfil</option>
-										{profiles.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.code})</option>)}
+										{profiles.map((p) => (
+											<option key={p.id} value={p.id}>
+												{p.name} ({p.code})
+											</option>
+										))}
 									</select>
 								</div>
 								<div className="conf-form__group">
@@ -299,8 +352,12 @@ const UsuariosTab: React.FC = () => {
 							</div>
 						</div>
 						<div className="modal__actions">
-							<button type="button" className="conf-btn conf-btn--secondary" onClick={() => setShowModal(false)}>Cancelar</button>
-							<button type="submit" className="conf-btn conf-btn--primary" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
+							<button type="button" className="conf-btn conf-btn--secondary" onClick={() => setShowModal(false)}>
+								Cancelar
+							</button>
+							<button type="submit" className="conf-btn conf-btn--primary" disabled={saving}>
+								{saving ? 'Guardando...' : 'Guardar'}
+							</button>
 						</div>
 					</form>
 				</div>
@@ -309,7 +366,13 @@ const UsuariosTab: React.FC = () => {
 				<AnimatePresence>
 					{showDeleteModal && itemToDelete && (
 						<motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-							<motion.div className="proyect-delete-modal" initial={{ scale: 0.94, opacity: 0, y: 10 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.94, opacity: 0, y: 10 }} transition={{ type: 'spring', stiffness: 280, damping: 22 }}>
+							<motion.div
+								className="proyect-delete-modal"
+								initial={{ scale: 0.94, opacity: 0, y: 10 }}
+								animate={{ scale: 1, opacity: 1, y: 0 }}
+								exit={{ scale: 0.94, opacity: 0, y: 10 }}
+								transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+							>
 								<div className="proyect-delete-modal__header">
 									<span className="material-icons">report_problem</span>
 									<h2>Eliminar usuario</h2>
@@ -323,8 +386,12 @@ const UsuariosTab: React.FC = () => {
 									</div>
 								</div>
 								<div className="proyect-delete-modal__actions">
-									<button className="proyect-delete-btn proyect-delete-btn--cancel" onClick={() => setShowDeleteModal(false)} disabled={deleting}>Cancelar</button>
-									<button className="proyect-delete-btn proyect-delete-btn--confirm" onClick={() => void confirmDelete()} disabled={deleting}>{deleting ? 'Eliminando...' : 'Eliminar'}</button>
+									<button className="proyect-delete-btn proyect-delete-btn--cancel" onClick={() => setShowDeleteModal(false)} disabled={deleting}>
+										Cancelar
+									</button>
+									<button className="proyect-delete-btn proyect-delete-btn--confirm" onClick={() => void confirmDelete()} disabled={deleting}>
+										{deleting ? 'Eliminando...' : 'Eliminar'}
+									</button>
 								</div>
 							</motion.div>
 						</motion.div>

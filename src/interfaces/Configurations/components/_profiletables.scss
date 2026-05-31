@@ -1,0 +1,62 @@
+.profiles-table {
+	&__description {
+		max-width: 350px;
+
+		color: var(--color-text-secondary);
+
+		font-size: 0.92rem;
+
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__code {
+		display: inline-flex;
+		align-items: center;
+
+		padding: 6px 12px;
+
+		border-radius: 999px;
+
+		font-size: 0.8rem;
+		font-weight: 700;
+
+		background: rgba(59, 130, 246, 0.12);
+
+		color: var(--color-primary);
+	}
+
+	&__admin-badge {
+		display: inline-flex;
+		align-items: center;
+
+		padding: 6px 12px;
+
+		border-radius: 999px;
+
+		font-size: 0.8rem;
+		font-weight: 700;
+
+		background: rgba(34, 197, 94, 0.15);
+
+		color: #22c55e;
+	}
+
+	&__actions {
+		display: flex;
+		align-items: center;
+
+		gap: 8px;
+
+		flex-wrap: wrap;
+	}
+
+	&__empty {
+		padding: 30px;
+
+		text-align: center;
+
+		color: var(--color-text-secondary);
+	}
+}
