@@ -7,7 +7,6 @@
 @use '_body';
 @use '_fonts';
 @use '_animations';
-@use '_glass';
 @use '_spinner';
 
 /**BASE APP**/
@@ -17,6 +16,7 @@
 @use '../interfaces/base/components/alert/actionAlert';
 @use '../interfaces/base/components/redirect/routeNotFound';
 @use '../interfaces/base/components/redirect/accesDenied';
+@use '../interfaces/base/components/MetricCard/metricCard';
 
 /**APP_BAR**/
 @use '../interfaces/AppBar/components/bar/_appBarSpacer';
@@ -111,3 +111,5 @@
 @use '../interfaces/Reports/components/ExportStep/dotacionExportModal';
 @use '../interfaces/Reports/components/ExportStep/dotationExportConfiguration';
 @use '../interfaces/Reports/components/ExportStep/dotationExportTypeStep';
+/**DASHBOARD EVM**/
+@use '../interfaces/DashboardEvm/views/dashboardEvm';

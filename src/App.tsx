@@ -21,6 +21,7 @@ import RouteNotFound from './interfaces/base/components/redirect/RouteNotFound'
 import { ProjectAssignmentRoutes } from './interfaces/ProjectAsignament/routes/routes'
 import { ReportsPublicRoutes } from './interfaces/reports/routes/routes'
 import { EtcProyectViewPublicRoutes } from './interfaces/Etc/routes/routes'
+import { DashboardEvmRoutes } from './interfaces/DashboardEvm/routes/routes'
 
 const AppClient = () => {
 	const { toggleTheme, mode } = useAppTheme()
@@ -52,6 +53,7 @@ const AppClient = () => {
 												{DashBoardHoursRoutes()}
 												{ProjectAssignmentRoutes()}
 												{ReportsPublicRoutes()}
+												{DashboardEvmRoutes()}
 											</Route>
 
 											<Route path="*" element={<RouteNotFound />} />
