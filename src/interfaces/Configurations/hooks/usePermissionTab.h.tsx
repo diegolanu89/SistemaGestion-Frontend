@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { AppUserDto } from '../models/AppUser.m'
 
@@ -31,9 +31,13 @@ export const usePermissionTab = () => {
 
 	const [saving, setSaving] = useState(false)
 
+	const [error, setError] = useState<string | null>(null)
+
 	const [showProfileModal, setShowProfileModal] = useState(false)
 
 	const [editingProfile, setEditingProfile] = useState<ProfileDto | null>(null)
+
+	const [userSearch, setUserSearch] = useState('')
 
 	const [profileName, setProfileName] = useState('')
 
@@ -42,21 +46,30 @@ export const usePermissionTab = () => {
 	const [profileDescription, setProfileDescription] = useState('')
 
 	const loadUsers = async () => {
-		const response = await permissionBDT.listUsers()
-
-		setUsers(response)
+		try {
+			const response = await permissionBDT.listUsers()
+			setUsers(response)
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : 'Error al cargar los usuarios')
+		}
 	}
 
 	const loadProfiles = async () => {
-		const response = await permissionBDT.listProfiles()
-
-		setProfiles(response)
+		try {
+			const response = await permissionBDT.listProfiles()
+			setProfiles(response)
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : 'Error al cargar los perfiles')
+		}
 	}
 
 	const loadAllPermissions = async () => {
-		const response = await permissionBDT.listPermissions()
-
-		setAllPermissions(response)
+		try {
+			const response = await permissionBDT.listPermissions()
+			setAllPermissions(response)
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : 'Error al cargar los permisos')
+		}
 	}
 
 	const loadPermissions = async (profileId: number) => {
@@ -218,6 +231,12 @@ export const usePermissionTab = () => {
 		await loadProfiles()
 	}
 
+	const filteredUsers = useMemo(() => {
+		const q = userSearch.trim().toLowerCase()
+		if (!q) return users
+		return users.filter((u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+	}, [users, userSearch])
+
 	useEffect(() => {
 		void loadUsers()
 
@@ -229,9 +248,15 @@ export const usePermissionTab = () => {
 	return {
 		users,
 		profiles,
+		filteredUsers,
 		allPermissions,
 
+		userSearch,
+		setUserSearch,
+
 		permissions,
+
+		error,
 
 		selectedUser,
 		selectedProfile,

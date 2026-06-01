@@ -35,9 +35,25 @@ const ProfilePermissionsModal = ({ profile, permissions, selectedPermissions, lo
 								const assigned = selectedPermissions.includes(permission.code)
 
 								return (
-									<label key={permission.id}>
-										<input type="checkbox" checked={assigned} disabled={profile.code === 'ADMIN'} onChange={() => onToggle(permission.code)} />{' '}
-										{permission.code}
+									<label
+										key={permission.id}
+										style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: profile.code === 'ADMIN' ? 'default' : 'pointer' }}
+									>
+										<input
+											type="checkbox"
+											checked={assigned}
+											disabled={profile.code === 'ADMIN'}
+											onChange={() => onToggle(permission.code)}
+											style={{ marginTop: 3, flexShrink: 0 }}
+										/>
+										<span>
+											<span style={{ fontWeight: 500 }}>{permission.code}</span>
+											{permission.description && (
+												<span style={{ color: 'var(--color-text-secondary)', fontSize: 13, marginLeft: 8 }}>
+													— {permission.description}
+												</span>
+											)}
+										</span>
 									</label>
 								)
 							})}
