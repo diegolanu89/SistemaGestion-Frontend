@@ -1,4 +1,4 @@
-import { FaEye, FaPen, FaTrash, FaShieldAlt } from 'react-icons/fa'
+import { FaEye, FaShieldAlt } from 'react-icons/fa'
 
 import { ProfileDto } from '../models/Permissions.m'
 
@@ -50,7 +50,7 @@ const ProfilesTable = ({ profiles, onViewPermissions, onEditProfile, onDeletePro
 							</td>
 
 							<td>
-								<div className="profiles-table__description">{profile.description ?? '-'}</div>
+								{profile.description ?? '-'}
 							</td>
 
 							<td>
@@ -61,17 +61,15 @@ const ProfilesTable = ({ profiles, onViewPermissions, onEditProfile, onDeletePro
 							</td>
 
 							<td>
-								<div className="profiles-table__actions">
+								<div className="conf-tab__row-actions">
 									{profile.code !== 'ADMIN' && (
 										<>
-											<button className="conf-btn conf-btn--secondary" onClick={() => onEditProfile(profile)}>
-												<FaPen />
-												&nbsp;Editar
+											<button className="proyect-table__action proyect-table__action--edit" onClick={() => onEditProfile(profile)} data-tooltip="Editar">
+												<span className="material-icons">edit</span>
 											</button>
 
-											<button className="conf-btn conf-btn--danger" onClick={() => onDeleteProfile(profile)}>
-												<FaTrash />
-												&nbsp;Eliminar
+											<button className="proyect-table__action proyect-table__action--delete" onClick={() => onDeleteProfile(profile)} data-tooltip="Eliminar">
+												<span className="material-icons">delete</span>
 											</button>
 										</>
 									)}

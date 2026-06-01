@@ -27,7 +27,13 @@ const UsersTable = ({ users, onAssignProfile }: Props) => {
 
 							<td>{user.email}</td>
 
-							<td>{user.profileCode ?? '-'}</td>
+							<td>
+								{user.profileCode ? (
+									<span className="profiles-table__code">{user.profileCode}</span>
+								) : (
+									'-'
+								)}
+							</td>
 
 							<td>{user.profileName ?? '-'}</td>
 
@@ -36,7 +42,8 @@ const UsersTable = ({ users, onAssignProfile }: Props) => {
 							</td>
 
 							<td>
-								<button className="conf-btn conf-btn--primary" onClick={() => onAssignProfile(user)}>
+								<button className="conf-btn conf-btn--secondary" onClick={() => onAssignProfile(user)}>
+									<span className="material-icons" style={{ fontSize: 16 }}>assignment_ind</span>
 									Asignar Perfil
 								</button>
 							</td>

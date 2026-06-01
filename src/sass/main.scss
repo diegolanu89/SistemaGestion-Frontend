@@ -118,5 +118,6 @@
 /**CONFIGURATIONS**/
 @use '../interfaces/Configurations/views/_configurations';
 @use '../interfaces/Configurations/components/_configurationsTab';
+@use '../interfaces/Configurations/components/_profiletables';
 @use '../interfaces/Configurations/components/assignProfileModal';
 @use '../interfaces/Configurations/components/profileFormModal';
