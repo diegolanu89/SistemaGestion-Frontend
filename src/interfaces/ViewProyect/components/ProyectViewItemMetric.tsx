@@ -39,39 +39,35 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 		description: string
 	} | null>(null)
 
+	const [loadedProjects, setLoadedProjects] = useState<Set<number>>(new Set())
+
 	useEffect(() => {
+		if (loadedProjects.has(project.id)) {
+			return
+		}
 		const loadChanges = async () => {
 			try {
-				const alreadyLoaded = changeRequests.some((change) => change.projectId === project.id)
-
-				if (alreadyLoaded) return
-
 				setChangeRequestsLoading(true)
-
 				const response = await changeRequestAdapter.getByProject(project.id)
-
 				setChangeRequests((previous) => {
 					const merged = [...previous]
-
 					response.forEach((item) => {
 						const exists = merged.some((x) => x.id === item.id)
-
 						if (!exists) {
 							merged.push(item)
 						}
 					})
-
 					return merged
 				})
+				setLoadedProjects((prev) => new Set(prev).add(project.id))
 			} catch (error) {
 				console.error(error)
 			} finally {
 				setChangeRequestsLoading(false)
 			}
 		}
-
 		void loadChanges()
-	}, [project.id, changeRequests, setChangeRequests, setChangeRequestsLoading])
+	}, [project.id])
 
 	const approvedChanges = useMemo(() => {
 		return changeRequests.filter((x) => x.projectId === project.id && (x.status === 'aprobado' || x.status === 'implementado'))

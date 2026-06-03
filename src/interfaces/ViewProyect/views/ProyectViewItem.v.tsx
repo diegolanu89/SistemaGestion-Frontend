@@ -22,6 +22,7 @@ export const ProyectViewItem: FC = () => {
 	const [itemError, setItemError] = useState<string | null>(null)
 
 	useEffect(() => {
+		console.log(projects)
 		if (!id || fromContext) {
 			setFetched(null)
 			setItemError(null)
@@ -31,7 +32,7 @@ export const ProyectViewItem: FC = () => {
 		let cancelled = false
 		setItemLoading(true)
 		setItemError(null)
-
+		console.log('AAAAAAAAA')
 		proyectViewAdapter
 			.getById(Number(id))
 			.then((p) => {
