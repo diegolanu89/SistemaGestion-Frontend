@@ -82,7 +82,6 @@ export interface ProjectIntakeRecordDto {
 	CreatedAt?: string | null
 	UpdatedAt?: string | null
 
-	// 🔥 EXPANDIDOS
 	TypeRef?: ProjectIntakeTypeRefDto | null
 	CategoryRef?: ProjectIntakeCategoryRefDto | null
 	StatusRef?: ProjectIntakeStatusRefDto | null
