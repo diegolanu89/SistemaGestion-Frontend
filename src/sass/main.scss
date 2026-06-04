@@ -99,18 +99,18 @@
 
 /** REPORTS **/
 
-@use '../interfaces/Reports/views/dotacion';
-@use '../interfaces/Reports/components/reportHeader';
-@use '../interfaces/Reports/components/reportCard';
-@use '../interfaces/Reports/components/dotationReportTable';
-@use '../interfaces/Reports/components/dotacionExecutiveMetrics';
-@use '../interfaces/Reports/components/dotacionExportActions';
-@use '../interfaces/Reports/components/dotacionFilters';
-@use '../interfaces/Reports/components/dotacionHeader';
-@use '../interfaces/Reports/components/dotacionSummary';
-@use '../interfaces/Reports/components/ExportStep/dotacionExportModal';
-@use '../interfaces/Reports/components/ExportStep/dotationExportConfiguration';
-@use '../interfaces/Reports/components/ExportStep/dotationExportTypeStep';
+@use '../interfaces/reports/views/dotacion';
+@use '../interfaces/reports/components/reportHeader';
+@use '../interfaces/reports/components/reportCard';
+@use '../interfaces/reports/components/dotationReportTable';
+@use '../interfaces/reports/components/dotacionExecutiveMetrics';
+@use '../interfaces/reports/components/dotacionExportActions';
+@use '../interfaces/reports/components/dotacionFilters';
+@use '../interfaces/reports/components/dotacionHeader';
+@use '../interfaces/reports/components/dotacionSummary';
+@use '../interfaces/reports/components/ExportStep/dotacionExportModal';
+@use '../interfaces/reports/components/ExportStep/dotationExportConfiguration';
+@use '../interfaces/reports/components/ExportStep/dotationExportTypeStep';
 
 /**DASHBOARD EVM**/
 @use '../interfaces/DashboardEvm/views/dashboardEvm';
