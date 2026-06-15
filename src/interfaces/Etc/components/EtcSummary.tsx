@@ -8,7 +8,7 @@ import { EtcTable } from './EtcTable'
 // components/EtcSummary.tsx
 
 import { useNavigate } from 'react-router-dom'
-import { PROYECT_PATHS_VIEWS } from '../../ViewProyect/routes/paths'
+import { ETC_LOAD_PROJECT } from '../routes/paths'
 
 export const EtcSummary: FC = () => {
 	const { entries, errors, projectId } = useEtcContext()
@@ -40,7 +40,7 @@ export const EtcSummary: FC = () => {
 	const handleNewVersion = () => {
 		logger.infoTag(LogTag.Adapter, '[ETC] Create weekly snapshot')
 
-		navigate(PROYECT_PATHS_VIEWS.ETC_WEEKLY_VERSION, {
+		navigate(ETC_LOAD_PROJECT.ETC_WEEKLY_VERSION, {
 			state: {
 				projectId,
 			},

@@ -1,6 +1,6 @@
 // components/ProyectGrid.tsx
 
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -9,25 +9,14 @@ import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 import { PROYECT_PATHS_VIEWS } from '../routes/paths'
 
 export const ProyectGrid: FC = () => {
-	const {
-		projects,
-		loading,
-		error,
-
-		page,
-		setPage,
-
-		total,
-		perPage,
-	} = useProyectViewContext()
+	const { projects, loading, error } = useProyectViewContext()
 
 	const navigate = useNavigate()
 
-	// =========================
-	// PAGINATION
-	// =========================
-
-	const totalPages = Math.ceil(total / perPage)
+	const sortedProjects = useMemo(
+		() => [...projects].sort((a, b) => (b.code ?? '').localeCompare(a.code ?? '')),
+		[projects],
+	)
 
 	// =========================
 	// PROGRESS COLOR
@@ -60,7 +49,7 @@ export const ProyectGrid: FC = () => {
 			{/* ========================= */}
 
 			<div className="grid">
-				{projects.map((p) => {
+				{sortedProjects.map((p) => {
 					const progress = p.hourlyRate ?? 0
 
 					return (
@@ -71,10 +60,6 @@ export const ProyectGrid: FC = () => {
 
 							<div className="card__header">
 								<div className="card__title">
-									<span className="card__code">{p.code}</span>
-
-									<span className="card__separator">-</span>
-
 									<span className="card__name">{p.name}</span>
 								</div>
 
@@ -156,29 +141,6 @@ export const ProyectGrid: FC = () => {
 				})}
 			</div>
 
-			{/* ========================= */}
-			{/* PAGINATION */}
-			{/* ========================= */}
-
-			{totalPages > 1 && (
-				<div className="pagination">
-					<button className="pagination__button" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-						Anterior
-					</button>
-
-					<div className="pagination__info">
-						<span>
-							Página {page} de {totalPages}
-						</span>
-
-						<span>({total} proyectos)</span>
-					</div>
-
-					<button className="pagination__button" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
-						Siguiente
-					</button>
-				</div>
-			)}
 		</>
 	)
 }

@@ -1,7 +1,10 @@
 // views/EtcWeeklyVersionView.tsx
 
-import { FC } from 'react'
-import { Outlet } from 'react-router-dom'
+import { FC, useEffect } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
+
+import { useEtcContext } from '../hooks/useEtcContext.h'
+import { ETC_LOAD_PROJECT } from '../routes/paths'
 
 import { EtcWeeklyVersionMetrics } from '../components/EtcWeeklyVersionMetrics'
 import { EtcWeeklyVersionMonthSelector } from '../components/EtcWeeklyVersionMonthSelector'
@@ -15,7 +18,15 @@ import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionContro
 import { SectionLoader } from '../../base/components/loading/SectionLoader'
 
 export const EtcWeeklyVersionView: FC = () => {
+	const navigate = useNavigate()
+	const { projectId } = useEtcContext()
 	const { loading } = useEtcWeeklyVersionController()
+
+	useEffect(() => {
+		if (!projectId) {
+			navigate(ETC_LOAD_PROJECT.ETC_LOAD, { replace: true })
+		}
+	}, [projectId, navigate])
 
 	return (
 		<div className="etc-weekly-version">
