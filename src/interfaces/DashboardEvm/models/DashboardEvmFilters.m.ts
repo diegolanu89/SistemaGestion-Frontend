@@ -3,6 +3,9 @@ export interface DashboardEvmFilters {
 	project: string
 	vacMin: string
 	vacMax: string
+	/** Rango sobre la fecha de inicio del proyecto (startDate), formato 'YYYY-MM-DD'. */
+	dateFrom: string
+	dateTo: string
 }
 
 export const DEFAULT_DASHBOARD_EVM_FILTERS: DashboardEvmFilters = {
@@ -10,4 +13,6 @@ export const DEFAULT_DASHBOARD_EVM_FILTERS: DashboardEvmFilters = {
 	project: '',
 	vacMin: '',
 	vacMax: '',
+	dateFrom: '',
+	dateTo: '',
 }
