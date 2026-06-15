@@ -16,7 +16,7 @@ export const SideBarItem: FC<Props> = ({ label, icon, path, selected = false }) 
 	}
 
 	return (
-		<button className={`sidebar-item ${selected ? 'is-selected' : ''}`} onClick={handleClick} type="button">
+		<button className={`sidebar-item ${selected ? 'is-selected' : ''}`} onClick={handleClick} type="button" aria-current={selected ? 'page' : undefined}>
 			{icon && <span className="material-icons sidebar-item__icon">{icon}</span>}
 
 			<span className="sidebar-item__text">{label}</span>
