@@ -28,7 +28,7 @@ export interface ProjectDto {
 
 	filter?: unknown | null
 
-	etcHours?: number
+	etcTotalHours: number
 }
 
 export interface UpdateBacDto {

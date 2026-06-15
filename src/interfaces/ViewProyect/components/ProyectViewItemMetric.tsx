@@ -8,7 +8,6 @@ import { changeRequestAdapter } from '../services/ChangeAdapter.s'
 
 interface Props {
 	project: ProjectDto
-	etcHours: number
 }
 
 interface MetricHeaderProps {
@@ -31,7 +30,7 @@ const MetricHeader: FC<MetricHeaderProps> = ({ title, description, onInfo }) => 
 	)
 }
 
-export const ProyectViewItemMetrics: FC<Props> = ({ project, etcHours }) => {
+export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 	const { changeRequests, setChangeRequests, changeRequestsLoading, setChangeRequestsLoading } = useProyectViewContext()
 
 	const [popover, setPopover] = useState<{
@@ -87,7 +86,7 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project, etcHours }) => {
 
 	const acTotal = adjustedBacHours * 0.62
 
-	const etc = etcHours
+	const etc = project.etcTotalHours
 
 	const ev = acTotal * 0.92
 
