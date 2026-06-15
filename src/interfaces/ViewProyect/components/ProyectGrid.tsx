@@ -139,12 +139,6 @@ export const ProyectGrid: FC = () => {
 									<span className="metric__value">{p.bacTotalHours}h</span>
 								</button>
 
-								<button className="metric metric--etc" data-tooltip="Estimación restante del proyecto">
-									<span className="metric__label">ETC</span>
-
-									<span className="metric__value">{p.etcHours ?? 0}h</span>
-								</button>
-
 								<button className="metric metric--success" data-tooltip="Costo base inicial">
 									<span className="metric__label">Base $</span>
 

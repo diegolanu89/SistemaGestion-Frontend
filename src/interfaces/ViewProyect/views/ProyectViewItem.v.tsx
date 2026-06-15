@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 import { proyectViewAdapter } from '../services/ProyectViewAdapter.s'
+import { etcAdapter } from '../../Etc/service/EtcAdapter'
 import type { ProjectDto } from '../models/ProyectViewDTO.m'
 
 import { ProyectViewItemHeader } from '../components/ProyectViewItemHeader'
@@ -12,27 +13,26 @@ export const ProyectViewItem: FC = () => {
 	const { id } = useParams()
 	const { projects, loading: listLoading, error: listError } = useProyectViewContext()
 
-	// El array del context puede estar vacío si entramos por URL directa o
-	// si volvimos desde una ruta cubierta por otro provider (ej: Etc), que
-	// desmonta ProyectViewProvider. En ese caso, fetcheamos por id.
 	const fromContext = projects.find((p) => String(p.id) === id)
 
 	const [fetched, setFetched] = useState<ProjectDto | null>(null)
 	const [itemLoading, setItemLoading] = useState(!fromContext)
 	const [itemError, setItemError] = useState<string | null>(null)
 
+	const [etcHours, setEtcHours] = useState(0)
+
 	useEffect(() => {
-		console.log(projects)
 		if (!id || fromContext) {
 			setFetched(null)
 			setItemError(null)
+			if (fromContext) setItemLoading(false)
 			return
 		}
 
 		let cancelled = false
 		setItemLoading(true)
 		setItemError(null)
-		console.log('AAAAAAAAA')
+
 		proyectViewAdapter
 			.getById(Number(id))
 			.then((p) => {
@@ -50,18 +50,38 @@ export const ProyectViewItem: FC = () => {
 		}
 	}, [id, fromContext])
 
+	useEffect(() => {
+		const projectId = Number(id)
+		if (!projectId) return
+
+		let cancelled = false
+
+		etcAdapter
+			.getByProject(projectId)
+			.then((res) => {
+				if (!cancelled) {
+					const total = res.records.reduce((acc, r) => acc + Number(r.hours), 0)
+					setEtcHours(total)
+				}
+			})
+			.catch(() => {})
+
+		return () => {
+			cancelled = true
+		}
+	}, [id])
+
 	const project = fromContext ?? fetched
-	const loading = listLoading || itemLoading
 	const error = listError || itemError
 
-	if (loading) return <div className="empty">Cargando proyecto...</div>
+	if (itemLoading && !project) return <div className="empty">Cargando proyecto...</div>
 	if (error) return <div className="empty">{error}</div>
 	if (!project) return <div className="empty">Proyecto no encontrado</div>
 
 	return (
 		<div className="project-item">
 			<ProyectViewItemHeader project={project} />
-			<ProyectViewItemMetrics project={project} />
+			<ProyectViewItemMetrics project={project} etcHours={etcHours} />
 			<ProyectViewItemAccordions project={project} />
 			<Outlet />
 		</div>

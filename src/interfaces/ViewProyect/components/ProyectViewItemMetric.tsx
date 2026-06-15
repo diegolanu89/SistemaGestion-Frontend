@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { FC, useEffect, useMemo, useState } from 'react'
 
 import { ProjectDto } from '../models/ProyectViewDTO.m'
@@ -9,6 +8,7 @@ import { changeRequestAdapter } from '../services/ChangeAdapter.s'
 
 interface Props {
 	project: ProjectDto
+	etcHours: number
 }
 
 interface MetricHeaderProps {
@@ -31,7 +31,7 @@ const MetricHeader: FC<MetricHeaderProps> = ({ title, description, onInfo }) => 
 	)
 }
 
-export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
+export const ProyectViewItemMetrics: FC<Props> = ({ project, etcHours }) => {
 	const { changeRequests, setChangeRequests, changeRequestsLoading, setChangeRequestsLoading } = useProyectViewContext()
 
 	const [popover, setPopover] = useState<{
@@ -87,7 +87,7 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 
 	const acTotal = adjustedBacHours * 0.62
 
-	const etc = project.etcHours ?? Math.max(adjustedBacHours - acTotal, 0)
+	const etc = etcHours
 
 	const ev = acTotal * 0.92
 
