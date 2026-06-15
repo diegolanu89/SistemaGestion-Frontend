@@ -84,8 +84,11 @@ export const ProyectCreateForm: FC = () => {
 
 					<input
 						className="proyect-create-input"
+						type="number"
+						inputMode="numeric"
+						min={0}
 						value={form.secondaryProjectNumber ?? ''}
-						onChange={(e) => update('secondaryProjectNumber')(e.target.value)}
+						onChange={(e) => update('secondaryProjectNumber')(e.target.value.replace(/\D/g, ''))}
 					/>
 				</div>
 
