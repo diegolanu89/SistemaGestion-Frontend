@@ -146,6 +146,7 @@ export const ProyectEditForm: FC = () => {
 						className="proyect-create-input"
 						value={form.ProjectName ?? ''}
 						onChange={(e) => update('ProjectName')(e.target.value)}
+						maxLength={40}
 						required
 					/>
 				</div>

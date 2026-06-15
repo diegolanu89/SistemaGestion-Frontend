@@ -135,7 +135,13 @@ export const ProyectCreateForm: FC = () => {
 						{CREATE.FIELDS.PROJECT_NAME.LABEL} *
 					</label>
 
-					<input className="proyect-create-input" value={form.projectName ?? ''} onChange={(e) => update('projectName')(e.target.value)} required />
+					<input
+						className="proyect-create-input"
+						value={form.projectName ?? ''}
+						onChange={(e) => update('projectName')(e.target.value)}
+						maxLength={40}
+						required
+					/>
 				</div>
 
 				{/* Categoría */}
