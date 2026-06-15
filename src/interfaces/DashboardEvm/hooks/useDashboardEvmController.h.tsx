@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
@@ -21,6 +21,9 @@ export interface EvmMetrics {
 	advance: number
 	changeControl: number
 }
+
+/** Cantidad de proyectos por página en la paginación (cliente) del dashboard. */
+const PER_PAGE = 10
 
 export interface DashboardEvmComputedRow {
 	row: DashboardEvmRowDto
@@ -64,6 +67,9 @@ export const useDashboardEvmController = () => {
 	const inFlightRef = useRef(false)
 	const didFetchRef = useRef(false)
 	const metricsCacheRef = useRef<Map<number, ProjectMetricsDto>>(new Map())
+
+	// Paginación en cliente: el back EVM trae todos los proyectos de una.
+	const [page, setPage] = useState(1)
 
 	const fetchRows = useCallback(async () => {
 		if (inFlightRef.current) {
@@ -187,6 +193,8 @@ export const useDashboardEvmController = () => {
 		const projectQ = filters.project.trim().toLowerCase()
 		const vacMin = filters.vacMin === '' ? null : Number(filters.vacMin)
 		const vacMax = filters.vacMax === '' ? null : Number(filters.vacMax)
+		const dateFrom = filters.dateFrom // 'YYYY-MM-DD' o ''
+		const dateTo = filters.dateTo
 
 		return rows
 			.filter((row) => {
@@ -194,6 +202,13 @@ export const useDashboardEvmController = () => {
 				if (projectQ) {
 					const haystack = `${row.code ?? ''} ${row.name}`.toLowerCase()
 					if (!haystack.includes(projectQ)) return false
+				}
+				if (dateFrom || dateTo) {
+					// startDate puede venir como 'YYYY-MM-DD' o ISO con hora; comparo solo la fecha.
+					const start = row.startDate ? row.startDate.slice(0, 10) : null
+					if (!start) return false
+					if (dateFrom && start < dateFrom) return false
+					if (dateTo && start > dateTo) return false
 				}
 				return true
 			})
@@ -205,14 +220,27 @@ export const useDashboardEvmController = () => {
 			})
 	}, [rows, filters, computeMetrics])
 
+	const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE))
+
+	// Si los filtros achican el resultado, evita quedar en una página inexistente.
+	useEffect(() => {
+		setPage(1)
+	}, [filters])
+
+	// Sólo la página actual se agrupa/renderiza. El summary sigue sobre todo lo filtrado.
+	const pagedRows: DashboardEvmComputedRow[] = useMemo(() => {
+		const start = (page - 1) * PER_PAGE
+		return filtered.slice(start, start + PER_PAGE)
+	}, [filtered, page])
+
 	const groups: DashboardEvmComputedGroup[] = useMemo(() => {
-		const grouped: ClientGroup[] = groupByClient(filtered.map(({ row }) => row))
+		const grouped: ClientGroup[] = groupByClient(pagedRows.map(({ row }) => row))
 
 		return grouped.map(({ clientName, rows: groupRows }) => ({
 			clientName,
 			rows: groupRows.map((row) => ({ row, metrics: computeMetrics(row) })),
 		}))
-	}, [filtered, computeMetrics])
+	}, [pagedRows, computeMetrics])
 
 	const summary: DashboardEvmSummary = useMemo(() => {
 		const totals = filtered.reduce(
@@ -245,5 +273,8 @@ export const useDashboardEvmController = () => {
 		groups,
 		summary,
 		refetch: fetchRows,
+		page,
+		setPage,
+		totalPages,
 	}
 }
