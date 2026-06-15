@@ -42,6 +42,10 @@ export const ProyectEditForm: FC = () => {
 			className="proyect-create-form"
 			onSubmit={(e) => {
 				e.preventDefault()
+				if (!e.currentTarget.checkValidity()) {
+					e.currentTarget.reportValidity()
+					return
+				}
 				void submit()
 			}}
 		>
@@ -225,6 +229,7 @@ export const ProyectEditForm: FC = () => {
 						type="date"
 						value={form.EstimatedEndDate ?? ''}
 						onChange={(e) => update('EstimatedEndDate')(e.target.value || undefined)}
+						required
 					/>
 				</div>
 
