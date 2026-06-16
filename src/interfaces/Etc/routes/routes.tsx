@@ -6,6 +6,7 @@ import EtcBaselineView from '../views/EtcBaselineView.v'
 import EtcViewBaselineView from '../views/EtcViewBaselineView.v'
 import { ETC_LOAD_PROJECT } from './paths'
 import EtcLoadProjectView from '../views/EtcProjectView.v'
+import EtcEditSnapshotView from '../views/EtcEditSnapshotView.v'
 
 export const EtcProyectViewPublicRoutes = () => (
 	<>
@@ -24,6 +25,8 @@ export const EtcProyectViewPublicRoutes = () => (
 				<Route path={ETC_LOAD_PROJECT.ETC_BASELINE} element={<EtcBaselineView />} />
 
 				<Route path={ETC_LOAD_PROJECT.ETC_VIEW_BASELINE} element={<EtcViewBaselineView />} />
+
+				<Route path={ETC_LOAD_PROJECT.ETC_EDIT_SNAPSHOT} element={<EtcEditSnapshotView />} />
 			</Route>
 		</Route>
 	</>

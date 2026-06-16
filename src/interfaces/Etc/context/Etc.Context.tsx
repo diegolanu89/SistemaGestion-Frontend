@@ -110,6 +110,8 @@ export const EtcProvider = ({ children }: Props) => {
 					})
 				)
 
+				if (!cancelled) setEntries(records)
+
 				const monthSet = new Set<string>()
 
 				records.forEach((r) => monthSet.add(r.monthKey))

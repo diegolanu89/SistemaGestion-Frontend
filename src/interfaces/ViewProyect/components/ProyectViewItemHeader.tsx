@@ -58,11 +58,7 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 
 					<div className="project-detail-header__titles">
 						<h1 className="project-detail-header__title">
-							<span>{project.code ?? '-'}</span>
-							<span>-</span>
-							<span>{project.clientName ?? '-'}</span>
-							<span>-</span>
-							<span>{project.name}</span>
+							{project.name}
 						</h1>
 
 						<p className="project-detail-header__subtitle">

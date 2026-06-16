@@ -11,6 +11,7 @@ import { etcAdapter } from '../service/EtcAdapter'
 import type { EtcEntryDto } from '../model/Etc.m'
 
 import { useEtcContext } from './useEtcContext.h'
+import { useEtcProjectController } from './useEtcProjectController.h'
 
 export const useEtcWeeklyVersionController = () => {
 	const navigate = useNavigate()
@@ -18,6 +19,8 @@ export const useEtcWeeklyVersionController = () => {
 	const location = useLocation()
 
 	const projectId = Number(location.state?.projectId)
+
+	const { loadProject } = useEtcProjectController()
 
 	const {
 		loading,
@@ -195,6 +198,8 @@ export const useEtcWeeklyVersionController = () => {
 
 			await etcAdapter.createSnapshot(projectId, { entries })
 
+			await loadProject(projectId)
+
 			logger.infoTag(LogTag.Adapter, '[ETC WEEKLY] Snapshot created', { projectId, entries: entries.length })
 
 			navigate(-1)
@@ -207,7 +212,7 @@ export const useEtcWeeklyVersionController = () => {
 		} finally {
 			setLoading(false)
 		}
-	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading, setErrors])
+	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading, setErrors, loadProject])
 
 	// =========================
 	// FINALIZE BASELINE
@@ -236,9 +241,7 @@ export const useEtcWeeklyVersionController = () => {
 
 			await etcAdapter.finalizeBaseline(projectId)
 
-			const refreshed = await etcAdapter.getByProject(projectId)
-
-			setSnapshot(refreshed.snapshot)
+			await loadProject(projectId)
 
 			logger.infoTag(LogTag.Adapter, '[ETC BASELINE] Baseline finalized', { projectId, entries: entries.length })
 
@@ -252,7 +255,7 @@ export const useEtcWeeklyVersionController = () => {
 		} finally {
 			setLoading(false)
 		}
-	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading, setSnapshot, setErrors])
+	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading, setErrors, loadProject])
 
 	// =========================
 	// ADD MONTH DIRECT

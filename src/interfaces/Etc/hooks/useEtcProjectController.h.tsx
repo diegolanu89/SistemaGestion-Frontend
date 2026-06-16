@@ -28,6 +28,8 @@ export const useEtcProjectController = () => {
 
 		setLoading,
 
+		setSnapshot,
+
 		setSelectedMonths,
 
 		setSelectedUserIds,
@@ -77,6 +79,8 @@ export const useEtcProjectController = () => {
 				// =========================
 
 				const response = await etcAdapter.getByProject(projectId)
+
+				setSnapshot(response.snapshot)
 
 				const records = response.records ?? []
 
@@ -165,7 +169,7 @@ export const useEtcProjectController = () => {
 				setLoading(false)
 			}
 		},
-		[setProjectId, setProjectName, setBac, setUsers, setLoading, setSelectedMonths, setSelectedUserIds, setValues, setErrors, setEntries]
+		[setProjectId, setProjectName, setBac, setUsers, setLoading, setSnapshot, setSelectedMonths, setSelectedUserIds, setValues, setErrors, setEntries]
 	)
 
 	return {
