@@ -215,6 +215,60 @@ export const useEtcWeeklyVersionController = () => {
 		}
 	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading])
 
+	// =========================
+	// ADD MONTH DIRECT
+	// =========================
+
+	const addMonthDirect = useCallback(
+		(month: string) => {
+			if (!month) {
+				return
+			}
+
+			setSelectedMonths((prev) => {
+				if (prev.includes(month)) {
+					return prev
+				}
+
+				return [...prev, month].sort()
+			})
+		},
+		[setSelectedMonths]
+	)
+
+	// =========================
+	// ADD MULTIPLE MONTHS
+	// =========================
+
+	const addMultipleMonths = useCallback(
+		(months: string[]) => {
+			if (months.length === 0) {
+				return
+			}
+
+			setSelectedMonths((prev) => {
+				const next = new Set(prev)
+
+				months.forEach((month) => {
+					if (month) {
+						next.add(month)
+					}
+				})
+
+				return Array.from(next).sort()
+			})
+		},
+		[setSelectedMonths]
+	)
+
+	// =========================
+	// CLEAR MONTHS
+	// =========================
+
+	const clearMonths = useCallback(() => {
+		setSelectedMonths([])
+	}, [setSelectedMonths])
+
 	const handleBack = () => {
 		navigate(-1)
 	}
@@ -259,12 +313,16 @@ export const useEtcWeeklyVersionController = () => {
 		updateHours,
 
 		addMonth,
+		addMonthDirect,
+		addMultipleMonths,
 
 		removeMonth,
+		clearMonths,
 
 		saveSnapshot,
 
 		handleBack,
+
 		setLoading,
 	}
 }
