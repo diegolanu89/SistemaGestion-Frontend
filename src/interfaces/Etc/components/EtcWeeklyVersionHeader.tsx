@@ -4,7 +4,11 @@ import { FC } from 'react'
 
 import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionController.h'
 
-export const EtcWeeklyVersionHeader: FC = () => {
+interface Props {
+	title?: string
+}
+
+export const EtcWeeklyVersionHeader: FC<Props> = ({ title = 'Nueva versión semanal' }) => {
 	const { projectName, handleBack } = useEtcWeeklyVersionController()
 
 	return (
@@ -14,7 +18,7 @@ export const EtcWeeklyVersionHeader: FC = () => {
 			</button>
 
 			<div>
-				<h1 className="etc-weekly-header__title">Nueva versión semanal</h1>
+				<h1 className="etc-weekly-header__title">{title}</h1>
 
 				<p className="etc-weekly-header__subtitle">
 					Actualización de forecast ETC para el proyecto:

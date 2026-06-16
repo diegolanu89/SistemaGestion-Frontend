@@ -50,7 +50,7 @@ export const ProyectGrid: FC = () => {
 
 			<div className="grid">
 				{sortedProjects.map((p) => {
-					const progress = p.hourlyRate ?? 0
+					const progress = p.bacBaseHours > 0 ? Math.min(Math.round((p.etcTotalHours / p.bacBaseHours) * 100), 100) : 0
 
 					return (
 						<div className="card card--project" key={p.id} onClick={() => navigate(PROYECT_PATHS_VIEWS.PROYECT_ITEM.replace(':id', String(p.id)))}>
@@ -124,6 +124,12 @@ export const ProyectGrid: FC = () => {
 									<span className="metric__value">{p.bacTotalHours}h</span>
 								</button>
 
+								<button className="metric metric--etc" data-tooltip="Estimación restante del proyecto">
+									<span className="metric__label">ETC</span>
+
+									<span className="metric__value">{p.etcTotalHours}h</span>
+								</button>
+
 								<button className="metric metric--success" data-tooltip="Costo base inicial">
 									<span className="metric__label">Base $</span>
 
@@ -134,12 +140,6 @@ export const ProyectGrid: FC = () => {
 									<span className="metric__label">Base Hs</span>
 
 									<span className="metric__value">{p.bacBaseHours}h</span>
-								</button>
-
-								<button className="metric metric--info" data-tooltip="Total ETC cargado">
-									<span className="metric__label">ETC</span>
-
-									<span className="metric__value">{p.etcTotalHours.toFixed(1)}h</span>
 								</button>
 							</div>
 						</div>

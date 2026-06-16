@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { ETC_LOAD_PROJECT } from '../routes/paths'
 
 export const EtcSummary: FC = () => {
-	const { entries, errors, projectId } = useEtcContext()
+	const { entries, errors, projectId, snapshot } = useEtcContext()
 	const navigate = useNavigate()
 	// =========================
 	// SUMMARY
@@ -40,11 +40,13 @@ export const EtcSummary: FC = () => {
 	const handleNewVersion = () => {
 		logger.infoTag(LogTag.Adapter, '[ETC] Create weekly snapshot')
 
-		navigate(ETC_LOAD_PROJECT.ETC_WEEKLY_VERSION, {
-			state: {
-				projectId,
-			},
-		})
+		navigate(ETC_LOAD_PROJECT.ETC_WEEKLY_VERSION, { state: { projectId } })
+	}
+
+	const handleCreateBaseline = () => {
+		logger.infoTag(LogTag.Adapter, '[ETC] Create baseline')
+
+		navigate(ETC_LOAD_PROJECT.ETC_BASELINE, { state: { projectId } })
 	}
 
 	return (
@@ -63,15 +65,24 @@ export const EtcSummary: FC = () => {
 				</div>
 
 				<div className="etc-summary__actions">
-					<button className="etc-summary__btn etc-summary__btn--ghost" onClick={handleViewBaseline}>
-						<span className="material-icons etc-summary__icon">visibility</span>
-						Visualizar línea base
-					</button>
+					{snapshot !== null && (
+						<button className="etc-summary__btn etc-summary__btn--ghost" onClick={handleViewBaseline}>
+							<span className="material-icons etc-summary__icon">visibility</span>
+							Visualizar línea base
+						</button>
+					)}
 
-					<button className="etc-summary__btn etc-summary__btn--primary" onClick={handleNewVersion}>
-						<span className="material-icons etc-summary__icon">add</span>
-						Nueva versión semanal
-					</button>
+					{snapshot === null ? (
+						<button className="etc-summary__btn etc-summary__btn--primary" onClick={handleCreateBaseline}>
+							<span className="material-icons etc-summary__icon">add</span>
+							Crear línea base
+						</button>
+					) : (
+						<button className="etc-summary__btn etc-summary__btn--primary" onClick={handleNewVersion}>
+							<span className="material-icons etc-summary__icon">add</span>
+							Nueva versión semanal
+						</button>
+					)}
 				</div>
 			</div>
 

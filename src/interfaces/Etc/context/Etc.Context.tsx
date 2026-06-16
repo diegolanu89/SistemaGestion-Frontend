@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import type { EtcEntryDto } from '../model/Etc.m'
+import type { EtcSnapshotDto } from '../model/IEtcApi.m'
 import type { IEtcContext, GridValues } from '../model/IEtcContext.m'
 
 import { etcContext } from '../hooks/useEtcContext.h'
@@ -33,6 +34,8 @@ export const EtcProvider = ({ children }: Props) => {
 	// =========================
 	// BASE ETC
 	// =========================
+
+	const [snapshot, setSnapshot] = useState<EtcSnapshotDto | null>(null)
 
 	const [entries, setEntries] = useState<EtcEntryDto[]>([])
 
@@ -92,6 +95,8 @@ export const EtcProvider = ({ children }: Props) => {
 				const response = await etcAdapter.getByProject(projectId)
 
 				if (cancelled) return
+
+				setSnapshot(response.snapshot)
 
 				const records: EtcEntryDto[] = (response.records ?? []).map(
 					(record: { userName?: string | null; monthKey: string; monthLabel?: string | null; hours?: number | null }) => ({
@@ -180,6 +185,9 @@ export const EtcProvider = ({ children }: Props) => {
 			projectId,
 			setProjectId,
 
+			snapshot,
+			setSnapshot,
+
 			entries,
 			setEntries,
 
@@ -215,7 +223,7 @@ export const EtcProvider = ({ children }: Props) => {
 			values,
 			setValues,
 		}),
-		[projectId, entries, errors, loading, projectName, bac, search, selectedMonths, monthToAdd, users, selectedUserIds, values]
+		[projectId, snapshot, entries, errors, loading, projectName, bac, search, selectedMonths, monthToAdd, users, selectedUserIds, values]
 	)
 
 	return <etcContext.Provider value={value}>{children}</etcContext.Provider>
