@@ -26,7 +26,7 @@ export class EtcBDT implements IEtcApi {
 	// GET BY PROJECT
 	// ==========================
 
-	async getByProject(projectId: number, snapshot?: 'baseline'): Promise<GetEtcByProjectResponse> {
+	async getByProject(projectId: number, snapshot?: string): Promise<GetEtcByProjectResponse> {
 		logger.infoTag(LogTag.Adapter, `[ETC][BDT] getByProject -> id=${projectId}`)
 
 		try {

@@ -35,6 +35,8 @@ export const EtcSummary: FC = () => {
 	// =========================
 	const handleViewBaseline = () => {
 		logger.infoTag(LogTag.Navigation, '[ETC] View baseline')
+
+		navigate(ETC_LOAD_PROJECT.ETC_VIEW_BASELINE, { state: { projectId } })
 	}
 
 	const handleNewVersion = () => {
