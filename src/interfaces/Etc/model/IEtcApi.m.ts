@@ -7,6 +7,7 @@ export interface EtcSnapshotDto {
 	version: number
 	label: string
 	created_at?: string | null
+	updated_at?: string | null
 }
 
 export interface GetEtcByProjectResponse {
@@ -77,7 +78,7 @@ export interface ExportCapacityDto {
 }
 
 export interface IEtcApi {
-	getByProject(projectId: number, snapshot?: 'baseline'): Promise<GetEtcByProjectResponse>
+	getByProject(projectId: number, snapshot?: string): Promise<GetEtcByProjectResponse>
 
 	create(projectId: number, dto: CreateEtcRecordDto): Promise<CreateEtcResponse>
 

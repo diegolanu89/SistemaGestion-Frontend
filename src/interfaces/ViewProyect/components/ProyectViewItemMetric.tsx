@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { FC, useEffect, useMemo, useState } from 'react'
 
 import { ProjectDto } from '../models/ProyectViewDTO.m'
@@ -87,7 +86,7 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 
 	const acTotal = adjustedBacHours * 0.62
 
-	const etc = project.etcHours ?? Math.max(adjustedBacHours - acTotal, 0)
+	const etc = project.etcTotalHours
 
 	const ev = acTotal * 0.92
 

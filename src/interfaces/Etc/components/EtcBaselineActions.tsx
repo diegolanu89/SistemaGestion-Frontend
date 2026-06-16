@@ -1,11 +1,11 @@
-// components/EtcWeeklyVersionActions.tsx
+// components/EtcBaselineActions.tsx
 
 import { FC } from 'react'
 
 import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionController.h'
 
-export const EtcWeeklyVersionActions: FC = () => {
-	const { loading, handleBack, saveSnapshot, errors } = useEtcWeeklyVersionController()
+export const EtcBaselineActions: FC = () => {
+	const { loading, handleBack, finalizeBaseline, errors } = useEtcWeeklyVersionController()
 
 	return (
 		<div className="etc-weekly-actions-wrapper">
@@ -24,8 +24,8 @@ export const EtcWeeklyVersionActions: FC = () => {
 					Cancelar
 				</button>
 
-				<button type="button" className="etc-weekly-actions__save" onClick={() => void saveSnapshot()} disabled={loading}>
-					{loading ? 'Guardando...' : 'Guardar versión'}
+				<button type="button" className="etc-weekly-actions__save" onClick={() => void finalizeBaseline()} disabled={loading}>
+					{loading ? 'Guardando...' : 'Grabar línea base'}
 				</button>
 			</footer>
 		</div>

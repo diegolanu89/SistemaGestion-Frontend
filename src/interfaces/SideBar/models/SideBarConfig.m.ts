@@ -78,7 +78,7 @@ export const SIDEBAR = {
 					label: 'Carga de ETC a Proyecto',
 					icon: 'edit_note',
 					path: ETC_LOAD_PROJECT.ETC_LOAD,
-					activePaths: [ETC_LOAD_PROJECT.ETC_WEEKLY_VERSION, PROYECT_PATHS_VIEWS.ETC_LOAD, PROYECT_PATHS_VIEWS.ETC_WEEKLY_VERSION],
+					activePaths: [ETC_LOAD_PROJECT.ETC_WEEKLY_VERSION],
 
 					requiredPermission: 'ETC_ACCESS',
 				},

@@ -1,4 +1,4 @@
-// views/EtcWeeklyVersionView.tsx
+// views/EtcBaselineView.tsx
 
 import { FC, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -11,13 +11,13 @@ import { EtcWeeklyVersionMonthSelector } from '../components/EtcWeeklyVersionMon
 import { EtcWeeklyVersionResources } from '../components/EtcWeeklyVersionResources'
 import { EtcWeeklyVersionGrid } from '../components/EtcWeeklyVersionGrid'
 import { EtcWeeklyVersionHeader } from '../components/EtcWeeklyVersionHeader'
-import { EtcWeeklyVersionActions } from '../components/EtcWeeklyVersionActions'
+import { EtcBaselineActions } from '../components/EtcBaselineActions'
 
 import { useEtcWeeklyVersionController } from '../hooks/useEtcWeelyVersionController.h'
 
 import { SectionLoader } from '../../base/components/loading/SectionLoader'
 
-export const EtcWeeklyVersionView: FC = () => {
+export const EtcBaselineView: FC = () => {
 	const navigate = useNavigate()
 	const { projectId } = useEtcContext()
 	const { loading } = useEtcWeeklyVersionController()
@@ -30,7 +30,7 @@ export const EtcWeeklyVersionView: FC = () => {
 
 	return (
 		<div className="etc-weekly-version">
-			<EtcWeeklyVersionHeader />
+			<EtcWeeklyVersionHeader title="Nueva línea base" />
 
 			<EtcWeeklyVersionMetrics />
 
@@ -40,11 +40,11 @@ export const EtcWeeklyVersionView: FC = () => {
 
 			<EtcWeeklyVersionGrid />
 
-			<EtcWeeklyVersionActions />
+			<EtcBaselineActions />
 
 			{loading && (
 				<div className="etc-weekly-version__loading">
-					<SectionLoader text="Guardando versión semanal..." />
+					<SectionLoader text="Grabando línea base..." />
 				</div>
 			)}
 
@@ -53,4 +53,4 @@ export const EtcWeeklyVersionView: FC = () => {
 	)
 }
 
-export default EtcWeeklyVersionView
+export default EtcBaselineView

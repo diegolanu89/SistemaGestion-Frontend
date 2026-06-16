@@ -180,9 +180,9 @@ export const useDashboardEvmController = () => {
 		return {
 			bac: row.bacTotalHours,
 			ac: 0,
-			etc: row.etcHours ?? 0,
-			eac: row.etcHours ?? 0,
-			vac: row.bacTotalHours - (row.etcHours ?? 0),
+			etc: row.etcTotalHours,
+			eac: row.etcTotalHours,
+			vac: row.bacTotalHours - row.etcTotalHours,
 			advance: 0,
 			changeControl: row.bacTotalHours - row.bacBaseHours,
 		}
