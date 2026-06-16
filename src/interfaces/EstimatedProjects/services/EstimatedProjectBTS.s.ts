@@ -438,8 +438,6 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 				entries.push({
 					MonthKey: monthKey,
 
-					MonthLabel: monthKey,
-
 					UserId: r.UserId,
 
 					UserName: r.UserName,

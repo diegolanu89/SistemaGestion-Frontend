@@ -230,7 +230,7 @@ export class DashBoardHourMock implements IDashboardHours {
 
 			monthKey: entry.MonthKey,
 
-			monthLabel: entry.MonthLabel,
+			monthLabel: entry.MonthKey,
 
 			hours: entry.Hours,
 

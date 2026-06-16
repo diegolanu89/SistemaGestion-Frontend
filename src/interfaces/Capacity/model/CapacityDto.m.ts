@@ -1,7 +1,6 @@
 export interface ValidateCapacityEntryDto {
 	userName: string
 	monthKey: string
-	monthLabel: string
 	hours: number
 }
 

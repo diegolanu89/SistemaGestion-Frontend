@@ -46,7 +46,7 @@ export class EtcMock implements IEtcApi {
 			userId: ID,
 			userName: user,
 			monthKey: dto.monthKey,
-			monthLabel: dto.monthLabel,
+			monthLabel: dto.monthKey,
 			hours: dto.hours,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
@@ -74,7 +74,6 @@ export class EtcMock implements IEtcApi {
 			...records[index],
 			userName: dto.userName,
 			monthKey: dto.monthKey,
-			monthLabel: dto.monthLabel,
 			hours: dto.hours,
 			updatedAt: new Date().toISOString(),
 		}
@@ -157,7 +156,7 @@ export class EtcMock implements IEtcApi {
 			userId: ID,
 			userName: entry.userName,
 			monthKey: entry.monthKey,
-			monthLabel: entry.monthLabel,
+			monthLabel: entry.monthLabel ?? entry.monthKey,
 			hours: entry.hours,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
@@ -183,7 +182,7 @@ export class EtcMock implements IEtcApi {
 			userId: ID,
 			userName: entry.userName,
 			monthKey: entry.monthKey,
-			monthLabel: entry.monthLabel,
+			monthLabel: entry.monthLabel ?? entry.monthKey,
 			hours: entry.hours,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
@@ -215,7 +214,7 @@ export class EtcMock implements IEtcApi {
 
 			if (entry.hours > hoursFree) {
 				errors.push({
-					message: `${entry.userName} (${entry.monthLabel}): tiene ${hoursTaken}h tomadas y ${hoursFree}h libres.`,
+					message: `${entry.userName} (${entry.monthLabel ?? entry.monthKey}): tiene ${hoursTaken}h tomadas y ${hoursFree}h libres.`,
 					userName: entry.userName,
 					monthKey: entry.monthKey,
 				})

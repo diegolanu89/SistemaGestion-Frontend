@@ -189,7 +189,7 @@ export const useEtcWeeklyVersionController = () => {
 
 					if (hours <= 0) return
 
-					entries.push({ userName: u.FullName, monthKey: month, monthLabel: month, hours })
+					entries.push({ userName: u.FullName, monthKey: month, hours })
 				})
 			})
 
@@ -226,7 +226,7 @@ export const useEtcWeeklyVersionController = () => {
 
 					if (hours <= 0) return
 
-					entries.push({ userName: u.FullName, monthKey: month, monthLabel: month, hours })
+					entries.push({ userName: u.FullName, monthKey: month, hours })
 				})
 			})
 

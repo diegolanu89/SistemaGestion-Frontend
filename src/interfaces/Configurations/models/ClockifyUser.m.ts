@@ -63,5 +63,5 @@ export interface UpdateClockifyUserDto {
 }
 
 export interface SaveCapacitiesDto {
-	entries: Array<{ monthKey: string; monthLabel: string; hours: number }>
+	entries: Array<{ monthKey: string; hours: number }>
 }

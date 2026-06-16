@@ -61,7 +61,6 @@ export interface CapacityLimitsResponseDto {
 export interface ValidateCapacityEntryDto {
 	userName: string
 	monthKey: string
-	monthLabel: string
 	hours: number
 }
 
@@ -111,7 +110,6 @@ export interface AllocationWireDto {
 /** Item de body para POST /allocations (back usa case-insensitive deserialization). */
 export interface AllocationEntryDto {
 	MonthKey: string
-	MonthLabel: string
 	UserId?: number | null
 	UserName: string
 	Hours: number
