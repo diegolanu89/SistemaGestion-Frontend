@@ -349,13 +349,13 @@
 
 	padding: 0 22px;
 
-	border-radius: 14px;
+	border-radius: 12px;
 
 	border: none;
 
-	background: var(--color-primary);
+	background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
 
-	color: #fff;
+	color: white;
 
 	font-size: 14px;
 
@@ -363,20 +363,23 @@
 
 	cursor: pointer;
 
-	transition:
-		transform 0.2s ease,
-		box-shadow 0.2s ease,
-		opacity 0.2s ease;
+	box-shadow: 0 4px 12px var(--color-shadow-soft);
+
+	transition: all 0.2s ease;
 }
 
 .add-projects-modal__save:hover:not(:disabled) {
-	transform: translateY(-2px);
+	transform: translateY(-1px);
 
-	box-shadow: 0 10px 22px var(--color-primary-opacity-20);
+	box-shadow: 0 8px 20px var(--color-shadow-medium);
+}
+
+.add-projects-modal__save:active:not(:disabled) {
+	transform: scale(0.97);
 }
 
 .add-projects-modal__save:disabled {
-	opacity: 0.7;
+	opacity: 0.5;
 
 	cursor: not-allowed;
 }

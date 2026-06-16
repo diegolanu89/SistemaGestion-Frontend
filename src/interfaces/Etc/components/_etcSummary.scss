@@ -85,12 +85,14 @@
 		}
 
 		&--primary {
-			background: var(--color-primary);
+			background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
 			color: white;
 			border: none;
+			box-shadow: 0 4px 12px var(--color-shadow-soft);
 
 			&:hover {
-				background: var(--color-primary-light);
+				transform: translateY(-1px);
+				box-shadow: 0 8px 20px var(--color-shadow-medium);
 			}
 		}
 
