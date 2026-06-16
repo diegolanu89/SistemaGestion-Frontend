@@ -14,7 +14,7 @@ export class UserMonthlyCapacityMock implements IUserMonthlyCapacity {
 
 			monthKey: entry.monthKey,
 
-			monthLabel: entry.monthLabel,
+			monthLabel: entry.monthKey,
 
 			hours: entry.hours,
 		}))

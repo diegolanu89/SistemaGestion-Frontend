@@ -221,7 +221,7 @@ export class EstimatedProjectMock implements EstimatedProjectInterface {
 				id: this.nextAllocationId++,
 				potencial_project_id: projectId,
 				month_key: e.monthKey,
-				month_label: e.monthLabel,
+				month_label: e.MonthKey,
 				user_id: userId,
 				user_name: e.userName,
 				hours: e.hours,
@@ -250,13 +250,13 @@ export class EstimatedProjectMock implements EstimatedProjectInterface {
 				errors.push({
 					user_name: e.userName,
 					month_key: e.monthKey,
-					month_label: e.monthLabel,
+					month_label: e.monthKey,
 					hours_entered: e.hours,
 					capacity: limit.capacity,
 					etc_hours: limit.etc_hours,
 					other_potencial_hours: limit.other_potencial_hours,
 					available: limit.available,
-					message: `${e.userName} (${e.monthLabel}): capacidad ${limit.capacity}h, ETC ${limit.etc_hours}h, otros estimados ${limit.other_potencial_hours}h. Quedan ${limit.available}h libres.`,
+					message: `${e.userName} (${e.monthKey}): capacidad ${limit.capacity}h, ETC ${limit.etc_hours}h, otros estimados ${limit.other_potencial_hours}h. Quedan ${limit.available}h libres.`,
 				})
 			}
 		}
@@ -319,7 +319,6 @@ export class EstimatedProjectMock implements EstimatedProjectInterface {
 				if (hours <= 0) continue
 				entries.push({
 					monthKey,
-					monthLabel: monthKey, // mock-only: el form va a pasar el label real
 					userId: r.UserId,
 					userName: r.UserName,
 					hours,

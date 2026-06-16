@@ -11,7 +11,7 @@ import { ESTIMATED_PROJECT_PATHS } from '../routes/paths'
 
 import { UserRefDto, EstimatedResourceDto, ValidateCapacityEntryDto, ValidateCapacityErrorDto } from '../models/EstimatedProjectDTO.m'
 
-import { earlierOf, getMonthsFromNow, monthKeyOf, monthsBetween, MonthSlot, parseMonthKey } from '../utils/months'
+import { earlierOf, getMonthsFromNow, monthKeyOf, monthsBetween, parseMonthKey } from '../utils/months'
 
 import { estimatedProjectAdapter } from '../services/EstimatedProjectAdapter.s'
 
@@ -60,9 +60,7 @@ const buildResources = (selectedUsers: UserRefDto[], monthlyHours: EstimatedProj
 		}
 	})
 
-const buildValidateEntries = (resources: EstimatedResourceDto[], months: MonthSlot[]): ValidateCapacityEntryDto[] => {
-	const monthLabel = (key: string) => months.find((m) => m.key === key)?.label ?? key
-
+const buildValidateEntries = (resources: EstimatedResourceDto[]): ValidateCapacityEntryDto[] => {
 	const entries: ValidateCapacityEntryDto[] = []
 
 	for (const r of resources) {
@@ -72,7 +70,6 @@ const buildValidateEntries = (resources: EstimatedResourceDto[], months: MonthSl
 			entries.push({
 				userName: r.UserName,
 				monthKey,
-				monthLabel: monthLabel(monthKey),
 				hours,
 			})
 		}
@@ -307,7 +304,7 @@ export const useEstimatedProjectForm = ({ editingId = null }: Props = {}) => {
 		try {
 			const resources = buildResources(selectedUsers, form.monthlyHours)
 
-			const validateEntries = buildValidateEntries(resources, months)
+			const validateEntries = buildValidateEntries(resources)
 
 			if (validateEntries.length > 0) {
 				const validation = await estimatedProjectAdapter.validateCapacity({

@@ -225,9 +225,9 @@ const ClockifyUsersTab: React.FC = () => {
 			}
 		}
 
-		const entries = MONTH_RANGE.flatMap(({ monthKey, monthLabel }) => {
+		const entries = MONTH_RANGE.flatMap(({ monthKey }) => {
 			const hours = parseFloat(capacityHoursByMonth[monthKey] ?? '') || 0
-			return hours > 0 ? [{ monthKey, monthLabel, hours }] : []
+			return hours > 0 ? [{ monthKey, hours }] : []
 		})
 
 		try {
