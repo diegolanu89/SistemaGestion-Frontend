@@ -2,7 +2,7 @@ import { FC, useEffect } from 'react'
 import { useProyectContext } from '../hooks/useProyectContext.h'
 import { PROYECT_CONFIG } from '../models/ProyectConfig.m'
 import { useProyectEditForm } from '../hooks/useProyectEditForm.h'
-import { ProyectClockifyStatus } from './ProyectClockifyStatus'
+import { ProyectTimesheetStatus } from './ProyectTimesheetStatus'
 import { useIsSmallScreen } from '../../base/hooks/useSmallScreen.h'
 
 export const ProyectEditForm: FC = () => {
@@ -12,7 +12,7 @@ export const ProyectEditForm: FC = () => {
 
 	const { form, update, submit, submitting, validationErrors, setForm } = useProyectEditForm()
 
-	const isAlreadySynced = Boolean(selectedProject?.ClockifyRecordId)
+	const isAlreadySynced = Boolean(selectedProject?.TimesheetRecordId)
 	const selectedType = refs?.types.find((t) => t.Code === selectedProject?.ProjectType)
 
 	useEffect(() => {
@@ -29,9 +29,9 @@ export const ProyectEditForm: FC = () => {
 			EstimatedEndDate: selectedProject.EstimatedEndDate ?? undefined,
 			ActualEndDate: selectedProject.ActualEndDate ?? undefined,
 			CommercialStatus: selectedProject.CommercialStatus ?? undefined,
-			LeaderClockifyUserId: selectedProject.LeaderClockifyUserId ?? undefined,
+			LeaderTimesheetUserId: selectedProject.LeaderTimesheetUserId ?? undefined,
 			Observations: selectedProject.Observations ?? undefined,
-			RequiresClockifyCreation: selectedProject.RequiresClockifyCreation,
+			RequiresTimesheetCreation: selectedProject.RequiresTimesheetCreation,
 		})
 	}, [selectedProject, setForm])
 
@@ -50,19 +50,19 @@ export const ProyectEditForm: FC = () => {
 			}}
 		>
 			{isAlreadySynced ? (
-				<ProyectClockifyStatus project={selectedProject} />
+				<ProyectTimesheetStatus project={selectedProject} />
 			) : (
-				<div className="proyect-create-clockify">
+				<div className="proyect-create-timesheet">
 					<div>
 						<h3>
-							<span className="material-icons">{CREATE.CLOCKIFY.ICON}</span>
-							{CREATE.CLOCKIFY.TITLE}
+							<span className="material-icons">{CREATE.TIMESHEET.ICON}</span>
+							{CREATE.TIMESHEET.TITLE}
 						</h3>
-						<p>{CREATE.CLOCKIFY.DESCRIPTION}</p>
+						<p>{CREATE.TIMESHEET.DESCRIPTION}</p>
 					</div>
 
-					<label className="mui-switch" title={!isSmallScreen ? CREATE.CLOCKIFY.TOOLTIP : ''}>
-						<input type="checkbox" checked={form.RequiresClockifyCreation ?? false} onChange={(e) => update('RequiresClockifyCreation')(e.target.checked)} />
+					<label className="mui-switch" title={!isSmallScreen ? CREATE.TIMESHEET.TOOLTIP : ''}>
+						<input type="checkbox" checked={form.RequiresTimesheetCreation ?? false} onChange={(e) => update('RequiresTimesheetCreation')(e.target.checked)} />
 						<span className="mui-switch__track">
 							<span className="mui-switch__thumb" />
 						</span>
@@ -273,8 +273,8 @@ export const ProyectEditForm: FC = () => {
 
 					<select
 						className="proyect-create-select"
-						value={form.LeaderClockifyUserId ?? ''}
-						onChange={(e) => update('LeaderClockifyUserId')(e.target.value ? Number(e.target.value) : undefined)}
+						value={form.LeaderTimesheetUserId ?? ''}
+						onChange={(e) => update('LeaderTimesheetUserId')(e.target.value ? Number(e.target.value) : undefined)}
 					>
 						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
 						{(refs.leaders ?? []).map((l) => (

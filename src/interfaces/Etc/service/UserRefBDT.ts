@@ -18,7 +18,7 @@ interface UserWireDto {
 	active: boolean
 }
 
-interface ClockifyUsersResponse {
+interface TimesheetUsersResponse {
 	success: boolean
 	data: {
 		data: UserWireDto[]
@@ -30,7 +30,7 @@ export class UserRefBDT implements IUserRef {
 		logger.infoTag(LogTag.Adapter, '[USERS][BDT] getUsers()')
 
 		try {
-			const wire = await HttpClient.request<ClockifyUsersResponse>(`${BASE_URL}/clockify-users?active=true`)
+			const wire = await HttpClient.request<TimesheetUsersResponse>(`${BASE_URL}/timesheet-users?active=true`)
 
 			return wire.data.data.map((u) => ({
 				Id: u.id,

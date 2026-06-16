@@ -20,9 +20,9 @@ const INITIAL_COLUMNS: ColumnConfig[] = [
 	{
 		key: 'clockify',
 
-		label: PROYECT_CONFIG.TABLE.HEADERS_CLOCKIFY ?? 'Clockify',
+		label: PROYECT_CONFIG.TABLE.HEADERS_TIMESHEET ?? 'Clockify',
 
-		getValue: (p) => (p.ClockifyRecordId ? '1' : '0'),
+		getValue: (p) => (p.TimesheetRecordId ? '1' : '0'),
 	},
 
 	{
@@ -197,14 +197,14 @@ export const ProyectTable = () => {
 
 	const renderCell = (p: ProjectIntakeRecordDto, col: ColumnConfig) => {
 		// ==========================
-		// 🔹 CLOCKIFY
+		// 🔹 TIMESHEET
 		// ==========================
 
 		if (col.key === 'clockify') {
-			const isInClockify = !!p.ClockifyRecordId
+			const isInClockify = !!p.TimesheetRecordId
 
 			return (
-				<span className="proyect-table__clockify" data-tooltip={isInClockify ? 'En Clockify' : 'No vinculado a Clockify'}>
+				<span className="proyect-table__timesheet" data-tooltip={isInClockify ? 'En Clockify' : 'No vinculado a Clockify'}>
 					<span
 						className="material-icons"
 						style={{

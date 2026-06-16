@@ -18,7 +18,7 @@ export const PROYECT_CONFIG = {
 		STATUS: 'flag',
 		CATEGORY: 'category',
 		TYPE: 'tune',
-		CLOCKIFY: 'schedule',
+		TIMESHEET: 'schedule',
 	},
 
 	// ==========================
@@ -46,11 +46,11 @@ export const PROYECT_CONFIG = {
 	// 🔹 TABLE
 	// ==========================
 	TABLE: {
-		HEADERS_CLOCKIFY: '',
+		HEADERS_TIMESHEET: '',
 
 		HEADERS: ['Título', 'Cliente', 'Descripción', 'Estado', 'Categoría', 'Tipo'],
 
-		CLOCKIFY: {
+		TIMESHEET: {
 			TOOLTIP_ON: 'En Clockify',
 			TOOLTIP_OFF: 'No vinculado a Clockify',
 		},
@@ -88,7 +88,7 @@ export const PROYECT_CONFIG = {
 	// 🔹 CREATE PROJECT
 	// ==========================
 	CREATE: {
-		CLOCKIFY: {
+		TIMESHEET: {
 			TITLE: 'Clockify',
 			DESCRIPTION: 'Crear automáticamente el proyecto en Clockify',
 			ICON: 'schedule',

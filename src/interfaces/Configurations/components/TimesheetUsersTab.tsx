@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { clockifyUsersBDT } from '../services/ClockifyUsersBDT'
+import { timesheetUsersBDT } from '../services/TimesheetUsersBDT'
 import { workingDaysCalendarBDT } from '../services/WorkingDaysCalendarBDT'
-import type { ClockifyUserDto } from '../models/ClockifyUser.m'
+import type { TimesheetUserDto } from '../models/TimesheetUser.m'
 import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
 
-const ClockifyUsersTab: React.FC = () => {
-	const [users, setUsers] = useState<ClockifyUserDto[]>([])
+const TimesheetUsersTab: React.FC = () => {
+	const [users, setUsers] = useState<TimesheetUserDto[]>([])
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 	const [formError, setFormError] = useState<string | null>(null)
@@ -30,10 +30,10 @@ const ClockifyUsersTab: React.FC = () => {
 	const [syncMessage, setSyncMessage] = useState<string | null>(null)
 
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
-	const [userToDelete, setUserToDelete] = useState<ClockifyUserDto | null>(null)
+	const [userToDelete, setUserToDelete] = useState<TimesheetUserDto | null>(null)
 	const [deleting, setDeleting] = useState(false)
 
-	const [capacityUser, setCapacityUser] = useState<ClockifyUserDto | null>(null)
+	const [capacityUser, setCapacityUser] = useState<TimesheetUserDto | null>(null)
 	const [showCapacityModal, setShowCapacityModal] = useState(false)
 	const [capacityHoursByMonth, setCapacityHoursByMonth] = useState<Record<string, string>>({})
 	const [capacityLimitsByMonth, setCapacityLimitsByMonth] = useState<Record<string, number>>({})
@@ -46,8 +46,8 @@ const ClockifyUsersTab: React.FC = () => {
 
 	const filteredUsers = useMemo(() => {
 		return users.filter((u) => {
-			if (filterOrigin === 'clockify' && !u.clockifyUserId) return false
-			if (filterOrigin === 'manual' && u.clockifyUserId) return false
+			if (filterOrigin === 'clockify' && !u.timesheetUserId) return false
+			if (filterOrigin === 'manual' && u.timesheetUserId) return false
 			if (filterRole && u.role !== filterRole) return false
 			if (filterStatus === 'active' && !u.active) return false
 			if (filterStatus === 'inactive' && u.active) return false
@@ -72,7 +72,7 @@ const ClockifyUsersTab: React.FC = () => {
 		setError(null)
 		const q = searchOverride !== undefined ? searchOverride : search
 		try {
-			const { users: data } = await clockifyUsersBDT.list({ search: q.trim() || undefined, per_page: 500 })
+			const { users: data } = await timesheetUsersBDT.list({ search: q.trim() || undefined, per_page: 500 })
 			setUsers(data)
 		} catch (err: unknown) {
 			setError(err instanceof Error ? err.message : 'Error al cargar los usuarios clocky')
@@ -88,7 +88,7 @@ const ClockifyUsersTab: React.FC = () => {
 		setSyncMessage(null)
 		setError(null)
 		try {
-			await clockifyUsersBDT.sync()
+			await timesheetUsersBDT.sync()
 			await loadData()
 			setSyncMessage('Sincronización completada')
 			setTimeout(() => setSyncMessage(null), 4000)
@@ -110,7 +110,7 @@ const ClockifyUsersTab: React.FC = () => {
 		setShowModal(true)
 	}
 
-	const openEdit = (u: ClockifyUserDto) => {
+	const openEdit = (u: TimesheetUserDto) => {
 		setEditingId(u.id)
 		setFormName(u.name)
 		setFormEmail(u.email ?? '')
@@ -135,9 +135,9 @@ const ClockifyUsersTab: React.FC = () => {
 				defaultMonthHours: monthHours,
 			}
 			if (editingId) {
-				await clockifyUsersBDT.update(editingId, payload)
+				await timesheetUsersBDT.update(editingId, payload)
 			} else {
-				await clockifyUsersBDT.create(payload)
+				await timesheetUsersBDT.create(payload)
 			}
 			setShowModal(false)
 			await loadData()
@@ -148,7 +148,7 @@ const ClockifyUsersTab: React.FC = () => {
 		}
 	}
 
-	const requestDelete = (u: ClockifyUserDto) => {
+	const requestDelete = (u: TimesheetUserDto) => {
 		setUserToDelete(u)
 		setShowDeleteModal(true)
 	}
@@ -158,7 +158,7 @@ const ClockifyUsersTab: React.FC = () => {
 		setDeleting(true)
 		setError(null)
 		try {
-			await clockifyUsersBDT.remove(userToDelete.id)
+			await timesheetUsersBDT.remove(userToDelete.id)
 			setShowDeleteModal(false)
 			setUserToDelete(null)
 			await loadData()
@@ -170,7 +170,7 @@ const ClockifyUsersTab: React.FC = () => {
 		}
 	}
 
-	const openCapacityModal = async (u: ClockifyUserDto) => {
+	const openCapacityModal = async (u: TimesheetUserDto) => {
 		setCapacityUser(u)
 		setCapacityHoursByMonth({})
 		setCapacityLimitsByMonth({})
@@ -178,7 +178,7 @@ const ClockifyUsersTab: React.FC = () => {
 		setShowCapacityModal(true)
 
 		try {
-			const capacities = await clockifyUsersBDT.listCapacities(u.id)
+			const capacities = await timesheetUsersBDT.listCapacities(u.id)
 			const map: Record<string, string> = {}
 			capacities.forEach((c) => { map[c.monthKey] = String(c.hours ?? 0) })
 
@@ -231,7 +231,7 @@ const ClockifyUsersTab: React.FC = () => {
 		})
 
 		try {
-			await clockifyUsersBDT.saveCapacities(capacityUser.id, entries)
+			await timesheetUsersBDT.saveCapacities(capacityUser.id, entries)
 			setShowCapacityModal(false)
 			setCapacityError(null)
 		} catch (err: unknown) {
@@ -348,7 +348,7 @@ const ClockifyUsersTab: React.FC = () => {
 									<tr key={u.id}>
 										<td>{u.name}</td>
 										<td>{u.email ?? '-'}</td>
-										<td>{u.clockifyUserId ? 'Clockify' : 'Manual'}</td>
+										<td>{u.timesheetUserId ? 'Clockify' : 'Manual'}</td>
 										<td>{u.role ?? '-'}</td>
 										<td>{u.defaultMonthHours != null ? `${Number(u.defaultMonthHours).toFixed(1)} h` : '-'}</td>
 										<td>{u.active ? 'Activo' : 'Inactivo'}</td>
@@ -530,4 +530,4 @@ const ClockifyUsersTab: React.FC = () => {
 	)
 }
 
-export default ClockifyUsersTab
+export default TimesheetUsersTab

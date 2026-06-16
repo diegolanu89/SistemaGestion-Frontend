@@ -2,7 +2,7 @@
 	"data": [
 		{
 			"id": 1,
-			"clockifyProjectId": "clk_001",
+			"timesheetProjectId": "clk_001",
 			"name": "Proyecto Alpha",
 			"code": "30.001",
 			"clientId": 10,
@@ -23,7 +23,7 @@
 		},
 		{
 			"id": 2,
-			"clockifyProjectId": "clk_002",
+			"timesheetProjectId": "clk_002",
 			"name": "Proyecto Beta",
 			"code": "30.002",
 			"clientId": 20,
@@ -44,7 +44,7 @@
 		},
 		{
 			"id": 3,
-			"clockifyProjectId": "clk_003",
+			"timesheetProjectId": "clk_003",
 			"name": "Proyecto Gamma",
 			"code": "30.003",
 			"clientId": 10,
@@ -65,7 +65,7 @@
 		},
 		{
 			"id": 4,
-			"clockifyProjectId": "clk_004",
+			"timesheetProjectId": "clk_004",
 			"name": "Proyecto Delta",
 			"code": "30.004",
 			"clientId": 30,
@@ -86,7 +86,7 @@
 		},
 		{
 			"id": 5,
-			"clockifyProjectId": "clk_005",
+			"timesheetProjectId": "clk_005",
 			"name": "Proyecto Epsilon",
 			"code": "30.005",
 			"clientId": 20,
@@ -107,7 +107,7 @@
 		},
 		{
 			"id": 6,
-			"clockifyProjectId": "clk_006",
+			"timesheetProjectId": "clk_006",
 			"name": "Proyecto Zeta",
 			"code": "30.006",
 			"clientId": 40,

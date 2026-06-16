@@ -4,7 +4,7 @@
 
 export interface ProjectDto {
 	id: number
-	clockifyProjectId: string
+	timesheetProjectId: string
 	name: string
 	code?: string | null
 	clientId?: number | null

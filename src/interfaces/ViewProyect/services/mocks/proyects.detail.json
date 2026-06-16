@@ -1,6 +1,6 @@
 {
 	"id": 1,
-	"clockifyProjectId": "clk_001",
+	"timesheetProjectId": "clk_001",
 	"name": "Proyecto Alpha",
 	"code": "30.001",
 	"clientId": 10,

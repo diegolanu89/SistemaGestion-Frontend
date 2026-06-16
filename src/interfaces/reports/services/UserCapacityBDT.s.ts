@@ -17,7 +17,7 @@ export class UserMonthlyCapacityBDT implements IUserMonthlyCapacity {
 				success: boolean
 
 				data: UserMonthlyCapacityDto[]
-			}>(`${BASE_URL}/clockify-users/${userId}/capacities`)
+			}>(`${BASE_URL}/timesheet-users/${userId}/capacities`)
 
 			return response.data
 		} catch (error: unknown) {
@@ -37,7 +37,7 @@ export class UserMonthlyCapacityBDT implements IUserMonthlyCapacity {
 				success: boolean
 
 				data: UserMonthlyCapacityDto[]
-			}>(`${BASE_URL}/clockify-users/${userId}/capacities`, {
+			}>(`${BASE_URL}/timesheet-users/${userId}/capacities`, {
 				method: 'POST',
 
 				body: JSON.stringify(data),

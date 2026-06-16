@@ -23,10 +23,10 @@ type FormState = {
 	actualEndDate?: string | null
 
 	commercialStatus?: string | null
-	leaderClockifyUserId?: number | null
+	leaderTimesheetUserId?: number | null
 	observations?: string | null
 
-	requiresClockifyCreation: boolean
+	requiresTimesheetCreation: boolean
 }
 
 export const useProyectCreateForm = () => {
@@ -35,7 +35,7 @@ export const useProyectCreateForm = () => {
 	const [form, setForm] = useState<FormState>({
 		projectType: '',
 		projectName: '',
-		requiresClockifyCreation: false,
+		requiresTimesheetCreation: false,
 	})
 
 	const [submitting, setSubmitting] = useState(false)
@@ -98,10 +98,10 @@ export const useProyectCreateForm = () => {
 		ActualEndDate: form.actualEndDate ?? undefined,
 
 		CommercialStatus: form.commercialStatus ?? undefined,
-		LeaderClockifyUserId: form.leaderClockifyUserId ?? undefined,
+		LeaderTimesheetUserId: form.leaderTimesheetUserId ?? undefined,
 		Observations: form.observations ?? undefined,
 
-		RequiresClockifyCreation: form.requiresClockifyCreation,
+		RequiresTimesheetCreation: form.requiresTimesheetCreation,
 	})
 
 	// ==========================

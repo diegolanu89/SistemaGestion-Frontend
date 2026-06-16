@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { vacacionesBDT } from '../services/VacacionesBDT'
-import { clockifyUsersBDT } from '../services/ClockifyUsersBDT'
+import { timesheetUsersBDT } from '../services/TimesheetUsersBDT'
 import type { UserVacationPeriodDto } from '../models/Vacaciones.m'
-import type { UserOption } from '../models/ClockifyUser.m'
+import type { UserOption } from '../models/TimesheetUser.m'
 import { normalizeSearchText } from '../utils/stringUtils'
 import { diffDays } from '../utils/dateUtils'
 import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
@@ -29,7 +29,7 @@ const VacacionesTab: React.FC = () => {
 
 	const loadOptions = async () => {
 		try {
-			const optionsRes = await clockifyUsersBDT.getOptions()
+			const optionsRes = await timesheetUsersBDT.getOptions()
 			setUsers(optionsRes)
 		} catch (err) {
 			console.error('Error cargando opciones de usuarios', err)

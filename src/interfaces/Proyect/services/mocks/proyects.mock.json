@@ -16,8 +16,8 @@
 		"CommercialStatus": "en progreso",
 		"LeaderName": "Juan Pérez",
 		"Observations": "Proyecto estratégico",
-		"RequiresClockifyCreation": false,
-		"ClockifyRecordId": null,
+		"RequiresTimesheetCreation": false,
+		"TimesheetRecordId": null,
 		"IsActive": true,
 		"CreatedBy": 1,
 		"UpdatedBy": 1,
@@ -50,7 +50,7 @@
 			"Description": "Proyecto en curso",
 			"IsActive": true
 		},
-		"ClockifyProjectName": null
+		"TimesheetProjectName": null
 	},
 	{
 		"Id": 2,
@@ -69,8 +69,8 @@
 		"CommercialStatus": "pausado",
 		"LeaderName": "María López",
 		"Observations": "Pendiente de definición",
-		"RequiresClockifyCreation": true,
-		"ClockifyRecordId": 555,
+		"RequiresTimesheetCreation": true,
+		"TimesheetRecordId": 555,
 		"IsActive": true,
 		"CreatedBy": 2,
 		"UpdatedBy": 2,
@@ -103,7 +103,7 @@
 			"Description": "Proyecto detenido",
 			"IsActive": true
 		},
-		"ClockifyProjectName": "Horas Internas"
+		"TimesheetProjectName": "Horas Internas"
 	},
 	{
 		"Id": 3,
@@ -122,8 +122,8 @@
 		"CommercialStatus": "investigación",
 		"LeaderName": "Carlos Gómez",
 		"Observations": "Exploración tecnológica",
-		"RequiresClockifyCreation": false,
-		"ClockifyRecordId": null,
+		"RequiresTimesheetCreation": false,
+		"TimesheetRecordId": null,
 		"IsActive": true,
 		"CreatedBy": 3,
 		"UpdatedBy": 3,
@@ -156,6 +156,6 @@
 			"Description": "Proyecto en curso",
 			"IsActive": true
 		},
-		"ClockifyProjectName": null
+		"TimesheetProjectName": null
 	}
 ]

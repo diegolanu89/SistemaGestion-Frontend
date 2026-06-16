@@ -6,7 +6,7 @@ import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 
 import { proyectViewAdapter } from '../../ViewProyect/services/ProyectViewAdapter.s'
-import { clockifyUsersBDT } from '../../Configurations/services/ClockifyUsersBDT'
+import { timesheetUsersBDT } from '../../Configurations/services/TimesheetUsersBDT'
 
 export const useProjectAssignmentController = () => {
 	const {
@@ -64,7 +64,7 @@ export const useProjectAssignmentController = () => {
 		logger.infoTag(LogTag.View, '[PROJECT_ASSIGNMENT] sync projects requested')
 
 		try {
-			await clockifyUsersBDT.syncProjects()
+			await timesheetUsersBDT.syncProjects()
 			logger.infoTag(LogTag.View, '[PROJECT_ASSIGNMENT] sync completed')
 		} catch (error: unknown) {
 			logger.errorTag(LogTag.View, '[PROJECT_ASSIGNMENT] sync failed', error)

@@ -67,12 +67,12 @@ export interface ProjectIntakeRecordDto {
 	ActualEndDate?: string | null
 
 	CommercialStatus?: string | null
-	LeaderClockifyUserId?: number | null
+	LeaderTimesheetUserId?: number | null
 	LeaderName?: string | null
 	Observations?: string | null
 
-	RequiresClockifyCreation: boolean
-	ClockifyRecordId?: number | null
+	RequiresTimesheetCreation: boolean
+	TimesheetRecordId?: number | null
 
 	IsActive: boolean
 
@@ -86,7 +86,7 @@ export interface ProjectIntakeRecordDto {
 	CategoryRef?: ProjectIntakeCategoryRefDto | null
 	StatusRef?: ProjectIntakeStatusRefDto | null
 
-	ClockifyProjectName?: string | null
+	TimesheetProjectName?: string | null
 }
 
 // ==========================
@@ -109,10 +109,10 @@ export interface CreateProjectIntakeDto {
 	ActualEndDate?: string
 
 	CommercialStatus?: string
-	LeaderClockifyUserId?: number
+	LeaderTimesheetUserId?: number
 	Observations?: string
 
-	RequiresClockifyCreation?: boolean
+	RequiresTimesheetCreation?: boolean
 }
 
 export interface UpdateProjectIntakeDto {
@@ -130,10 +130,10 @@ export interface UpdateProjectIntakeDto {
 	ActualEndDate?: string
 
 	CommercialStatus?: string
-	LeaderClockifyUserId?: number
+	LeaderTimesheetUserId?: number
 	Observations?: string
 
-	RequiresClockifyCreation?: boolean
+	RequiresTimesheetCreation?: boolean
 }
 
 export interface PaginatedProjectIntakeResponseDto {

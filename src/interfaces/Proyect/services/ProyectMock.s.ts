@@ -60,7 +60,7 @@ export class ProyectMock implements ProyectInterface {
 			LeaderName: data.LeaderName ?? null,
 			Observations: data.Observations ?? null,
 
-			RequiresClockifyCreation: data.RequiresClockifyCreation ?? false,
+			RequiresTimesheetCreation: data.RequiresTimesheetCreation ?? false,
 			IsActive: true,
 
 			CreatedAt: now,
@@ -68,7 +68,7 @@ export class ProyectMock implements ProyectInterface {
 
 			InternalProjectNumber: null,
 			ClientName: null,
-			ClockifyRecordId: null,
+			TimesheetRecordId: null,
 			CreatedBy: null,
 			UpdatedBy: null,
 
@@ -76,7 +76,7 @@ export class ProyectMock implements ProyectInterface {
 			CategoryRef: null,
 			StatusRef: null,
 
-			ClockifyProjectName: null,
+			TimesheetProjectName: null,
 		}
 
 		this.data.push(newItem)

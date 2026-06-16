@@ -1,4 +1,4 @@
-.clockify-status {
+.timesheet-status {
 	display: flex;
 	align-items: center;
 	gap: 12px;
@@ -29,7 +29,7 @@
 }
 
 /* ✅ Estado OK */
-.clockify-status.is-linked {
+.timesheet-status.is-linked {
 	border-color: rgba(34, 197, 94, 0.3);
 	background: rgba(34, 197, 94, 0.08);
 
@@ -39,7 +39,7 @@
 }
 
 /* ❌ Estado NO vinculado */
-.clockify-status.is-unlinked {
+.timesheet-status.is-unlinked {
 	border-color: rgba(239, 68, 68, 0.3);
 	background: rgba(239, 68, 68, 0.08);
 
