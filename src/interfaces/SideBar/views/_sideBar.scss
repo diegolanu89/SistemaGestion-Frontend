@@ -172,6 +172,24 @@
 	opacity: 1;
 }
 
+.sidebar__parent.is-selected {
+	background: linear-gradient(90deg, var(--color-primary-opacity-20) 0%, var(--color-primary-opacity-10) 55%, transparent 100%);
+
+	color: var(--color-text-primary);
+
+	box-shadow: inset 3px 0 0 var(--color-primary), 0 4px 16px var(--color-primary-opacity-10);
+}
+
+.sidebar__parent.is-selected::before {
+	transform: scaleX(1);
+
+	opacity: 1;
+}
+
+.sidebar__parent.is-selected .material-icons {
+	color: var(--color-primary);
+}
+
 .sidebar__parent:active {
 	transform: scale(0.98);
 }
@@ -314,6 +332,24 @@
 	transform: scaleX(1);
 
 	opacity: 1;
+}
+
+.sidebar-item.is-selected {
+	background: linear-gradient(90deg, var(--color-primary-opacity-20) 0%, var(--color-primary-opacity-10) 60%, transparent 100%);
+
+	color: var(--color-text-primary);
+
+	box-shadow: inset 3px 0 0 var(--color-primary), 0 4px 16px var(--color-primary-opacity-10);
+}
+
+.sidebar-item.is-selected::before {
+	transform: scaleX(1);
+
+	opacity: 1;
+}
+
+.sidebar-item.is-selected .sidebar-item__icon {
+	color: var(--color-primary);
 }
 
 .sidebar-item:active {

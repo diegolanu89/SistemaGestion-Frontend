@@ -20,6 +20,10 @@ export const ProyectCreateForm: FC = () => {
 			className="proyect-create-form"
 			onSubmit={(e) => {
 				e.preventDefault()
+				if (!e.currentTarget.checkValidity()) {
+					e.currentTarget.reportValidity()
+					return
+				}
 				void submit()
 			}}
 		>
@@ -84,8 +88,11 @@ export const ProyectCreateForm: FC = () => {
 
 					<input
 						className="proyect-create-input"
+						type="number"
+						inputMode="numeric"
+						min={0}
 						value={form.secondaryProjectNumber ?? ''}
-						onChange={(e) => update('secondaryProjectNumber')(e.target.value)}
+						onChange={(e) => update('secondaryProjectNumber')(e.target.value.replace(/\D/g, ''))}
 					/>
 				</div>
 
@@ -132,7 +139,13 @@ export const ProyectCreateForm: FC = () => {
 						{CREATE.FIELDS.PROJECT_NAME.LABEL} *
 					</label>
 
-					<input className="proyect-create-input" value={form.projectName ?? ''} onChange={(e) => update('projectName')(e.target.value)} required />
+					<input
+						className="proyect-create-input"
+						value={form.projectName ?? ''}
+						onChange={(e) => update('projectName')(e.target.value)}
+						maxLength={40}
+						required
+					/>
 				</div>
 
 				{/* Categoría */}
@@ -205,6 +218,7 @@ export const ProyectCreateForm: FC = () => {
 						type="date"
 						value={form.estimatedEndDate ?? ''}
 						onChange={(e) => update('estimatedEndDate')(e.target.value || null)}
+						required
 					/>
 				</div>
 

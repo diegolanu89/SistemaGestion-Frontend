@@ -6,6 +6,10 @@ import { SideBarItem as SideBarItemType } from './SideBar.m'
 import { REPORTS_PATHS } from '../../reports/routes/paths'
 import { ETC_LOAD_PROJECT } from '../../Etc/routes/paths'
 import { PROYECT_PATHS_VIEWS } from '../../ViewProyect/routes/paths'
+import { IDLE_PATHS } from '../../Idle/routes/paths'
+import { PROJECT_ASSIGNMENT_PATHS } from '../../ProjectAsignament/routes/paths'
+import { DASHBOARD_EVM_PATHS } from '../../DashboardEvm/routes/paths'
+import { CONFIGURATIONS_PATHS } from '../../Configurations/routes/paths'
 
 export const SIDEBAR = {
 	config: {
@@ -45,6 +49,7 @@ export const SIDEBAR = {
 			label: 'Inicio',
 			icon: 'home',
 			path: '/',
+			activePaths: [IDLE_PATHS.HOME],
 		},
 
 		{
@@ -55,7 +60,7 @@ export const SIDEBAR = {
 				{
 					label: 'Asignación de Proyectos',
 					icon: 'assignment_ind',
-					path: '/operaciones/asignacion-proyectos',
+					path: PROJECT_ASSIGNMENT_PATHS.PROJECT_ASSIGNMENT,
 
 					requiredPermission: 'PROJECTS_ASSIGN',
 				},
@@ -64,6 +69,7 @@ export const SIDEBAR = {
 					label: 'Visualización de proyectos',
 					icon: 'visibility',
 					path: PROYECT_PATHS_VIEWS.PROYECT_VIEW,
+					activePaths: [PROYECT_PATHS_VIEWS.PROYECT_ITEM],
 
 					requiredPermission: 'PROJECTS_ACCESS',
 				},
@@ -72,6 +78,7 @@ export const SIDEBAR = {
 					label: 'Carga de ETC a Proyecto',
 					icon: 'edit_note',
 					path: ETC_LOAD_PROJECT.ETC_LOAD,
+					activePaths: [ETC_LOAD_PROJECT.ETC_WEEKLY_VERSION, PROYECT_PATHS_VIEWS.ETC_LOAD, PROYECT_PATHS_VIEWS.ETC_WEEKLY_VERSION],
 
 					requiredPermission: 'ETC_ACCESS',
 				},
@@ -80,6 +87,7 @@ export const SIDEBAR = {
 					label: 'Alta de Proyectos Estimados',
 					icon: 'post_add',
 					path: ESTIMATED_PROJECT_PATHS.LIST,
+					activePaths: [ESTIMATED_PROJECT_PATHS.CREATE, ESTIMATED_PROJECT_PATHS.EDIT],
 
 					requiredPermission: 'ESTIMATED_PROJECTS_ACCESS',
 				},
@@ -94,7 +102,7 @@ export const SIDEBAR = {
 				{
 					label: 'Dashboard EVM',
 					icon: 'query_stats',
-					path: '/analisis/dashboard-evm',
+					path: DASHBOARD_EVM_PATHS.DASHBOARD,
 
 					requiredPermission: 'DASHBOARD_EVM_ACCESS',
 				},
@@ -147,7 +155,7 @@ export const SIDEBAR = {
 				{
 					label: 'Configuraciones',
 					icon: 'tune',
-					path: '/configuracion',
+					path: CONFIGURATIONS_PATHS.LIST,
 
 					requiredPermission: 'SETTINGS_ACCESS',
 				},

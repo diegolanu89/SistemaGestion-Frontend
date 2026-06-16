@@ -38,6 +38,16 @@ export const DashboardEvmFiltersBar: FC<Props> = ({ filters, onChange }) => {
 					<label>VAC Máximo</label>
 					<input type="number" placeholder="Ej: 1000" value={filters.vacMax} onChange={update('vacMax')} />
 				</div>
+
+				<div className="dashboard-evm-filters__field">
+					<label>Inicio desde</label>
+					<input type="date" value={filters.dateFrom} onChange={update('dateFrom')} max={filters.dateTo || undefined} />
+				</div>
+
+				<div className="dashboard-evm-filters__field">
+					<label>Inicio hasta</label>
+					<input type="date" value={filters.dateTo} onChange={update('dateTo')} min={filters.dateFrom || undefined} />
+				</div>
 			</div>
 		</section>
 	)

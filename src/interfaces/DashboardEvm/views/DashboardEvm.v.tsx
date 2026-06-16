@@ -11,11 +11,12 @@ import { DashboardEvmHeader } from '../components/DashboardEvmHeader'
 import { DashboardEvmSummaryCards } from '../components/DashboardEvmSummaryCards'
 import { DashboardEvmFiltersBar } from '../components/DashboardEvmFilters'
 import { DashboardEvmTable } from '../components/DashboardEvmTable'
+import { DashboardEvmPagination } from '../components/DashboardEvmPagination'
 import { ProjectChangesModal } from '../components/changes/ProjectChangesModal'
 import { ProjectTrackingModal } from '../components/tracking/ProjectTrackingModal'
 
 export const DashboardEvmView: FC = () => {
-	const { loading, error, filters, setFilters, groups, summary, refetch } = useDashboardEvmController()
+	const { loading, error, filters, setFilters, groups, summary, refetch, page, setPage, totalPages } = useDashboardEvmController()
 	const { modalType } = useDashboardEvmContext()
 
 	const { selectedRow: changesRow, changeRequests, changeRequestsLoading, changeRequestsError, openChanges, closeChanges } = useProjectChanges()
@@ -35,6 +36,8 @@ export const DashboardEvmView: FC = () => {
 				{!loading && error && <div className="dashboard-evm__error">{error}</div>}
 
 				{!loading && !error && <DashboardEvmTable groups={groups} onOpenChanges={openChanges} onOpenTracking={openTracking} />}
+
+				{!loading && !error && <DashboardEvmPagination page={page} setPage={setPage} totalPages={totalPages} />}
 			</div>
 
 			{modalType === 'changes' && (

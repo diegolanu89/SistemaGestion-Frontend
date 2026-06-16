@@ -42,6 +42,10 @@ export const ProyectEditForm: FC = () => {
 			className="proyect-create-form"
 			onSubmit={(e) => {
 				e.preventDefault()
+				if (!e.currentTarget.checkValidity()) {
+					e.currentTarget.reportValidity()
+					return
+				}
 				void submit()
 			}}
 		>
@@ -91,8 +95,11 @@ export const ProyectEditForm: FC = () => {
 
 					<input
 						className="proyect-create-input"
+						type="number"
+						inputMode="numeric"
+						min={0}
 						value={form.SecondaryProjectNumber ?? ''}
-						onChange={(e) => update('SecondaryProjectNumber')(e.target.value)}
+						onChange={(e) => update('SecondaryProjectNumber')(e.target.value.replace(/\D/g, ''))}
 					/>
 				</div>
 
@@ -143,6 +150,7 @@ export const ProyectEditForm: FC = () => {
 						className="proyect-create-input"
 						value={form.ProjectName ?? ''}
 						onChange={(e) => update('ProjectName')(e.target.value)}
+						maxLength={40}
 						required
 					/>
 				</div>
@@ -221,6 +229,7 @@ export const ProyectEditForm: FC = () => {
 						type="date"
 						value={form.EstimatedEndDate ?? ''}
 						onChange={(e) => update('EstimatedEndDate')(e.target.value || undefined)}
+						required
 					/>
 				</div>
 
