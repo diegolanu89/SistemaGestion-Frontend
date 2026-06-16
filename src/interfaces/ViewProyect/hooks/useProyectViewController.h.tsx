@@ -39,7 +39,7 @@ export const useProyectViewController = () => {
 				search: filters.search || undefined,
 				client: filters.client !== 'all' ? filters.client : undefined,
 				status: filters.status !== 'all' ? filters.status : undefined,
-				code: filters.code !== 'all' ? filters.code : undefined,
+				code: filters.code || undefined,
 			})
 
 			setProjects(res.data)

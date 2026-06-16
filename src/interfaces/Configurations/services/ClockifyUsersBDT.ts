@@ -79,4 +79,8 @@ export const clockifyUsersBDT = {
 	async sync(): Promise<void> {
 		await HttpClient.request(`${BASE_URL}/clockify/sync-users`, { method: 'POST' })
 	},
+
+	async syncProjects(): Promise<void> {
+		await HttpClient.request(`${BASE_URL}/clockify/sync-projects`, { method: 'POST' })
+	},
 }

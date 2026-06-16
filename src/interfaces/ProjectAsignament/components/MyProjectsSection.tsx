@@ -1,19 +1,20 @@
 import { FC } from 'react'
 
 import ProjectAssignmentList from './ProjectAssignmentList'
+import MyProjectsFilters from './MyProjectsFilters'
 
 import { useProjectAssignment } from '../hooks/useProjectAsignment.h'
+import { useVisibleProjectsController } from '../hooks/useVisibleProjectController.h'
 
 interface Props {
 	onAddProjects: () => void
 }
 
 const MyProjectsSection: FC<Props> = ({ onAddProjects }) => {
-	const { assignedProjects, selectedFilters } = useProjectAssignment()
+	const { selectedFilters } = useProjectAssignment()
+	const ctrl = useVisibleProjectsController()
 
 	const showProjects = selectedFilters.includes('projects')
-
-	const totalAssignedProjects = assignedProjects.length
 
 	if (!showProjects) {
 		return null
@@ -26,7 +27,8 @@ const MyProjectsSection: FC<Props> = ({ onAddProjects }) => {
 					<h2>Mis proyectos</h2>
 
 					<span>
-						{totalAssignedProjects} {totalAssignedProjects === 1 ? 'proyecto visible' : 'proyectos visibles'}
+						{ctrl.projects.length} {ctrl.projects.length === 1 ? 'proyecto' : 'proyectos'}
+						{ctrl.hasFilters && ctrl.totalCount !== ctrl.projects.length && ` de ${ctrl.totalCount}`}
 					</span>
 				</div>
 
@@ -37,7 +39,9 @@ const MyProjectsSection: FC<Props> = ({ onAddProjects }) => {
 				</button>
 			</div>
 
-			<ProjectAssignmentList />
+			<MyProjectsFilters ctrl={ctrl} />
+
+			<ProjectAssignmentList projects={ctrl.projects} />
 		</section>
 	)
 }

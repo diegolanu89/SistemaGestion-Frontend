@@ -6,6 +6,7 @@ import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 
 import { proyectViewAdapter } from '../../ViewProyect/services/ProyectViewAdapter.s'
+import { clockifyUsersBDT } from '../../Configurations/services/ClockifyUsersBDT'
 
 export const useProjectAssignmentController = () => {
 	const {
@@ -60,7 +61,14 @@ export const useProjectAssignmentController = () => {
 	}, [search, client, code, status, setLoading, setProjects])
 
 	const refetch = useCallback(async () => {
-		logger.infoTag(LogTag.View, '[PROJECT_ASSIGNMENT] refetch requested')
+		logger.infoTag(LogTag.View, '[PROJECT_ASSIGNMENT] sync projects requested')
+
+		try {
+			await clockifyUsersBDT.syncProjects()
+			logger.infoTag(LogTag.View, '[PROJECT_ASSIGNMENT] sync completed')
+		} catch (error: unknown) {
+			logger.errorTag(LogTag.View, '[PROJECT_ASSIGNMENT] sync failed', error)
+		}
 
 		await loadProjects()
 

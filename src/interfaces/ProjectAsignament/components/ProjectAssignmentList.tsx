@@ -1,11 +1,13 @@
 import { FC } from 'react'
 
 import ProjectAssignmentCard from './ProjectAssignmentCard'
-import { useVisibleProjectsController } from '../hooks/useVisibleProjectController.h'
+import { ProjectDto } from '../../ViewProyect/models/ProyectViewDTO.m'
 
-const ProjectAssignmentList: FC = () => {
-	const { projects } = useVisibleProjectsController()
+interface Props {
+	projects: ProjectDto[]
+}
 
+const ProjectAssignmentList: FC<Props> = ({ projects }) => {
 	if (projects.length === 0) {
 		return (
 			<div className="project-assignment-list project-assignment-list--empty">

@@ -1,10 +1,11 @@
-import { FC, useState } from 'react'
+import { FC, useState, useMemo } from 'react'
 
 import SelectableProjectList from './SelectableProjectList'
 
 import { useProjectAssignment } from '../hooks/useProjectAsignment.h'
 
 import { SectionLoader } from '../../base/components/loading/SectionLoader'
+import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
 
 import logger from '../../base/controllers/Logger.c'
 
@@ -23,13 +24,33 @@ type MessageState = {
 } | null
 
 const AddProjectsModal: FC<Props> = ({ open, onClose }) => {
-	const { assignedProjects, setLoading, loadVisibleProjects } = useProjectAssignment()
+	const { assignedProjects, setLoading, loadVisibleProjects, projects } = useProjectAssignment()
 
 	const [search, setSearch] = useState('')
-
 	const [code, setCode] = useState('')
+	const [client, setClient] = useState('all')
+	const [status, setStatus] = useState('all')
 
 	const [isSaving, setIsSaving] = useState(false)
+
+	const clientOptions = useMemo(() => {
+		const vals = Array.from(new Set(projects.map((p) => p.clientName).filter(Boolean)))
+		return [{ value: 'all', label: 'Todos' }, ...vals.map((v) => ({ value: String(v), label: String(v) }))]
+	}, [projects])
+
+	const statusOptions = useMemo(() => {
+		const vals = Array.from(new Set(projects.map((p) => p.status).filter(Boolean)))
+		return [{ value: 'all', label: 'Todos' }, ...vals.map((v) => ({ value: String(v), label: String(v) }))]
+	}, [projects])
+
+	const hasFilters = search !== '' || code !== '' || client !== 'all' || status !== 'all'
+
+	const clearFilters = () => {
+		setSearch('')
+		setCode('')
+		setClient('all')
+		setStatus('all')
+	}
 
 	const [message, setMessage] = useState<MessageState>(null)
 
@@ -111,28 +132,66 @@ const AddProjectsModal: FC<Props> = ({ open, onClose }) => {
 					</div>
 				)}
 
-				<div className="add-projects-modal__search">
-					<div className="add-projects-modal__search-field">
-						<span className="material-icons">tag</span>
+				<div className="proyect-view-filters">
+					<div className="proyect-view-search">
+						<label className="proyect-view-search__label">Buscar por nombre</label>
 
-						<input
-							type="text"
-							placeholder="Buscar por código"
-							value={code}
-							onChange={(event) => setCode(event.target.value.toUpperCase())}
-							disabled={isSaving}
-						/>
+						<div className="proyect-view-search__control">
+							<span className="material-icons proyect-view-search__icon">search</span>
+
+							<input
+								className="proyect-view-search__input"
+								value={search}
+								placeholder="Buscar proyecto..."
+								disabled={isSaving}
+								onChange={(e) => setSearch(e.target.value)}
+							/>
+						</div>
 					</div>
 
-					<div className="add-projects-modal__search-field">
-						<span className="material-icons">search</span>
+					<div className="proyect-view-filters__field">
+						<label className="proyect-view-filters__label">Cliente</label>
 
-						<input type="text" placeholder="Buscar por nombre" value={search} onChange={(event) => setSearch(event.target.value)} disabled={isSaving} />
+						<select className="proyect-view-filters__select" value={client} disabled={isSaving} onChange={(e) => setClient(e.target.value)}>
+							{clientOptions.map((opt) => (
+								<option key={opt.value} value={opt.value}>{opt.label}</option>
+							))}
+						</select>
+					</div>
+
+					<div className="proyect-view-filters__field">
+						<label className="proyect-view-filters__label">Estado</label>
+
+						<select className="proyect-view-filters__select" value={status} disabled={isSaving} onChange={(e) => setStatus(e.target.value)}>
+							{statusOptions.map((opt) => (
+								<option key={opt.value} value={opt.value}>{opt.label}</option>
+							))}
+						</select>
+					</div>
+
+					<div className="proyect-view-search">
+						<label className="proyect-view-search__label">Código</label>
+
+						<div className="proyect-view-search__control">
+							<span className="material-icons proyect-view-search__icon">tag</span>
+
+							<input
+								className="proyect-view-search__input"
+								value={code}
+								placeholder="Ej: 30.006"
+								disabled={isSaving}
+								onChange={(e) => setCode(e.target.value.toUpperCase())}
+							/>
+						</div>
+					</div>
+
+					<div className="proyect-view-filters__refresh">
+						<ClearFiltersButton active={hasFilters} onClear={clearFilters} />
 					</div>
 				</div>
 
 				<div className="add-projects-modal__body">
-					{isSaving ? <SectionLoader text="Actualizando proyectos visibles..." /> : <SelectableProjectList search={search} code={code} />}
+					{isSaving ? <SectionLoader text="Actualizando proyectos visibles..." /> : <SelectableProjectList search={search} code={code} client={client} status={status} />}
 				</div>
 
 				<div className="add-projects-modal__footer">

@@ -39,7 +39,7 @@ export const ProyectViewProvider = ({ children }: IProviderProps) => {
 		search: '',
 		client: 'all',
 		status: 'all',
-		code: 'all',
+		code: '',
 	})
 
 	const [refetchFn, setRefetchFn] = useState<() => Promise<void>>(async () => {})
