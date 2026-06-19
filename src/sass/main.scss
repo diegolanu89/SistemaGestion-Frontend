@@ -85,6 +85,7 @@
 @use '../interfaces/DashboardHours/components/dashboardHourToolbar';
 @use '../interfaces/DashboardHours/components/dashboardHoursTable';
 @use '../interfaces/DashboardHours/components/dashboard-filters-modal';
+@use '../interfaces/DashboardHours/components/dashboardHoursIndicatorTooltip';
 
 /**ProjectAsignment**/
 @use '../interfaces/ProjectAsignament/views/_projectAssignment';

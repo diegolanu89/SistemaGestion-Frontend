@@ -4,7 +4,8 @@ import { FC, Fragment, useMemo, useState } from 'react'
 
 import { useDashboardHoursContext } from '../hooks/useEstimatedProjectContext.h'
 
-import { DashboardHoursDetailDto, DashboardHoursRowDto } from '../model/DashboardHoursDTO.m'
+import { DashboardHoursDetailDto, DashboardHoursMonthDto, DashboardHoursRowDto } from '../model/DashboardHoursDTO.m'
+import { DashboardHoursIndicatorTooltip } from './DashboardHoursIndicatorTooltip'
 
 const PAGE_SIZE = 10
 
@@ -12,10 +13,13 @@ type DashboardViewMode = 'details' | 'kpis'
 
 type CapacityStatus = 'success' | 'danger' | 'empty'
 
-const getCapacityStatus = (hours: number, max: number): CapacityStatus => {
-	if (hours <= 0) return 'empty'
+const areSameHours = (current: number, expected: number): boolean => {
+	return Math.abs(current - expected) < 0.01
+}
 
-	return hours > max ? 'danger' : 'success'
+const getCapacityStatus = (hours: number, expected: number): CapacityStatus => {
+	if (hours <= 0 && expected <= 0) return 'empty'
+	return areSameHours(hours, expected) ? 'success' : 'danger'
 }
 
 const getRoleClass = (role?: string | null): string => {
@@ -75,25 +79,14 @@ export const DashboardHoursTable: FC = () => {
 	// 🔹 MONTH CELL
 	// =====================================================
 
-	const renderMonthCell = (
-		monthsMap: Record<
-			string,
-			{
-				hours: number
-				expected: number
-			}
-		>,
-		monthKey: string,
-		expectedHours?: number | null,
-		key?: string
-	) => {
+	const renderMonthCell = (monthsMap: Record<string, DashboardHoursMonthDto>, monthKey: string, key?: string) => {
 		const month = monthsMap?.[monthKey]
 
 		const hours = month?.hours ?? 0
 
-		const max = expectedHours ?? 160
+		const expected = month?.expected ?? monthHours?.[monthKey] ?? 160
 
-		const status = getCapacityStatus(hours, max)
+		const status = getCapacityStatus(hours, expected)
 
 		return (
 			<td key={key ?? monthKey} className="dashboard-hours-table__cell dashboard-hours-table__month-cell">
@@ -107,6 +100,7 @@ export const DashboardHoursTable: FC = () => {
 					}`}
 				>
 					{hours.toFixed(1)}h
+					<DashboardHoursIndicatorTooltip hours={hours} expected={expected} status={status} />
 				</div>
 			</td>
 		)
@@ -137,8 +131,7 @@ export const DashboardHoursTable: FC = () => {
 					</div>
 				</td>
 
-				{months.map((monthKey) => renderMonthCell(detail.months, monthKey, monthHours?.[monthKey], `${userId}-${detail.project_id}-${monthKey}`))}
-
+				{months.map((monthKey) => renderMonthCell(detail.months, monthKey, `${userId}-${detail.project_id}-${monthKey}`))}
 				<td className="dashboard-hours-table__cell dashboard-hours-table__total-cell">
 					<strong>{total.toFixed(1)}h</strong>
 				</td>
@@ -188,7 +181,7 @@ export const DashboardHoursTable: FC = () => {
 						</div>
 					</td>
 
-					{months.map((monthKey) => renderMonthCell(row.months, monthKey, monthHours?.[monthKey], `${row.user_id}-${monthKey}`))}
+					{months.map((monthKey) => renderMonthCell(row.months, monthKey, `${row.user_id}-${monthKey}`))}
 
 					<td className="dashboard-hours-table__cell dashboard-hours-table__total-cell">
 						<strong>{total.toFixed(1)}h</strong>
@@ -244,9 +237,11 @@ export const DashboardHoursTable: FC = () => {
 
 									const hours = month?.hours ?? 0
 
-									const max = monthHours?.[monthKey] ?? 160
+									const expected = month?.expected ?? monthHours?.[monthKey] ?? 160
 
-									const percentage = max > 0 ? (hours / max) * 100 : 0
+									const percentage = expected > 0 ? (hours / expected) * 100 : 0
+
+									const status = getCapacityStatus(hours, expected)
 
 									return (
 										<td key={`${row.user_id}-${monthKey}`} className="dashboard-hours-table__cell">
@@ -255,7 +250,9 @@ export const DashboardHoursTable: FC = () => {
 
 												<div className="dashboard-hours-table__kpi-bar">
 													<div
-														className={`dashboard-hours-table__kpi-fill ${percentage > 100 ? 'is-danger' : percentage > 70 ? 'is-warning' : 'is-success'}`}
+														className={`dashboard-hours-table__kpi-fill ${
+															status === 'danger' ? 'is-danger' : status === 'success' ? 'is-success' : 'is-empty'
+														}`}
 														style={{
 															width: `${Math.min(percentage, 100)}%`,
 														}}

@@ -1,0 +1,224 @@
+/* =======================================================
+ * MONTH CELL
+ * ======================================================= */
+
+.dashboard-hours-table__month-cell {
+	position: relative;
+	overflow: visible;
+}
+
+/* =======================================================
+ * HOURS CHIP
+ * ======================================================= */
+
+.dashboard-hours-table__hours {
+	position: relative;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	cursor: help;
+
+	overflow: visible;
+
+	z-index: 1;
+}
+
+/* =======================================================
+ * TOOLTIP
+ * ======================================================= */
+
+.dashboard-hours-tooltip {
+	position: absolute;
+
+	left: 50%;
+	top: calc(100% + 10px);
+
+	transform: translateX(-50%) translateY(-6px);
+
+	min-width: 260px;
+	max-width: 300px;
+
+	padding: 14px;
+
+	border-radius: 14px;
+
+	background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+
+	color: var(--color-text-primary);
+
+	border: 1px solid var(--color-border);
+
+	box-shadow:
+		0 12px 30px var(--color-shadow-medium),
+		0 4px 12px var(--color-shadow-soft);
+
+	opacity: 0;
+	visibility: hidden;
+
+	pointer-events: none;
+
+	z-index: 999999;
+
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease,
+		visibility 0.2s ease;
+}
+
+.dashboard-hours-table__hours:hover .dashboard-hours-tooltip {
+	opacity: 1;
+	visibility: visible;
+	transform: translateX(-50%) translateY(0);
+}
+
+/* =======================================================
+ * ARROW
+ * ======================================================= */
+
+.dashboard-hours-tooltip::after {
+	content: '';
+
+	position: absolute;
+
+	left: 50%;
+	top: -7px;
+
+	width: 12px;
+	height: 12px;
+
+	background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+
+	border-left: 1px solid var(--color-border);
+	border-top: 1px solid var(--color-border);
+
+	transform: translateX(-50%) rotate(45deg);
+}
+
+/* =======================================================
+ * HEADER
+ * ======================================================= */
+
+.dashboard-hours-tooltip__header {
+	display: flex;
+	align-items: flex-start;
+
+	gap: 10px;
+
+	margin-bottom: 12px;
+	padding-bottom: 10px;
+
+	border-bottom: 1px solid var(--color-border);
+}
+
+.dashboard-hours-tooltip__title {
+	display: flex;
+	flex-direction: column;
+
+	gap: 2px;
+}
+
+.dashboard-hours-tooltip__title strong {
+	font-size: 13px;
+	font-weight: 700;
+
+	color: var(--color-text-primary);
+}
+
+.dashboard-hours-tooltip__title small {
+	font-size: 11px;
+	font-weight: 600;
+
+	color: var(--color-text-secondary);
+}
+
+/* =======================================================
+ * STATUS DOT
+ * ======================================================= */
+
+.dashboard-hours-tooltip__status {
+	width: 10px;
+	height: 10px;
+
+	margin-top: 4px;
+
+	border-radius: 999px;
+
+	flex-shrink: 0;
+}
+
+.dashboard-hours-tooltip__status--success {
+	background: var(--color-success);
+}
+
+.dashboard-hours-tooltip__status--danger {
+	background: var(--color-error);
+}
+
+.dashboard-hours-tooltip__status--empty {
+	background: var(--color-text-secondary);
+}
+
+/* =======================================================
+ * BODY
+ * ======================================================= */
+
+.dashboard-hours-tooltip__body {
+	display: flex;
+	flex-direction: column;
+
+	gap: 8px;
+}
+
+.dashboard-hours-tooltip__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	gap: 16px;
+
+	font-size: 12px;
+}
+
+.dashboard-hours-tooltip__row span {
+	color: var(--color-text-secondary);
+}
+
+.dashboard-hours-tooltip__row strong {
+	font-weight: 700;
+
+	color: var(--color-text-primary);
+}
+
+.dashboard-hours-tooltip__positive {
+	color: var(--color-success);
+}
+
+.dashboard-hours-tooltip__negative {
+	color: var(--color-error);
+}
+
+/* =======================================================
+ * WRAPPER FIXES
+ * ======================================================= */
+
+.dashboard-hours-table-card {
+	position: relative;
+	overflow: visible;
+}
+
+.dashboard-hours-table__wrapper {
+	position: relative;
+
+	overflow-x: auto;
+	overflow-y: visible;
+}
+
+.dashboard-hours-table {
+	position: relative;
+	overflow: visible;
+}
