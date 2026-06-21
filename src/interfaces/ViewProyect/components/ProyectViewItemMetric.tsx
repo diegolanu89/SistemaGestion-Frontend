@@ -1,4 +1,5 @@
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import { ProjectDto } from '../models/ProyectViewDTO.m'
 
@@ -12,31 +13,46 @@ interface Props {
 
 interface MetricHeaderProps {
 	title: string
-
 	description: string
-
-	onInfo: (title: string, description: string) => void
 }
 
-const MetricHeader: FC<MetricHeaderProps> = ({ title, description, onInfo }) => {
+const MetricHeader: FC<MetricHeaderProps> = ({ title, description }) => {
+	const btnRef = useRef<HTMLButtonElement>(null)
+	const [tooltipPos, setTooltipPos] = useState<{ top: number; left: number } | null>(null)
+
+	const showTooltip = () => {
+		if (!btnRef.current) return
+		const rect = btnRef.current.getBoundingClientRect()
+		setTooltipPos({ top: rect.top, left: rect.left + rect.width / 2 })
+	}
+
 	return (
 		<div className="project-detail-metric__header">
 			<span className="project-detail-metric__label">{title}</span>
 
-			<button type="button" className="project-detail-metric__info" onClick={() => onInfo(title, description)}>
+			<button
+				ref={btnRef}
+				type="button"
+				className="project-detail-metric__info"
+				onMouseEnter={showTooltip}
+				onMouseLeave={() => setTooltipPos(null)}
+			>
 				<span className="material-icons">info</span>
 			</button>
+
+			{tooltipPos &&
+				createPortal(
+					<div className="metric-tooltip" style={{ top: tooltipPos.top, left: tooltipPos.left }}>
+						{description}
+					</div>,
+					document.body,
+				)}
 		</div>
 	)
 }
 
 export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 	const { changeRequests, setChangeRequests, changeRequestsLoading, setChangeRequestsLoading } = useProyectViewContext()
-
-	const [popover, setPopover] = useState<{
-		title: string
-		description: string
-	} | null>(null)
 
 	const [loadedProjects, setLoadedProjects] = useState<Set<number>>(new Set())
 
@@ -134,12 +150,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 					<MetricHeader
 						title="BAC Ajustado"
 						description="Representa el presupuesto total actualizado del proyecto considerando todos los controles de cambio aprobados e implementados."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
-								description,
-							})
-						}
 					/>
 
 					<strong>{adjustedBacHours.toFixed(1)}h</strong>
@@ -169,12 +179,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 					<MetricHeader
 						title="AC"
 						description="Actual Cost: representa el costo o esfuerzo real actualmente consumido por el proyecto."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
-								description,
-							})
-						}
 					/>
 
 					<strong>{acTotal.toFixed(1)}h</strong>
@@ -184,12 +188,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 					<MetricHeader
 						title="EV"
 						description="Earned Value: representa el valor realmente ganado según el avance ejecutado."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
-								description,
-							})
-						}
 					/>
 
 					<strong>{ev.toFixed(1)}h</strong>
@@ -199,12 +197,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 					<MetricHeader
 						title="ETC"
 						description="Estimate To Complete: esfuerzo estimado restante necesario para finalizar el proyecto."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
-								description,
-							})
-						}
 					/>
 
 					<strong>{etc.toFixed(1)}h</strong>
@@ -214,12 +206,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 					<MetricHeader
 						title="EAC"
 						description="Estimate At Completion: proyección total del esfuerzo final esperado del proyecto."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
-								description,
-							})
-						}
 					/>
 
 					<strong>{eac.toFixed(1)}h</strong>
@@ -229,12 +215,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 					<MetricHeader
 						title="VAC"
 						description="Variance At Completion: diferencia proyectada entre el BAC ajustado y el costo final estimado."
-						onInfo={(title, description) =>
-							setPopover({
-								title,
-								description,
-							})
-						}
 					/>
 
 					<strong>{vac.toFixed(1)}h</strong>
@@ -245,12 +225,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						<MetricHeader
 							title="CPI"
 							description="Cost Performance Index: mide la eficiencia de costos del proyecto."
-							onInfo={(title, description) =>
-								setPopover({
-									title,
-									description,
-								})
-							}
 						/>
 
 						<strong>{cpi}</strong>
@@ -260,12 +234,6 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						<MetricHeader
 							title="SPI"
 							description="Schedule Performance Index: mide la eficiencia del cronograma respecto al avance esperado."
-							onInfo={(title, description) =>
-								setPopover({
-									title,
-									description,
-								})
-							}
 						/>
 
 						<strong>{spi}</strong>
@@ -275,34 +243,12 @@ export const ProyectViewItemMetrics: FC<Props> = ({ project }) => {
 						<MetricHeader
 							title="Avance"
 							description="Porcentaje estimado de avance real considerando el valor ganado sobre el BAC ajustado."
-							onInfo={(title, description) =>
-								setPopover({
-									title,
-									description,
-								})
-							}
 						/>
 
 						<strong>%{advance}</strong>
 					</div>
 				</div>
 			</div>
-
-			{popover && (
-				<div className="project-detail-global-popover-backdrop" onClick={() => setPopover(null)}>
-					<div className="project-detail-global-popover" onClick={(event) => event.stopPropagation()}>
-						<div className="project-detail-global-popover__header">
-							<h3>{popover.title}</h3>
-
-							<button type="button" onClick={() => setPopover(null)}>
-								<span className="material-icons">close</span>
-							</button>
-						</div>
-
-						<p>{popover.description}</p>
-					</div>
-				</div>
-			)}
 		</>
 	)
 }
