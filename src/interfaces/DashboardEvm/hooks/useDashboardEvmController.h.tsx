@@ -189,26 +189,37 @@ export const useDashboardEvmController = () => {
 	}, [])
 
 	const filtered: DashboardEvmComputedRow[] = useMemo(() => {
-		const clientQ = filters.client.trim().toLowerCase()
+		const clientQ = filters.client
 		const projectQ = filters.project.trim().toLowerCase()
 		const vacMin = filters.vacMin === '' ? null : Number(filters.vacMin)
 		const vacMax = filters.vacMax === '' ? null : Number(filters.vacMax)
-		const dateFrom = filters.dateFrom // 'YYYY-MM-DD' o ''
-		const dateTo = filters.dateTo
+		const statusQ = filters.status.trim().toLowerCase()
 
 		return rows
 			.filter((row) => {
-				if (clientQ && !(row.clientName ?? '').toLowerCase().includes(clientQ)) return false
+				if (clientQ && row.clientName !== clientQ) return false
 				if (projectQ) {
 					const haystack = `${row.code ?? ''} ${row.name}`.toLowerCase()
 					if (!haystack.includes(projectQ)) return false
 				}
-				if (dateFrom || dateTo) {
-					// startDate puede venir como 'YYYY-MM-DD' o ISO con hora; comparo solo la fecha.
+				if (statusQ && (row.status ?? '').toLowerCase() !== statusQ) return false
+				if (filters.dateFrom || filters.dateTo) {
 					const start = row.startDate ? row.startDate.slice(0, 10) : null
 					if (!start) return false
-					if (dateFrom && start < dateFrom) return false
-					if (dateTo && start > dateTo) return false
+					if (filters.dateFrom && start < filters.dateFrom) return false
+					if (filters.dateTo && start > filters.dateTo) return false
+				}
+				if (filters.endPlannedFrom || filters.endPlannedTo) {
+					const planned = row.endDatePlanned ? row.endDatePlanned.slice(0, 10) : null
+					if (!planned) return false
+					if (filters.endPlannedFrom && planned < filters.endPlannedFrom) return false
+					if (filters.endPlannedTo && planned > filters.endPlannedTo) return false
+				}
+				if (filters.endActualFrom || filters.endActualTo) {
+					const actual = row.endDateActual ? row.endDateActual.slice(0, 10) : null
+					if (!actual) return false
+					if (filters.endActualFrom && actual < filters.endActualFrom) return false
+					if (filters.endActualTo && actual > filters.endActualTo) return false
 				}
 				return true
 			})

@@ -16,7 +16,7 @@ import { ProjectChangesModal } from '../components/changes/ProjectChangesModal'
 import { ProjectTrackingModal } from '../components/tracking/ProjectTrackingModal'
 
 export const DashboardEvmView: FC = () => {
-	const { loading, error, filters, setFilters, groups, summary, refetch, page, setPage, totalPages } = useDashboardEvmController()
+	const { loading, error, groups, summary, refetch, page, setPage, totalPages } = useDashboardEvmController()
 	const { modalType } = useDashboardEvmContext()
 
 	const { selectedRow: changesRow, changeRequests, changeRequestsLoading, changeRequestsError, openChanges, closeChanges } = useProjectChanges()
@@ -28,7 +28,7 @@ export const DashboardEvmView: FC = () => {
 
 			<DashboardEvmSummaryCards summary={summary} />
 
-			<DashboardEvmFiltersBar filters={filters} onChange={setFilters} />
+			<DashboardEvmFiltersBar />
 
 			<div className="dashboard-evm__table-wrapper">
 				{loading && <SectionLoader text="Cargando dashboard..." />}

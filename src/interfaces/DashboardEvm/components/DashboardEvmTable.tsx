@@ -22,6 +22,7 @@ export const DashboardEvmTable: FC<Props> = ({ groups, onOpenChanges, onOpenTrac
 						<th className="dashboard-evm-table__th-client">Cliente</th>
 						<th className="dashboard-evm-table__th-project">Proyecto</th>
 						<th className="dashboard-evm-table__th-cc">Control cambios</th>
+						<th>Fecha inicio</th>
 						<th className="dashboard-evm-table__th-numeric">BAC</th>
 						<th className="dashboard-evm-table__th-numeric">AC</th>
 						<th className="dashboard-evm-table__th-numeric">ETC</th>
