@@ -1,4 +1,4 @@
-import { CreateEtcRecordDto, UpdateEtcRecordDto, CreateSnapshotDto, BulkEtcDto, ValidateEtcCapacityDto, EtcRecordDto, EtcEntryDto } from '../model/Etc.m'
+import { CreateEtcRecordDto, UpdateEtcRecordDto, CreateSnapshotDto, BulkEtcDto, UpdateBulkEtcDto, ValidateEtcCapacityDto, EtcRecordDto, EtcEntryDto } from '../model/Etc.m'
 
 import {
 	BulkEtcResponse,
@@ -169,6 +169,64 @@ export class EtcMock implements IEtcApi {
 			snapshot,
 			records: newRecords,
 		}
+	}
+
+	// =========================
+	// UPDATE BULK
+	// =========================
+	async updateBulk(dto: UpdateBulkEtcDto): Promise<BulkEtcResponse> {
+		// IDs enviados en el request (solo los que tienen id)
+		const incomingIds = new Set(dto.entries.filter((e) => e.id != null).map((e) => e.id!))
+
+		// Registros del snapshot objetivo que NO vienen en el request → se eliminan
+		const before = records.length
+		records = records.filter((r) => {
+			if (r.projectId !== dto.projectId) return true
+			if (dto.snapshotId != null && r.snapshotId !== dto.snapshotId) return true
+			return incomingIds.has(r.id)
+		})
+		const deleted = before - records.length
+
+		const synced: EtcRecordDto[] = dto.entries.map((entry) => {
+			if (entry.id != null) {
+				// Actualizar registro existente
+				const index = records.findIndex((r) => r.id === entry.id)
+
+				if (index === -1) throw new Error(`Registro con id ${entry.id} no encontrado`)
+
+				const updatedRecord: EtcRecordDto = {
+					...records[index],
+					userName: entry.userName,
+					monthKey: entry.monthKey,
+					hours: entry.hours,
+					updatedAt: new Date().toISOString(),
+				}
+
+				records[index] = updatedRecord
+
+				return updatedRecord
+			} else {
+				// Crear registro nuevo
+				const newRecord: EtcRecordDto = {
+					id: ID++,
+					projectId: dto.projectId,
+					snapshotId: snapshot?.id ?? null,
+					userId: null,
+					userName: entry.userName,
+					monthKey: entry.monthKey,
+					monthLabel: entry.monthKey,
+					hours: entry.hours,
+					createdAt: new Date().toISOString(),
+					updatedAt: new Date().toISOString(),
+				}
+
+				records.push(newRecord)
+
+				return newRecord
+			}
+		})
+
+		return { message: 'Mock bulk sync OK', records: synced, deleted }
 	}
 
 	// =========================

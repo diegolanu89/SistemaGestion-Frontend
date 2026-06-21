@@ -1,12 +1,20 @@
-// views/EtcEditSnapshotView.v.tsx
-// Read-only view of the latest snapshot. Editing disabled pending backend endpoint.
+﻿// views/EtcEditSnapshotView.v.tsx
 
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useEtcContext } from '../hooks/useEtcContext.h'
+import { useEtcProjectController } from '../hooks/useEtcProjectController.h'
+import { etcAdapter } from '../service/EtcAdapter'
 import { ETC_LOAD_PROJECT } from '../routes/paths'
+import { EtcWeeklyVersionMonthSelector } from '../components/EtcWeeklyVersionMonthSelector'
+import { EtcWeeklyVersionResources } from '../components/EtcWeeklyVersionResources'
 import { SectionLoader } from '../../base/components/loading/SectionLoader'
+
+import type { GridValues } from '../model/IEtcContext.m'
+
+import logger from '../../base/controllers/Logger.c'
+import { LogTag } from '../../base/model/LogTag.m'
 
 const getInitials = (name: string): string =>
 	name
@@ -19,7 +27,12 @@ const getInitials = (name: string): string =>
 export const EtcEditSnapshotView: FC = () => {
 	const navigate = useNavigate()
 
-	const { projectId, projectName, snapshot, bac, users, selectedUserIds, selectedMonths, values, loading } = useEtcContext()
+	const { projectId, projectName, snapshot, bac, users, selectedUserIds, selectedMonths, values, records, loading } = useEtcContext()
+	const { loadProject } = useEtcProjectController()
+
+	const [localValues, setLocalValues] = useState<GridValues>({})
+	const [saving, setSaving] = useState(false)
+	const [saveErrors, setSaveErrors] = useState<{ message: string }[]>([])
 
 	useEffect(() => {
 		if (!projectId) {
@@ -27,10 +40,21 @@ export const EtcEditSnapshotView: FC = () => {
 		}
 	}, [projectId, navigate])
 
+	// Initialize local copy from context once data is loaded
+	useEffect(() => {
+		if (!loading) {
+			setLocalValues(
+				Object.fromEntries(
+					Object.entries(values).map(([uid, months]) => [uid, { ...months }])
+				)
+			)
+		}
+	}, [loading, values])
+
 	const selectedUsers = users.filter((u) => selectedUserIds.has(u.Id))
 
 	const erc = selectedUsers.reduce(
-		(acc, u) => acc + selectedMonths.reduce((a, m) => a + (values[u.Id]?.[m] ?? 0), 0),
+		(acc, u) => acc + selectedMonths.reduce((a, m) => a + (localValues[u.Id]?.[m] ?? 0), 0),
 		0
 	)
 
@@ -38,8 +62,50 @@ export const EtcEditSnapshotView: FC = () => {
 
 	const colorClass = usePercentage >= 85 ? 'is-danger' : usePercentage >= 60 ? 'is-warning' : 'is-success'
 
-	const rangeLabel =
-		selectedMonths.length > 0 ? `${selectedMonths[0]} → ${selectedMonths[selectedMonths.length - 1]}` : '—'
+	// =========================
+	// HANDLERS
+	// =========================
+
+	const handleChange = (userId: number, month: string, value: number) => {
+		setSaveErrors([])
+		setLocalValues((prev) => ({
+			...prev,
+			[userId]: { ...prev[userId], [month]: value },
+		}))
+	}
+
+	const handleSave = async () => {
+		setSaving(true)
+		setSaveErrors([])
+
+		try {
+			const entries = selectedUsers.flatMap((u) =>
+				selectedMonths.map((month) => {
+					const existing = records.find((r) => r.userName === u.FullName && r.monthKey === month)
+					return {
+						...(existing ? { id: existing.id } : {}),
+						userName: u.FullName,
+						monthKey: month,
+						hours: localValues[u.Id]?.[month] ?? 0,
+					}
+				})
+			)
+
+			await etcAdapter.updateBulk({ projectId, snapshotId: snapshot?.id, entries })
+
+			await loadProject(projectId)
+
+			logger.infoTag(LogTag.Adapter, '[ETC EDIT SNAPSHOT] Saved', { projectId })
+
+			navigate(-1)
+		} catch (e: unknown) {
+			const msg = e instanceof Error ? e.message : 'Error al guardar'
+			setSaveErrors(msg.split('\n').filter(Boolean).map((message) => ({ message })))
+			logger.errorTag(LogTag.Adapter, '[ETC EDIT SNAPSHOT] Save error', e)
+		} finally {
+			setSaving(false)
+		}
+	}
 
 	return (
 		<div className="etc-weekly-version">
@@ -55,14 +121,7 @@ export const EtcEditSnapshotView: FC = () => {
 					<h1 className="etc-weekly-header__title">Editar {snapshot?.label ?? 'versión'}</h1>
 
 					<p className="etc-weekly-header__subtitle">
-						Visualización del snapshot para el proyecto: <strong>{projectName}</strong>
-					</p>
-
-					<p className="etc-weekly-header__meta etc-weekly-header__meta--warning">
-						<span className="material-icons" style={{ fontSize: 15, verticalAlign: 'middle', marginRight: 4 }}>
-							lock
-						</span>
-						Edición no disponible — pendiente de implementación del endpoint.
+						Proyecto: <strong>{projectName}</strong>
 					</p>
 				</div>
 			</header>
@@ -118,57 +177,17 @@ export const EtcEditSnapshotView: FC = () => {
 					</section>
 
 					{/* ========================= */}
-					{/* MESES (READ-ONLY) */}
+					{/* HORIZONTE DE PLANIFICACIÓN */}
 					{/* ========================= */}
-					<section className="etc-weekly-months">
-						<div className="etc-weekly-months__header">
-							<div className="etc-weekly-months__title-group">
-								<h3>Meses incluidos</h3>
-								<div className="etc-weekly-months__range">
-									<span className="material-icons">calendar_month</span>
-									<span>{rangeLabel}</span>
-								</div>
-							</div>
-							<div className="etc-weekly-months__actions">
-								<input type="month" className="etc-weekly-months__picker" disabled defaultValue="" />
-								<button type="button" className="etc-weekly-months__add" disabled>
-									<span className="material-icons">add</span>
-									Agregar mes
-								</button>
-							</div>
-						</div>
-						<div className="etc-weekly-months__chips">
-							{selectedMonths.map((m) => (
-								<div key={m} className="etc-weekly-months__chip">
-									<span>{m}</span>
-									<button type="button" disabled>
-										<span className="material-icons">close</span>
-									</button>
-								</div>
-							))}
-						</div>
-					</section>
+					<EtcWeeklyVersionMonthSelector />
 
 					{/* ========================= */}
-					{/* RECURSOS (READ-ONLY) */}
+					{/* RECURSOS */}
 					{/* ========================= */}
-					<section className="etc-weekly-users">
-						<div className="etc-weekly-users__search">
-							<span className="material-icons">search</span>
-							<input type="text" placeholder="Buscar usuario..." disabled />
-						</div>
-						<div className="etc-weekly-users__grid">
-							{selectedUsers.map((u) => (
-								<label key={u.Id} className="etc-weekly-user is-selected">
-									<input type="checkbox" checked disabled onChange={() => undefined} />
-									<span>{u.FullName}</span>
-								</label>
-							))}
-						</div>
-					</section>
+					<EtcWeeklyVersionResources />
 
 					{/* ========================= */}
-					{/* GRID (READ-ONLY) */}
+					{/* GRID EDITABLE */}
 					{/* ========================= */}
 					{selectedUsers.length === 0 ? (
 						<p className="empty">No hay registros en este snapshot.</p>
@@ -187,7 +206,7 @@ export const EtcEditSnapshotView: FC = () => {
 								</thead>
 								<tbody>
 									{selectedUsers.map((user) => {
-										const total = selectedMonths.reduce((acc, m) => acc + (values[user.Id]?.[m] ?? 0), 0)
+										const total = selectedMonths.reduce((acc, m) => acc + (localValues[user.Id]?.[m] ?? 0), 0)
 										return (
 											<tr key={user.Id}>
 												<td className="etc-weekly-grid__avatar-cell">
@@ -198,9 +217,9 @@ export const EtcEditSnapshotView: FC = () => {
 													<td key={m}>
 														<input
 															type="number"
-															value={values[user.Id]?.[m] ?? 0}
-															disabled
-															onChange={() => undefined}
+															min={0}
+															value={localValues[user.Id]?.[m] ?? 0}
+															onChange={(e) => handleChange(user.Id, m, Number(e.target.value))}
 														/>
 													</td>
 												))}
@@ -218,15 +237,30 @@ export const EtcEditSnapshotView: FC = () => {
 					{/* ========================= */}
 					{/* FOOTER */}
 					{/* ========================= */}
-					<footer className="etc-weekly-actions">
-						<button type="button" className="etc-weekly-actions__cancel" onClick={() => navigate(-1)}>
-							Volver
-						</button>
+					<div className="etc-weekly-actions-wrapper">
+						{saveErrors.length > 0 && (
+							<ul className="etc-weekly-actions__errors">
+								{saveErrors.map((err, i) => (
+									<li key={i} className="etc-weekly-actions__error-item">{err.message}</li>
+								))}
+							</ul>
+						)}
 
-						<button type="button" className="etc-weekly-actions__save" disabled>
-							Guardar cambios
-						</button>
-					</footer>
+						<footer className="etc-weekly-actions">
+							<button type="button" className="etc-weekly-actions__cancel" onClick={() => navigate(-1)} disabled={saving}>
+								Volver
+							</button>
+
+							<button
+								type="button"
+								className="etc-weekly-actions__save"
+								onClick={() => void handleSave()}
+								disabled={saving || selectedUsers.length === 0 || selectedMonths.length === 0}
+							>
+								{saving ? 'Guardando...' : 'Guardar cambios'}
+							</button>
+						</footer>
+					</div>
 				</>
 			)}
 		</div>

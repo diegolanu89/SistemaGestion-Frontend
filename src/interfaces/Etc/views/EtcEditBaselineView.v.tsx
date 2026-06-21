@@ -1,12 +1,15 @@
-// views/EtcViewBaselineView.v.tsx
+﻿// views/EtcEditBaselineView.v.tsx
 
 import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useEtcContext } from '../hooks/useEtcContext.h'
+import { useEtcProjectController } from '../hooks/useEtcProjectController.h'
 import { etcAdapter } from '../service/EtcAdapter'
 import { ETC_LOAD_PROJECT } from '../routes/paths'
 
+import { EtcWeeklyVersionMonthSelector } from '../components/EtcWeeklyVersionMonthSelector'
+import { EtcWeeklyVersionResources } from '../components/EtcWeeklyVersionResources'
 import { SectionLoader } from '../../base/components/loading/SectionLoader'
 
 import type { EtcRecordDto } from '../model/Etc.m'
@@ -32,13 +35,21 @@ const getInitials = (fullName: string): string =>
 		.map((w) => w[0]?.toUpperCase())
 		.join('')
 
-export const EtcViewBaselineView: FC = () => {
+export const EtcEditBaselineView: FC = () => {
 	const navigate = useNavigate()
-	const { projectId, projectName, bac } = useEtcContext()
+	const { projectId, projectName, bac, selectedMonths, setSelectedMonths, users: allUsers, selectedUserIds } = useEtcContext()
+
+	const selectedUsers = allUsers.filter((u) => selectedUserIds.has(u.Id))
+	const { loadProject } = useEtcProjectController()
 
 	const [records, setRecords] = useState<EtcRecordDto[]>([])
 	const [baselineSnapshot, setBaselineSnapshot] = useState<EtcSnapshotDto | null>(null)
 	const [loading, setLoading] = useState(true)
+
+	// Editable matrix: userName -> monthKey -> hours
+	const [editValues, setEditValues] = useState<Record<string, Record<string, number>>>({})
+	const [saving, setSaving] = useState(false)
+	const [saveErrors, setSaveErrors] = useState<{ message: string }[]>([])
 
 	useEffect(() => {
 		if (!projectId) {
@@ -55,13 +66,25 @@ export const EtcViewBaselineView: FC = () => {
 				const response = await etcAdapter.getByProject(projectId, 'baseline')
 
 				if (!cancelled) {
-					setRecords(response.records ?? [])
+					const loaded = response.records ?? []
+					setRecords(loaded)
 					setBaselineSnapshot(response.snapshot)
+
+					const m: Record<string, Record<string, number>> = {}
+					loaded.forEach((r) => {
+						const user = r.userName ?? ''
+						if (!m[user]) m[user] = {}
+						m[user][r.monthKey] = Number(r.hours)
+					})
+					setEditValues(m)
+
+					const loadedMonths = [...new Set(loaded.map((r) => r.monthKey))].sort()
+					setSelectedMonths(loadedMonths)
 				}
 
-				logger.infoTag(LogTag.Adapter, '[ETC VIEW BASELINE] Loaded', { projectId })
+				logger.infoTag(LogTag.Adapter, '[ETC EDIT BASELINE] Loaded', { projectId })
 			} catch (e: unknown) {
-				logger.errorTag(LogTag.Adapter, '[ETC VIEW BASELINE] Load error', e)
+				logger.errorTag(LogTag.Adapter, '[ETC EDIT BASELINE] Load error', e)
 			} finally {
 				if (!cancelled) setLoading(false)
 			}
@@ -76,12 +99,7 @@ export const EtcViewBaselineView: FC = () => {
 	// DERIVAR DATOS
 	// =========================
 
-
-	const users = [...new Set(records.map((r) => r.userName ?? ''))].filter(Boolean)
-
-	const months = [...new Set(records.map((r) => r.monthKey))].sort()
-
-	const erc = records.reduce((acc, r) => acc + Number(r.hours), 0)
+	const erc = selectedUsers.reduce((acc, u) => acc + selectedMonths.reduce((a, m) => a + (editValues[u.FullName]?.[m] ?? 0), 0), 0)
 
 	const usePercentage = bac > 0 ? (erc / bac) * 100 : 0
 
@@ -91,15 +109,50 @@ export const EtcViewBaselineView: FC = () => {
 
 	const noBac = bac <= 0
 
-	const rangeLabel = months.length > 0 ? `${months[0]} → ${months[months.length - 1]}` : '—'
+	// =========================
+	// HANDLERS
+	// =========================
 
-	const matrix: Record<string, Record<string, number>> = {}
+	const handleChange = (user: string, month: string, value: number) => {
+		setSaveErrors([])
+		setEditValues((prev) => ({
+			...prev,
+			[user]: { ...prev[user], [month]: value },
+		}))
+	}
 
-	records.forEach((r) => {
-		const user = r.userName ?? ''
-		if (!matrix[user]) matrix[user] = {}
-		matrix[user][r.monthKey] = Number(r.hours)
-	})
+	const handleSave = async () => {
+		setSaving(true)
+		setSaveErrors([])
+
+		try {
+			const entries = selectedUsers.flatMap((u) =>
+				selectedMonths.map((month) => {
+					const existing = records.find((r) => r.userName === u.FullName && r.monthKey === month)
+					return {
+						...(existing ? { id: existing.id } : {}),
+						userName: u.FullName,
+						monthKey: month,
+						hours: editValues[u.FullName]?.[month] ?? 0,
+					}
+				})
+			)
+
+			await etcAdapter.updateBulk({ projectId, snapshotId: baselineSnapshot?.id, entries })
+
+			await loadProject(projectId)
+
+			logger.infoTag(LogTag.Adapter, '[ETC EDIT BASELINE] Saved', { projectId })
+
+			navigate(-1)
+		} catch (e: unknown) {
+			const msg = e instanceof Error ? e.message : 'Error al guardar'
+			setSaveErrors(msg.split('\n').filter(Boolean).map((message) => ({ message })))
+			logger.errorTag(LogTag.Adapter, '[ETC EDIT BASELINE] Save error', e)
+		} finally {
+			setSaving(false)
+		}
+	}
 
 	return (
 		<div className="etc-weekly-version">
@@ -113,10 +166,10 @@ export const EtcViewBaselineView: FC = () => {
 				</button>
 
 				<div>
-					<h1 className="etc-weekly-header__title">Actualizar línea base</h1>
+					<h1 className="etc-weekly-header__title">Editar línea base</h1>
 
 					<p className="etc-weekly-header__subtitle">
-						Visualización de la línea base del proyecto: <strong>{projectName}</strong>
+						Proyecto: <strong>{projectName}</strong>
 					</p>
 
 					{baselineSnapshot?.created_at && (
@@ -202,68 +255,19 @@ export const EtcViewBaselineView: FC = () => {
 					</section>
 
 					{/* ========================= */}
-					{/* MESES (READ-ONLY) */}
+					{/* HORIZONTE DE PLANIFICACIÃ“N */}
 					{/* ========================= */}
 
-					<section className="etc-weekly-months">
-						<div className="etc-weekly-months__header">
-							<div className="etc-weekly-months__title-group">
-								<h3>Meses incluidos</h3>
-
-								<div className="etc-weekly-months__range">
-									<span className="material-icons">calendar_month</span>
-
-									<span>{rangeLabel}</span>
-								</div>
-							</div>
-
-							<div className="etc-weekly-months__actions">
-								<input type="month" className="etc-weekly-months__picker" disabled defaultValue="" />
-
-								<button type="button" className="etc-weekly-months__add" disabled>
-									<span className="material-icons">add</span>
-									Agregar mes
-								</button>
-							</div>
-						</div>
-
-						<div className="etc-weekly-months__chips">
-							{months.map((month) => (
-								<div key={month} className="etc-weekly-months__chip">
-									<span>{month}</span>
-
-									<button type="button" disabled>
-										<span className="material-icons">close</span>
-									</button>
-								</div>
-							))}
-						</div>
-					</section>
+					<EtcWeeklyVersionMonthSelector />
 
 					{/* ========================= */}
-					{/* RECURSOS (READ-ONLY) */}
+					{/* RECURSOS */}
 					{/* ========================= */}
 
-					<section className="etc-weekly-users">
-						<div className="etc-weekly-users__search">
-							<span className="material-icons">search</span>
-
-							<input type="text" placeholder="Buscar usuario..." disabled />
-						</div>
-
-						<div className="etc-weekly-users__grid">
-							{users.map((userName) => (
-								<label key={userName} className="etc-weekly-user is-selected">
-									<input type="checkbox" checked disabled onChange={() => undefined} />
-
-									<span>{userName}</span>
-								</label>
-							))}
-						</div>
-					</section>
+					<EtcWeeklyVersionResources />
 
 					{/* ========================= */}
-					{/* GRID (READ-ONLY) */}
+					{/* GRID EDITABLE */}
 					{/* ========================= */}
 
 					{records.length === 0 ? (
@@ -277,7 +281,7 @@ export const EtcViewBaselineView: FC = () => {
 
 										<th>Usuario</th>
 
-										{months.map((m) => (
+										{selectedMonths.map((m) => (
 											<th key={m}>{m}</th>
 										))}
 
@@ -286,20 +290,20 @@ export const EtcViewBaselineView: FC = () => {
 								</thead>
 
 								<tbody>
-									{users.map((user) => {
-										const total = months.reduce((acc, m) => acc + (matrix[user]?.[m] ?? 0), 0)
+									{selectedUsers.map((u) => {
+										const total = selectedMonths.reduce((acc, m) => acc + (editValues[u.FullName]?.[m] ?? 0), 0)
 
 										return (
-											<tr key={user}>
+											<tr key={u.Id}>
 												<td className="etc-weekly-grid__avatar-cell">
-													<div className="etc-weekly-grid__avatar">{getInitials(user)}</div>
+													<div className="etc-weekly-grid__avatar">{getInitials(u.FullName)}</div>
 												</td>
 
-												<td>{user}</td>
+												<td>{u.FullName}</td>
 
-												{months.map((m) => (
+												{selectedMonths.map((m) => (
 													<td key={m}>
-														<input type="number" value={matrix[user]?.[m] ?? 0} disabled onChange={() => undefined} />
+														<input type="number" min={0} value={editValues[u.FullName]?.[m] ?? 0} onChange={(e) => handleChange(u.FullName, m, Number(e.target.value))} />
 													</td>
 												))}
 
@@ -318,19 +322,29 @@ export const EtcViewBaselineView: FC = () => {
 					{/* FOOTER */}
 					{/* ========================= */}
 
-					<footer className="etc-weekly-actions">
-						<button type="button" className="etc-weekly-actions__cancel" onClick={() => navigate(-1)}>
-							Volver
-						</button>
+					<div className="etc-weekly-actions-wrapper">
+						{saveErrors.length > 0 && (
+							<ul className="etc-weekly-actions__errors">
+								{saveErrors.map((err, i) => (
+									<li key={i} className="etc-weekly-actions__error-item">{err.message}</li>
+								))}
+							</ul>
+						)}
 
-						<button type="button" className="etc-weekly-actions__save" disabled>
-							Actualizar línea base
-						</button>
-					</footer>
+						<footer className="etc-weekly-actions">
+							<button type="button" className="etc-weekly-actions__cancel" onClick={() => navigate(-1)} disabled={saving}>
+								Volver
+							</button>
+
+							<button type="button" className="etc-weekly-actions__save" onClick={() => void handleSave()} disabled={saving || records.length === 0 || selectedUsers.length === 0 || selectedMonths.length === 0}>
+								{saving ? 'Guardando...' : 'Actualizar línea base'}
+							</button>
+						</footer>
+					</div>
 				</>
 			)}
 		</div>
 	)
 }
 
-export default EtcViewBaselineView
+export default EtcEditBaselineView

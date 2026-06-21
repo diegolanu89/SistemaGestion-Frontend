@@ -45,3 +45,16 @@ export interface ValidateEtcCapacityDto {
 	projectId: number
 	entries: EtcEntryDto[]
 }
+
+export interface UpdateBulkEntryDto {
+	id?: number
+	userName: string
+	monthKey: string
+	hours: number
+}
+
+export interface UpdateBulkEtcDto {
+	projectId: number
+	snapshotId?: number
+	entries: UpdateBulkEntryDto[]
+}
