@@ -14,7 +14,7 @@ export interface DashboardHoursMonthDto {
 // 🔹 SOURCE TYPES
 // ==========================
 
-export type DashboardHoursSourceType = 'ALL' | 'ETC' | 'POTENTIAL'
+export type DashboardHoursSourceType = 'ALL' | 'ETC' | 'POTENTIAL' | 'TIME_ENTRIES'
 
 // ==========================
 // 🔹 DETAILS

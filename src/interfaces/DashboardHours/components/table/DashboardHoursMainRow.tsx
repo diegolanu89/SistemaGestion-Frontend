@@ -17,12 +17,81 @@ interface Props {
 	expanded: boolean
 
 	onToggleUser: (userId: number) => void
+
+	timeEntriesEnabled: boolean
+
+	clockifyLoading: boolean
+
+	clockifyData: Record<number, unknown>
 }
 
-export const DashboardHoursMainRow: FC<Props> = ({ row, months, monthHours, expanded, onToggleUser }) => {
-	const total = Object.values(row.months).reduce((acc, current) => acc + current.hours, 0)
+export const DashboardHoursMainRow: FC<Props> = ({
+	row,
 
+	months,
+
+	monthHours,
+
+	expanded,
+
+	onToggleUser,
+
+	timeEntriesEnabled,
+
+	clockifyLoading,
+
+	clockifyData,
+}) => {
 	const hasDetails = row.details.length > 0
+
+	const timeEntriesHoursByMonth = useMemo(() => {
+		if (!timeEntriesEnabled) {
+			return {}
+		}
+
+		const result: Record<string, number> = {}
+
+		for (const detail of row.details) {
+			if (detail.project_type !== 'R' || !detail.project_id) {
+				continue
+			}
+
+			const projectData = clockifyData[detail.project_id] as
+				| {
+						data?: Array<{
+							user_id: number
+							user_name: string
+							total_hours: number
+							months: Record<string, number>
+						}>
+				  }
+				| undefined
+
+			if (!projectData?.data?.length) {
+				continue
+			}
+
+			const userData = projectData.data.find((user) => user.user_name?.trim().toLowerCase() === row.user_name?.trim().toLowerCase())
+
+			if (!userData) {
+				continue
+			}
+
+			Object.entries(userData.months).forEach(([monthKey, hours]) => {
+				result[monthKey] = (result[monthKey] ?? 0) + hours
+			})
+		}
+
+		return result
+	}, [row.details, row.user_name, timeEntriesEnabled, clockifyData])
+
+	const total = useMemo(() => {
+		if (timeEntriesEnabled) {
+			return Object.values(timeEntriesHoursByMonth).reduce((acc, value) => acc + value, 0)
+		}
+
+		return Object.values(row.months).reduce((acc, current) => acc + current.hours, 0)
+	}, [row.months, timeEntriesEnabled, timeEntriesHoursByMonth])
 
 	const displayClient = useMemo(() => {
 		if (!row.details.length) {
@@ -83,13 +152,30 @@ export const DashboardHoursMainRow: FC<Props> = ({ row, months, monthHours, expa
 					</div>
 				</td>
 
-				{months.map((monthKey) => (
-					<DashboardHoursMonthCell
-						key={`${row.user_id}-${monthKey}`}
-						month={row.months?.[monthKey]}
-						expected={row.months?.[monthKey]?.expected ?? monthHours?.[monthKey] ?? 160}
-					/>
-				))}
+				{months.map((monthKey) => {
+					if (timeEntriesEnabled && clockifyLoading) {
+						return (
+							<td key={`${row.user_id}-${monthKey}`} className="dashboard-hours-table__cell">
+								<div className="dashboard-hours-table__skeleton" />
+							</td>
+						)
+					}
+
+					return (
+						<DashboardHoursMonthCell
+							key={`${row.user_id}-${monthKey}`}
+							month={
+								timeEntriesEnabled
+									? {
+											hours: timeEntriesHoursByMonth[monthKey] ?? 0,
+											expected: row.months?.[monthKey]?.expected ?? 0,
+										}
+									: row.months?.[monthKey]
+							}
+							expected={row.months?.[monthKey]?.expected ?? monthHours?.[monthKey] ?? 160}
+						/>
+					)
+				})}
 
 				<td className="dashboard-hours-table__cell dashboard-hours-table__total-cell">
 					<strong>{total.toFixed(1)}h</strong>

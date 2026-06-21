@@ -24,11 +24,27 @@ export class DashboardHoursBDT implements IDashboardHours {
 		try {
 			const params = new URLSearchParams()
 
-			if (filters?.leader_id) params.append('leader_id', filters.leader_id)
+			if (filters?.leader_id) {
+				params.append('leader_id', filters.leader_id)
+			}
 
-			if (filters?.project_id) params.append('project_id', filters.project_id)
+			if (filters?.project_id) {
+				params.append('project_id', filters.project_id)
+			}
 
-			filters?.month_keys?.forEach((m) => params.append('month_keys[]', m))
+			// =====================================================
+			// 🔹 TIME_ENTRIES SE COMPORTA COMO ETC
+			// =====================================================
+
+			const sourceType = filters?.source_type === 'TIME_ENTRIES' ? 'ETC' : filters?.source_type
+
+			if (sourceType && sourceType !== 'ALL') {
+				params.append('source_type', sourceType)
+			}
+
+			filters?.month_keys?.forEach((monthKey) => {
+				params.append('month_keys[]', monthKey)
+			})
 
 			const query = params.toString()
 

@@ -123,7 +123,7 @@ export const SIDEBAR = {
 
 			children: [
 				{
-					label: 'Reportes',
+					label: 'Generación de dotación',
 					icon: 'description',
 					path: REPORTS_PATHS.DOTATION,
 

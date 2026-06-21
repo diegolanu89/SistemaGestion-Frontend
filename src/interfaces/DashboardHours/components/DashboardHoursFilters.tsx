@@ -42,10 +42,8 @@ export const DashboardHoursFilters: FC = () => {
 			dashboard?.options?.source_types ?? [
 				{
 					value: 'ALL',
-
-					label: 'Capacity + ETC',
+					label: 'Todos',
 				},
-
 				{
 					value: 'ETC',
 
@@ -56,6 +54,10 @@ export const DashboardHoursFilters: FC = () => {
 					value: 'POTENTIAL',
 
 					label: 'Solo Potenciales',
+				},
+				{
+					value: 'TIME_ENTRIES',
+					label: 'Horas Reales',
 				},
 			]
 		)

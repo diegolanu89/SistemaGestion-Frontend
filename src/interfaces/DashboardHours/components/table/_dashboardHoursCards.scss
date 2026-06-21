@@ -134,7 +134,7 @@
 .dashboard-hours-table__empty {
 	width: 100%;
 
-	min-height: 240px;
+	min-height: 320px;
 
 	display: flex;
 	flex-direction: column;
@@ -142,12 +142,47 @@
 	align-items: center;
 	justify-content: center;
 
-	gap: 14px;
+	text-align: center;
 
-	padding: 32px;
+	padding: 40px;
+
+	h3 {
+		margin: 16px 0 8px;
+
+		font-size: 18px;
+		font-weight: 700;
+
+		color: var(--color-text-primary);
+	}
+
+	p {
+		margin: 0;
+
+		max-width: 420px;
+
+		font-size: 14px;
+		line-height: 1.5;
+
+		color: var(--color-text-secondary);
+	}
+}
+
+.dashboard-hours-table__empty-icon {
+	width: 88px;
+	height: 88px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	border-radius: 20px;
+
+	background: var(--color-primary-opacity-08);
+
+	border: 1px solid var(--color-primary-opacity-15);
 
 	.material-icons {
-		font-size: 48px;
+		font-size: 42px;
 
 		color: var(--color-primary);
 	}

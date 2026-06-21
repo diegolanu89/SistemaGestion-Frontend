@@ -1,5 +1,7 @@
 import { FC } from 'react'
+
 import { DashboardHoursRowDto } from '../../model/DashboardHoursDTO.m'
+
 import { DashboardHoursMainRow } from './DashboardHoursMainRow'
 
 interface Props {
@@ -12,9 +14,31 @@ interface Props {
 	expandedUsers: Record<number, boolean>
 
 	onToggleUser: (userId: number) => void
+
+	timeEntriesEnabled: boolean
+
+	clockifyLoading: boolean
+
+	clockifyData: Record<number, unknown>
 }
 
-export const DashboardHoursDetailsTable: FC<Props> = ({ rows, months, monthHours, expandedUsers, onToggleUser }) => {
+export const DashboardHoursDetailsTable: FC<Props> = ({
+	rows,
+
+	months,
+
+	monthHours,
+
+	expandedUsers,
+
+	onToggleUser,
+
+	timeEntriesEnabled,
+
+	clockifyLoading,
+
+	clockifyData,
+}) => {
 	return (
 		<div className="dashboard-hours-table__wrapper">
 			<table className="dashboard-hours-table">
@@ -47,6 +71,9 @@ export const DashboardHoursDetailsTable: FC<Props> = ({ rows, months, monthHours
 							monthHours={monthHours}
 							expanded={!!expandedUsers[row.user_id]}
 							onToggleUser={onToggleUser}
+							timeEntriesEnabled={timeEntriesEnabled}
+							clockifyLoading={clockifyLoading}
+							clockifyData={clockifyData}
 						/>
 					))}
 				</tbody>
