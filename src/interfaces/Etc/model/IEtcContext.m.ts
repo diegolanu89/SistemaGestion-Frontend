@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react'
 
-import type { EtcEntryDto } from './Etc.m'
+import type { EtcEntryDto, EtcRecordDto } from './Etc.m'
 import type { EtcSnapshotDto } from './IEtcApi.m'
 
 import type { UserRefDto } from '../../EstimatedProjects/models/EstimatedProjectDTO.m'
@@ -33,6 +33,10 @@ export interface IEtcContext {
 	/* =========================================
 	🔹 ETC
 	========================================= */
+
+	records: EtcRecordDto[]
+
+	setRecords: Dispatch<SetStateAction<EtcRecordDto[]>>
 
 	entries: EtcEntryDto[]
 

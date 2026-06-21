@@ -1,6 +1,6 @@
 // services/IEtcApi.s.ts
 
-import { BulkEtcDto, CreateEtcRecordDto, CreateSnapshotDto, EtcRecordDto, UpdateEtcRecordDto, ValidateEtcCapacityDto } from './Etc.m'
+import { BulkEtcDto, CreateEtcRecordDto, CreateSnapshotDto, EtcRecordDto, UpdateBulkEtcDto, UpdateEtcRecordDto, ValidateEtcCapacityDto } from './Etc.m'
 
 export interface EtcSnapshotDto {
 	id: number
@@ -56,6 +56,7 @@ export interface CreateSnapshotResponse {
 export interface BulkEtcResponse {
 	message: string
 	records: EtcRecordDto[]
+	deleted?: number
 }
 
 export interface ValidateCapacityResponse {
@@ -95,6 +96,8 @@ export interface IEtcApi {
 	createSnapshot(projectId: number, dto: CreateSnapshotDto): Promise<CreateSnapshotResponse>
 
 	storeBulk(dto: BulkEtcDto): Promise<BulkEtcResponse>
+
+	updateBulk(dto: UpdateBulkEtcDto): Promise<BulkEtcResponse>
 
 	validateCapacity(dto: ValidateEtcCapacityDto): Promise<ValidateCapacityResponse>
 

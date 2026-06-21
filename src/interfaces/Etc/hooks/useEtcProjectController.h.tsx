@@ -30,6 +30,8 @@ export const useEtcProjectController = () => {
 
 		setSnapshot,
 
+		setRecords,
+
 		setSelectedMonths,
 
 		setSelectedUserIds,
@@ -83,6 +85,8 @@ export const useEtcProjectController = () => {
 				setSnapshot(response.snapshot)
 
 				const records = response.records ?? []
+
+				setRecords(records)
 
 				// =========================
 				// ENTRIES (EtcSummary / EtcTable)
@@ -169,7 +173,7 @@ export const useEtcProjectController = () => {
 				setLoading(false)
 			}
 		},
-		[setProjectId, setProjectName, setBac, setUsers, setLoading, setSnapshot, setSelectedMonths, setSelectedUserIds, setValues, setErrors, setEntries]
+		[setProjectId, setProjectName, setBac, setUsers, setLoading, setSnapshot, setRecords, setSelectedMonths, setSelectedUserIds, setValues, setErrors, setEntries]
 	)
 
 	return {

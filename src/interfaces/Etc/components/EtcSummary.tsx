@@ -112,7 +112,7 @@ export const EtcSummary: FC = () => {
 		if (snapshot.version === 1) {
 			// Only baseline exists — go directly to baseline editor
 			logger.infoTag(LogTag.Navigation, '[ETC] Edit baseline (direct)')
-			navigate(ETC_LOAD_PROJECT.ETC_VIEW_BASELINE, { state: { projectId } })
+			navigate(ETC_LOAD_PROJECT.ETC_EDIT_BASELINE, { state: { projectId } })
 		} else {
 			// Weekly versions exist — open bifurcation modal
 			setShowEditModal(true)
@@ -122,7 +122,7 @@ export const EtcSummary: FC = () => {
 	const handleEditBaseline = () => {
 		setShowEditModal(false)
 		logger.infoTag(LogTag.Navigation, '[ETC] Edit baseline')
-		navigate(ETC_LOAD_PROJECT.ETC_VIEW_BASELINE, { state: { projectId } })
+		navigate(ETC_LOAD_PROJECT.ETC_EDIT_BASELINE, { state: { projectId } })
 	}
 
 	const handleEditWeekly = () => {
@@ -241,13 +241,13 @@ export const EtcSummary: FC = () => {
 						<div className="etc-edit-modal__options">
 							<button className="etc-edit-modal__option" onClick={handleEditBaseline}>
 								<span className="material-icons">anchor</span>
-								<span className="etc-edit-modal__option-label">Editar Línea Base</span>
+								<span className="etc-edit-modal__option-label">Línea Base</span>
 								<span className="etc-edit-modal__option-sub">Versión fundacional del proyecto</span>
 							</button>
 
 							<button className="etc-edit-modal__option" onClick={handleEditWeekly}>
 								<span className="material-icons">edit_calendar</span>
-								<span className="etc-edit-modal__option-label">Editar {snapshot?.label}</span>
+								<span className="etc-edit-modal__option-label">{snapshot?.label}</span>
 								<span className="etc-edit-modal__option-sub">Último snapshot semanal</span>
 							</button>
 						</div>

@@ -36,7 +36,7 @@ export class HttpClient {
 			const body = await response.json().catch(() => null)
 
 			throw new ApiError(
-				body?.message ?? 'REQUEST_ERROR',
+				body?.message ?? body?.error ?? 'REQUEST_ERROR',
 				response.status,
 				Array.isArray(body?.errors) ? (body.errors as string[]) : [],
 			)

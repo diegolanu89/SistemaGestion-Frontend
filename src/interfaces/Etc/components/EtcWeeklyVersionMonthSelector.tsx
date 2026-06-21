@@ -7,14 +7,10 @@ export const EtcWeeklyVersionMonthSelector: FC = () => {
 		selectedMonths,
 		rangeLabel,
 
-		addMonth,
 		addMultipleMonths,
 
 		removeMonth,
 		clearMonths,
-
-		monthToAdd,
-		setMonthToAdd,
 	} = useEtcWeeklyVersionController()
 
 	const [pendingMonths, setPendingMonths] = useState<string[]>([])
@@ -45,8 +41,6 @@ export const EtcWeeklyVersionMonthSelector: FC = () => {
 
 		return result
 	}, [])
-
-	const monthAlreadyAdded = Boolean(monthToAdd && selectedMonths.includes(monthToAdd))
 
 	const togglePendingMonth = (month: string) => {
 		if (selectedMonths.includes(month)) {
@@ -117,8 +111,6 @@ export const EtcWeeklyVersionMonthSelector: FC = () => {
 
 					const pending = pendingMonths.includes(month.value)
 
-					const current = monthToAdd === month.value
-
 					return (
 						<button
 							key={month.value}
@@ -127,7 +119,6 @@ export const EtcWeeklyVersionMonthSelector: FC = () => {
 								etc-weekly-months__month
 								${added ? 'is-added' : ''}
 								${pending ? 'is-pending' : ''}
-								${current ? 'is-selected' : ''}
 							`}
 							onClick={() => {
 								if (added) {
@@ -153,22 +144,6 @@ export const EtcWeeklyVersionMonthSelector: FC = () => {
 						<span className="material-icons">queue</span>
 						Agregar {pendingMonths.length} {pendingMonths.length === 1 ? 'mes' : 'meses'}
 					</button>
-				</div>
-			)}
-
-			<div className="etc-weekly-months__actions">
-				<input type="month" value={monthToAdd} onChange={(e) => setMonthToAdd(e.target.value)} className="etc-weekly-months__picker" />
-
-				<button type="button" className="etc-weekly-months__add" onClick={addMonth} disabled={monthAlreadyAdded}>
-					<span className="material-icons">add</span>
-					Agregar mes
-				</button>
-			</div>
-
-			{monthAlreadyAdded && (
-				<div className="etc-weekly-months__warning">
-					<span className="material-icons">info</span>
-					Este mes ya forma parte del horizonte seleccionado.
 				</div>
 			)}
 

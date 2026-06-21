@@ -3,7 +3,7 @@ import ProtectedRoute from '../../base/components/redirect/ProtectedRoute'
 import { EtcProvider } from '../context/Etc.Context'
 import EtcWeeklyVersionView from '../views/EtcWeeklyVersionView.v'
 import EtcBaselineView from '../views/EtcBaselineView.v'
-import EtcViewBaselineView from '../views/EtcViewBaselineView.v'
+import EtcEditBaselineView from '../views/EtcEditBaselineView.v'
 import { ETC_LOAD_PROJECT } from './paths'
 import EtcLoadProjectView from '../views/EtcProjectView.v'
 import EtcEditSnapshotView from '../views/EtcEditSnapshotView.v'
@@ -24,7 +24,7 @@ export const EtcProyectViewPublicRoutes = () => (
 
 				<Route path={ETC_LOAD_PROJECT.ETC_BASELINE} element={<EtcBaselineView />} />
 
-				<Route path={ETC_LOAD_PROJECT.ETC_VIEW_BASELINE} element={<EtcViewBaselineView />} />
+				<Route path={ETC_LOAD_PROJECT.ETC_EDIT_BASELINE} element={<EtcEditBaselineView />} />
 
 				<Route path={ETC_LOAD_PROJECT.ETC_EDIT_SNAPSHOT} element={<EtcEditSnapshotView />} />
 			</Route>
