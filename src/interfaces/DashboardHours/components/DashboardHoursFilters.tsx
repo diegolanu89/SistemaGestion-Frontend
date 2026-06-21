@@ -3,6 +3,7 @@
 import { FC, useMemo } from 'react'
 
 import { useDashboardHoursContext } from '../hooks/useEstimatedProjectContext.h'
+import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
 
 import { DashboardHoursSourceType } from '../model/DashboardHoursDTO.m'
 
@@ -36,6 +37,8 @@ export const DashboardHoursFilters: FC = () => {
 	const projectOptions = useMemo(() => {
 		return dashboard?.options?.projects ?? []
 	}, [dashboard])
+
+	const hasActiveFilters = Boolean(filters.leader_id || filters.project_id || filters.month_keys?.length || (filters.source_type && filters.source_type !== 'ALL'))
 
 	const sourceOptions = useMemo(() => {
 		return (
@@ -156,9 +159,7 @@ export const DashboardHoursFilters: FC = () => {
 			{/* ========================= */}
 
 			<div className="dashboard-hours-filters__refresh">
-				<button className="dashboard-hours-filters__clear-btn" onClick={clearFilters} data-tooltip="Limpiar filtros">
-					<span className="material-icons">filter_alt_off</span>
-				</button>
+				<ClearFiltersButton active={hasActiveFilters} onClear={clearFilters} />
 
 				<button className="dashboard-hours-filters__refresh-btn" onClick={refetch} data-tooltip="Actualizar dashboard">
 					<span className="material-icons">refresh</span>

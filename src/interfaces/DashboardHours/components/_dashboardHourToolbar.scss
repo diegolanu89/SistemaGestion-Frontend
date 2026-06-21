@@ -189,6 +189,39 @@
 	}
 
 	// =========================================================
+	// 🔹 SAVED WRAPPER
+	// =========================================================
+
+	&__saved-wrapper {
+		position: relative;
+
+		display: flex;
+		align-items: center;
+	}
+
+	&__saved-icon {
+		position: absolute;
+
+		left: 14px;
+
+		font-size: 18px;
+
+		color: var(--color-text-secondary);
+
+		opacity: 0.7;
+
+		pointer-events: none;
+
+		z-index: 1;
+
+		transition: opacity 0.2s ease;
+	}
+
+	&__saved-wrapper:has(select:disabled) &__saved-icon {
+		opacity: 0.35;
+	}
+
+	// =========================================================
 	// 🔹 SELECT
 	// =========================================================
 
@@ -197,7 +230,12 @@
 
 		min-width: 240px;
 
-		padding: 0 42px 0 16px;
+		padding: 0 42px 0 42px;
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
 
 		border-radius: 12px;
 
