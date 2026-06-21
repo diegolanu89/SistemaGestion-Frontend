@@ -7,9 +7,9 @@ import { SectionLoader } from '../../base/components/loading/SectionLoader'
 import DashboardHourHeader from '../components/DashboardHourHeader'
 import DashboardHoursFilters from '../components/DashboardHoursFilters'
 import DashboardHoursToolbar from '../components/DashboardHoursToolbar'
-import DashboardHoursTable from '../components/DashboardHoursTable'
 
 import { useDashboardHoursContext } from '../hooks/useEstimatedProjectContext.h'
+import { DashboardHoursTable } from '../components/DashboardHoursTable'
 
 export const DashboardHours: FC = () => {
 	const { loading, loadDashboard, loadSavedFilters } = useDashboardHoursContext()

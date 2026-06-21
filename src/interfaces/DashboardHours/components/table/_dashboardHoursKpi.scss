@@ -1,0 +1,46 @@
+.dashboard-hours-table__kpi-cell {
+	min-width: 120px;
+
+	display: flex;
+	flex-direction: column;
+
+	align-items: center;
+	justify-content: center;
+
+	gap: 8px;
+}
+
+.dashboard-hours-table__kpi-bar {
+	position: relative;
+
+	width: 100%;
+	height: 8px;
+
+	border-radius: 999px;
+
+	background: var(--color-bg-alt);
+
+	overflow: hidden;
+}
+
+.dashboard-hours-table__kpi-fill {
+	height: 100%;
+
+	border-radius: inherit;
+
+	transition:
+		width 0.25s ease,
+		background 0.25s ease;
+
+	&.is-success {
+		background: linear-gradient(90deg, rgba(34, 197, 94, 0.75) 0%, #22c55e 100%);
+	}
+
+	&.is-warning {
+		background: linear-gradient(90deg, rgba(245, 158, 11, 0.75) 0%, #f59e0b 100%);
+	}
+
+	&.is-danger {
+		background: linear-gradient(90deg, rgba(239, 68, 68, 0.75) 0%, #ef4444 100%);
+	}
+}
