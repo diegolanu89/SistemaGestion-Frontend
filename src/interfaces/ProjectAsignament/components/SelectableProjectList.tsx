@@ -1,47 +1,15 @@
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 
 import SelectableProjectItem from './SelectableProjectItem'
 
-import { useProjectAssignment } from '../hooks/useProjectAsignment.h'
-
-import logger from '../../base/controllers/Logger.c'
-
-import { LogTag } from '../../base/model/LogTag.m'
+import { ProjectDto } from '../../ViewProyect/models/ProyectViewDTO.m'
 
 interface Props {
-	search: string
-	code: string
-	client: string
-	status: string
+	projects: ProjectDto[]
 }
 
-const SelectableProjectList: FC<Props> = ({ search, code, client, status }) => {
-	const { projects } = useProjectAssignment()
-
-	const filteredProjects = useMemo(() => {
-		const normalizedSearch = search.trim().toLowerCase()
-		const normalizedCode = code.trim().toLowerCase()
-
-		const result = projects.filter((project) => {
-			const projectName = project.name?.toLowerCase() ?? ''
-			const projectCode = project.code?.toLowerCase() ?? ''
-
-			const matchesName = normalizedSearch.length === 0 || projectName.includes(normalizedSearch)
-			const matchesCode = normalizedCode.length === 0 || projectCode.includes(normalizedCode)
-			const matchesClient = client === 'all' || project.clientName === client
-			const matchesStatus = status === 'all' || project.status === status
-
-			return matchesName && matchesCode && matchesClient && matchesStatus
-		})
-
-		logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] filtered ${result.length}/${projects.length} projects`)
-
-		return result
-	}, [projects, search, code, client, status])
-
-	if (filteredProjects.length === 0) {
-		logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] no projects found`)
-
+const SelectableProjectList: FC<Props> = ({ projects }) => {
+	if (projects.length === 0) {
 		return (
 			<div className="selectable-project-list selectable-project-list--empty">
 				<span className="material-icons">search_off</span>
@@ -53,7 +21,7 @@ const SelectableProjectList: FC<Props> = ({ search, code, client, status }) => {
 
 	return (
 		<div className="selectable-project-list">
-			{filteredProjects.map((project) => (
+			{projects.map((project) => (
 				<SelectableProjectItem key={project.id} project={project} />
 			))}
 		</div>

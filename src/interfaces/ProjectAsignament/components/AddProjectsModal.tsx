@@ -13,6 +13,8 @@ import { LogTag } from '../../base/model/LogTag.m'
 
 import { visibleProjectsAdapter } from '../services/ProjectAsignamentAdapter.s'
 
+import { VisibleProjectDto } from '../models/VisibleProject.m'
+
 interface Props {
 	open: boolean
 	onClose: () => void
@@ -24,7 +26,7 @@ type MessageState = {
 } | null
 
 const AddProjectsModal: FC<Props> = ({ open, onClose }) => {
-	const { assignedProjects, setLoading, loadVisibleProjects, projects } = useProjectAssignment()
+	const { assignedProjects, setAssignedProjects, setLoading, loadVisibleProjects, projects } = useProjectAssignment()
 
 	const [search, setSearch] = useState('')
 	const [code, setCode] = useState('')
@@ -45,11 +47,55 @@ const AddProjectsModal: FC<Props> = ({ open, onClose }) => {
 
 	const hasFilters = search !== '' || code !== '' || client !== 'all' || status !== 'all'
 
+	const filteredProjects = useMemo(() => {
+		const normalizedSearch = search.trim().toLowerCase()
+		const normalizedCode = code.trim().toLowerCase()
+
+		return projects.filter((project) => {
+			const matchesName = normalizedSearch.length === 0 || (project.name?.toLowerCase() ?? '').includes(normalizedSearch)
+			const matchesCode = normalizedCode.length === 0 || (project.code?.toLowerCase() ?? '').includes(normalizedCode)
+			const matchesClient = client === 'all' || project.clientName === client
+			const matchesStatus = status === 'all' || project.status === status
+
+			return matchesName && matchesCode && matchesClient && matchesStatus
+		})
+	}, [projects, search, code, client, status])
+
 	const clearFilters = () => {
 		setSearch('')
 		setCode('')
 		setClient('all')
 		setStatus('all')
+	}
+
+	const handleSelectAll = () => {
+		logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] Selecting all ${filteredProjects.length} filtered projects`)
+
+		setAssignedProjects((previous) => {
+			const existingIds = new Set(previous.map((p) => Number(p.project_id)))
+			const toAdd: VisibleProjectDto[] = filteredProjects
+				.filter((p) => !existingIds.has(Number(p.id)))
+				.map((p) => ({
+					id: 0,
+					project_id: Number(p.id),
+					project: {
+						id: Number(p.id),
+						name: p.name,
+						code: p.code ?? '',
+						status: p.status ?? '',
+						client_name: p.clientName ?? '',
+						client: { name: p.clientName ?? '' },
+					},
+				}))
+			return [...previous, ...toAdd]
+		})
+	}
+
+	const handleDeselectAll = () => {
+		logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] Deselecting all ${filteredProjects.length} filtered projects`)
+
+		const filteredIds = new Set(filteredProjects.map((p) => Number(p.id)))
+		setAssignedProjects((previous) => previous.filter((p) => !filteredIds.has(Number(p.project_id))))
 	}
 
 	const [message, setMessage] = useState<MessageState>(null)
@@ -190,8 +236,35 @@ const AddProjectsModal: FC<Props> = ({ open, onClose }) => {
 					</div>
 				</div>
 
+				<div className="add-projects-modal__bulk-actions">
+					<span className="add-projects-modal__bulk-count">
+						{filteredProjects.length} proyecto{filteredProjects.length !== 1 ? 's' : ''}
+						{hasFilters ? ' encontrados' : ' en total'}
+					</span>
+
+					<div className="add-projects-modal__bulk-buttons">
+						<button
+							type="button"
+							className="add-projects-modal__bulk-btn add-projects-modal__bulk-btn--select"
+							onClick={handleSelectAll}
+							disabled={isSaving || filteredProjects.length === 0}
+						>
+							Marcar todos
+						</button>
+
+						<button
+							type="button"
+							className="add-projects-modal__bulk-btn add-projects-modal__bulk-btn--select"
+							onClick={handleDeselectAll}
+							disabled={isSaving || filteredProjects.length === 0}
+						>
+							Desmarcar todos
+						</button>
+					</div>
+				</div>
+
 				<div className="add-projects-modal__body">
-					{isSaving ? <SectionLoader text="Actualizando proyectos visibles..." /> : <SelectableProjectList search={search} code={code} client={client} status={status} />}
+					{isSaving ? <SectionLoader text="Actualizando proyectos visibles..." /> : <SelectableProjectList projects={filteredProjects} />}
 				</div>
 
 				<div className="add-projects-modal__footer">

@@ -22,9 +22,10 @@
 
 	gap: 8px;
 
-	label {
+	> label:first-child {
 		font-size: 13px;
-		font-weight: 700;
+		font-weight: 600;
+		color: var(--color-primary);
 	}
 }
 
@@ -45,7 +46,7 @@
 	background: var(--color-surface);
 
 	.material-icons {
-		color: var(--color-primary);
+		color: #000;
 	}
 
 	input {
@@ -57,7 +58,7 @@
 
 		outline: none;
 
-		color: var(--color-text-primary);
+		color: #000;
 
 		font-size: 14px;
 
@@ -69,13 +70,9 @@
 
 		&::-webkit-calendar-picker-indicator {
 			cursor: pointer;
-			opacity: 0.7;
+			filter: none;
 		}
 	}
-}
-
-.theme-dark .dotation-report__date-input input::-webkit-calendar-picker-indicator {
-	filter: invert(1);
 }
 
 .dotation-report__generate {
