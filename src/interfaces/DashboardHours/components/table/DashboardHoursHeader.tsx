@@ -23,13 +23,11 @@ export const DashboardHoursHeader: FC<Props> = ({ viewMode, totalUsers, onChange
 				<div className="dashboard-hours-table-card__view-toggle">
 					<button className={`dashboard-hours-table-card__view-btn ${viewMode === 'details' ? 'is-active' : ''}`} onClick={() => onChangeViewMode('details')}>
 						<span className="material-icons">groups</span>
-
 						<span>Detalles por usuario</span>
 					</button>
 
 					<button className={`dashboard-hours-table-card__view-btn ${viewMode === 'kpis' ? 'is-active' : ''}`} onClick={() => onChangeViewMode('kpis')}>
-						<span className="material-icons">monitoring</span>
-
+						<span className="material-icons">leaderboard</span>
 						<span>KPIs por usuario</span>
 					</button>
 				</div>
