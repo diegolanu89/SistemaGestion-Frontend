@@ -5,3 +5,13 @@
 	gap: 16px;
 	padding: 24px;
 }
+
+// Stacking context fix: rows need z-index so the hover tooltip
+// isn't painted over by subsequent rows in DOM order.
+.dashboard-hours-table tbody tr {
+	z-index: 1;
+
+	&:hover {
+		z-index: 100;
+	}
+}

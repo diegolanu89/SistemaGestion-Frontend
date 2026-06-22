@@ -60,75 +60,207 @@
 ========================================= */
 
 .dashboard-evm-filters {
+	display: grid;
+	grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+	gap: 20px;
+	align-items: end;
+
+	padding: 18px 22px;
+
 	background: var(--color-surface);
 	border: 1px solid var(--color-border);
 	border-radius: 14px;
+	box-shadow: 0 4px 12px var(--color-shadow-soft);
+	box-sizing: border-box;
 
-	padding: 18px 20px;
-
-	&__title {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-
-		margin-bottom: 12px;
-
-		h3 {
-			margin: 0;
-			font-size: 14px;
-			font-weight: 600;
-			color: var(--color-text-primary);
-		}
-
-		.material-icons {
-			font-size: 18px;
-			color: var(--color-text-secondary);
-		}
-	}
-
-	&__grid {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 14px;
-
-		@media (max-width: 980px) {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-
-		@media (max-width: 560px) {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	&__field {
+	&__field,
+	&__search {
 		display: flex;
 		flex-direction: column;
 		gap: 6px;
+		min-width: 0;
+	}
 
-		label {
-			font-size: 12px;
-			font-weight: 500;
+	&__label {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-primary);
+	}
+
+	// ---- SELECT ----
+
+	&__select {
+		width: 100%;
+		height: 56px;
+		padding: 0 40px 0 16px;
+		border-radius: 12px;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		color: var(--color-text-primary);
+		font-size: 15px;
+		outline: none;
+		cursor: pointer;
+		appearance: none;
+		background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='%239ca3af' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+		background-repeat: no-repeat;
+		background-position: right 14px center;
+		background-size: 18px;
+		transition: all 0.2s ease;
+		box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+		&:hover { border-color: var(--color-primary-light); }
+
+		&:focus {
+			border-color: var(--color-primary);
+			box-shadow: 0 0 0 3px var(--color-primary-opacity-15);
+		}
+	}
+
+	// ---- INPUT (number / date) ----
+
+	&__input {
+		width: 100%;
+		height: 56px;
+		padding: 0 16px;
+		border-radius: 12px;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		color: var(--color-text-primary);
+		font-size: 15px;
+		outline: none;
+		transition: all 0.2s ease;
+		box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+		&::placeholder { color: var(--color-text-secondary); }
+		&:hover { border-color: var(--color-primary-light); }
+
+		&:focus {
+			border-color: var(--color-primary);
+			box-shadow: 0 0 0 3px var(--color-primary-opacity-15);
+		}
+	}
+
+	// ---- SEARCH (text con icono) ----
+
+	&__search-control {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	&__search-icon {
+		position: absolute;
+		left: 16px;
+		font-size: 20px;
+		color: var(--color-text-secondary);
+		pointer-events: none;
+	}
+
+	&__search-input {
+		width: 100%;
+		height: 56px;
+		padding: 0 16px 0 48px;
+		border-radius: 12px;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		color: var(--color-text-primary);
+		font-size: 15px;
+		transition: all 0.2s ease;
+		box-shadow: 0 2px 6px var(--color-shadow-soft);
+
+		&::placeholder { color: var(--color-text-secondary); }
+		&:hover { border-color: var(--color-primary-light); }
+
+		&:focus {
+			border-color: var(--color-primary);
+			box-shadow: 0 0 0 3px var(--color-primary-opacity-15);
+			outline: none;
+		}
+	}
+
+	// ---- ACCIONES ----
+
+	&__actions {
+		display: flex;
+		align-items: flex-end;
+		height: 100%;
+	}
+
+	// ---- FECHAS ROW (contenedor inline de las 3 subsecciones) ----
+
+	&__dates-row {
+		grid-column: 1 / -1;
+
+		display: flex;
+		gap: 32px;
+	}
+
+	// ---- SUBSECCIÓN ----
+
+	&__subsection {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	&__subsection-header {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-primary);
+
+		.material-icons {
+			font-size: 16px;
+		}
+	}
+
+	&__subsection-fields {
+		display: flex;
+		gap: 16px;
+
+		.dashboard-evm-filters__label {
 			color: var(--color-text-secondary);
 		}
+	}
 
-		input {
-			height: 38px;
-			padding: 0 12px;
+	// ---- RESPONSIVE ----
 
-			border: 1px solid var(--color-border);
-			border-radius: 8px;
+	@media (max-width: 900px) {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 
-			background: var(--color-bg);
-			color: var(--color-text-primary);
+		&__actions {
+			grid-column: span 2;
+			justify-content: flex-end;
+		}
 
-			font-size: 14px;
-			transition: border-color 0.15s ease, box-shadow 0.15s ease;
+		&__subsection {
+			flex-wrap: wrap;
+		}
 
-			&:focus {
-				outline: none;
-				border-color: var(--color-primary);
-				box-shadow: 0 0 0 3px var(--color-primary-opacity-15);
-			}
+		&__subsection-fields {
+			flex: 1 1 100%;
+		}
+	}
+
+	@media (max-width: 560px) {
+		grid-template-columns: 1fr;
+
+		&__actions {
+			grid-column: span 1;
+			justify-content: flex-end;
+		}
+
+		&__subsection {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		&__subsection-fields {
+			width: 100%;
+			flex-direction: column;
 		}
 	}
 }
@@ -227,6 +359,30 @@
 		width: 8%;
 	}
 
+	&__date {
+		white-space: nowrap;
+		font-size: 13px;
+		color: var(--color-text-secondary);
+		width: 100px;
+	}
+
+	&__th-date {
+		width: 100px;
+	}
+
+	&__date-header {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 5px;
+		white-space: nowrap;
+
+		&-chips {
+			display: flex;
+			gap: 4px;
+		}
+	}
+
 	&__vac {
 		font-weight: 600;
 
@@ -318,6 +474,40 @@
 			background: rgba(37, 99, 235, 0.12);
 			color: #2563eb;
 			border-color: rgba(37, 99, 235, 0.3);
+		}
+	}
+
+	&--date {
+		min-width: 20px;
+		justify-content: center;
+
+		font-family: inherit;
+		font-size: 10px;
+		font-weight: 700;
+		letter-spacing: 0.4px;
+		cursor: pointer;
+		padding: 2px 6px;
+
+		transition: filter 0.15s ease, transform 0.15s ease;
+
+		&:hover {
+			filter: brightness(0.92);
+		}
+
+		&:active {
+			transform: scale(0.93);
+		}
+
+		&-off {
+			background: var(--color-bg-alt);
+			color: var(--color-text-secondary);
+			border-color: var(--color-border);
+		}
+
+		&-on {
+			background: rgba(37, 99, 235, 0.15);
+			color: #2563eb;
+			border-color: rgba(37, 99, 235, 0.35);
 		}
 	}
 }
