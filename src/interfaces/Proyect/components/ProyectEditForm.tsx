@@ -10,7 +10,7 @@ export const ProyectEditForm: FC = () => {
 	const { CREATE, ACTIONS } = PROYECT_CONFIG
 	const isSmallScreen = useIsSmallScreen()
 
-	const { form, update, submit, submitting, validationErrors, setForm } = useProyectEditForm()
+	const { form, update, submit, submitting, validationErrors, backendError, setForm } = useProyectEditForm()
 
 	const isAlreadySynced = Boolean(selectedProject?.TimesheetRecordId)
 	const selectedType = refs?.types.find((t) => t.Code === selectedProject?.ProjectType)
@@ -307,6 +307,17 @@ export const ProyectEditForm: FC = () => {
 						<li key={i} className="proyect-create-error-item">
 							<span className="material-icons">error_outline</span>
 							{err}
+						</li>
+					))}
+				</ul>
+			)}
+
+			{backendError && (
+				<ul className="proyect-create-errors">
+					{backendError.split('\n').filter(Boolean).map((line, i) => (
+						<li key={i} className="proyect-create-error-item">
+							<span className="material-icons">error_outline</span>
+							{line}
 						</li>
 					))}
 				</ul>

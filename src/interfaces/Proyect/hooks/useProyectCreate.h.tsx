@@ -29,6 +29,17 @@ type FormState = {
 	requiresTimesheetCreation: boolean
 }
 
+const extractMessage = (raw: string): string => {
+	const idx = raw.indexOf(': {')
+	if (idx !== -1) {
+		try {
+			const parsed = JSON.parse(raw.slice(idx + 2)) as { message?: string }
+			if (parsed.message) return parsed.message
+		} catch { /* ignore */ }
+	}
+	return raw
+}
+
 export const useProyectCreateForm = () => {
 	const { refetch, closeCreate, setCreateStatus, setCreateMessage } = useProyectContext()
 
@@ -41,6 +52,7 @@ export const useProyectCreateForm = () => {
 	const [submitting, setSubmitting] = useState(false)
 
 	const [validationErrors, setValidationErrors] = useState<string[]>([])
+	const [backendError, setBackendError] = useState<string | null>(null)
 
 	const [nextNumber, setNextNumber] = useState<string>('')
 	const [loadingNextNumber, setLoadingNextNumber] = useState(false)
@@ -119,6 +131,7 @@ export const useProyectCreateForm = () => {
 			setCreateStatus('loading')
 			setCreateMessage(null)
 			setValidationErrors([])
+			setBackendError(null)
 
 			const result = await proyectAdapter.create(payload)
 
@@ -142,6 +155,9 @@ export const useProyectCreateForm = () => {
 				setCreateStatus('idle')
 				setCreateMessage(null)
 			} else {
+				const lines: string[] = [error instanceof Error ? error.message : ProyectCreateMessages.ERROR]
+				if (error instanceof ApiError && error.detail) lines.push(extractMessage(error.detail))
+				setBackendError(lines.join('\n'))
 				setCreateStatus('error')
 				setCreateMessage(ProyectCreateMessages.ERROR)
 
@@ -162,6 +178,7 @@ export const useProyectCreateForm = () => {
 		submit,
 		submitting,
 		validationErrors,
+		backendError,
 		nextNumber,
 		loadingNextNumber,
 	}

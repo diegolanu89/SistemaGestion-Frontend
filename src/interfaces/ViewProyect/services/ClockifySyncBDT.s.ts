@@ -13,7 +13,7 @@ import {
 	SyncStatusResponseDto,
 } from '../models/IClockifySync.m'
 
-const BASE_URL = `${import.meta.env.VITE_API_URL}/clockify`
+const BASE_URL = `${import.meta.env.VITE_API_URL}/timesheet`
 
 export class ClockifySyncBDT implements ClockifySyncInterface {
 	/* =====================================================
