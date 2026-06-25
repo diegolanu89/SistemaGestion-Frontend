@@ -18,9 +18,10 @@ type FormState = {
 	categoryCode?: string | null
 	projectStatusCode?: string | null
 
-	businessStatusDate?: string | null
-	estimatedEndDate?: string | null
+	startDate?: string | null
+	plannedEndDate?: string | null
 	actualEndDate?: string | null
+	implementationDate?: string | null
 
 	commercialStatus?: string | null
 	leaderTimesheetUserId?: number | null
@@ -105,9 +106,10 @@ export const useProyectCreateForm = () => {
 		CategoryCode: form.categoryCode ?? undefined,
 		ProjectStatusCode: form.projectStatusCode ?? undefined,
 
-		BusinessStatusDate: form.businessStatusDate ?? undefined,
-		EstimatedEndDate: form.estimatedEndDate ?? undefined,
+		StartDate: form.startDate ?? undefined,
+		PlannedEndDate: form.plannedEndDate ?? undefined,
 		ActualEndDate: form.actualEndDate ?? undefined,
+		ImplementationDate: form.implementationDate ?? undefined,
 
 		CommercialStatus: form.commercialStatus ?? undefined,
 		LeaderTimesheetUserId: form.leaderTimesheetUserId ?? undefined,

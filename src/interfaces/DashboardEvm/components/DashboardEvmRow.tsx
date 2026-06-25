@@ -26,9 +26,9 @@ export const DashboardEvmRow: FC<Props> = ({ row, dateMode, clientName, onOpenCh
 	const vacClass = metrics.vac < 0 ? 'is-negative' : 'is-positive'
 
 	const activeDateValue =
-		dateMode === 'I' ? project.startDate :
-		dateMode === 'P' ? project.endDatePlanned :
-		project.endDateActual
+		dateMode === 'I' ? project.tracking?.startDate :
+		dateMode === 'P' ? project.tracking?.plannedEndDate :
+		project.tracking?.actualEndDate
 
 	return (
 		<tr className="dashboard-evm-table__row">

@@ -2,6 +2,14 @@
 
 // models/ProyectViewDTO.m.ts
 
+export interface ProjectTrackingRef {
+	id: number
+	startDate: string | null
+	plannedEndDate: string | null
+	actualEndDate: string | null
+	implementationDate: string | null
+}
+
 export interface ProjectDto {
 	id: number
 	timesheetProjectId: string
@@ -11,9 +19,8 @@ export interface ProjectDto {
 	clientName?: string | null
 	status: string
 
-	startDate?: string | null
-	endDatePlanned?: string | null
-	endDateActual?: string | null
+	projectTrackingId?: number | null
+	tracking?: ProjectTrackingRef | null
 
 	bacBaseHours: number
 	bacBaseCost: number

@@ -7,5 +7,5 @@ export interface DashboardEvmInterface {
 	getEvm(): Promise<DashboardEvmResponse>
 	getMetricsBatch(projectIds: number[]): Promise<ProjectMetricsDto[]>
 	getChangeRequests(projectId: number): Promise<ChangeRequestDto[]>
-	getTracking(projectId: number): Promise<ProjectTrackingDto | null>
+	getTracking(trackingId: number): Promise<ProjectTrackingDto | null>
 }

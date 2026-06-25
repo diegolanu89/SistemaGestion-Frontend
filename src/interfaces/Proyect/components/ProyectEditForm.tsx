@@ -25,9 +25,10 @@ export const ProyectEditForm: FC = () => {
 			RegistrationDate: selectedProject.RegistrationDate ?? undefined,
 			CategoryCode: selectedProject.CategoryCode ?? undefined,
 			ProjectStatusCode: selectedProject.ProjectStatusCode ?? undefined,
-			BusinessStatusDate: selectedProject.BusinessStatusDate ?? undefined,
-			EstimatedEndDate: selectedProject.EstimatedEndDate ?? undefined,
-			ActualEndDate: selectedProject.ActualEndDate ?? undefined,
+			StartDate: selectedProject.Tracking?.startDate ?? undefined,
+			PlannedEndDate: selectedProject.Tracking?.plannedEndDate ?? undefined,
+			ActualEndDate: selectedProject.Tracking?.actualEndDate ?? undefined,
+			ImplementationDate: selectedProject.Tracking?.implementationDate ?? undefined,
 			CommercialStatus: selectedProject.CommercialStatus ?? undefined,
 			LeaderTimesheetUserId: selectedProject.LeaderTimesheetUserId ?? undefined,
 			Observations: selectedProject.Observations ?? undefined,
@@ -201,43 +202,41 @@ export const ProyectEditForm: FC = () => {
 					</select>
 				</div>
 
-				{/* Fecha ingreso/perdido/cerrado */}
+				{/* Fecha inicio */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
-						<span className="material-icons">today</span>
-						Fecha ingreso/perdido/cerrado{selectedType?.RequiresBusinessStatusDate ? ' *' : ''}
+						<span className="material-icons">play_arrow</span>
+						Fecha inicio
 					</label>
 
 					<input
 						className="proyect-create-input"
 						type="date"
-						value={form.BusinessStatusDate ?? ''}
-						onChange={(e) => update('BusinessStatusDate')(e.target.value || undefined)}
-						required={selectedType?.RequiresBusinessStatusDate ?? false}
+						value={form.StartDate ?? ''}
+						onChange={(e) => update('StartDate')(e.target.value || undefined)}
 					/>
 				</div>
 
-				{/* Fecha estimada de terminación */}
+				{/* Fin planificado */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">event_available</span>
-						Fecha estimada de terminación
+						Fin planificado
 					</label>
 
 					<input
 						className="proyect-create-input"
 						type="date"
-						value={form.EstimatedEndDate ?? ''}
-						onChange={(e) => update('EstimatedEndDate')(e.target.value || undefined)}
-						required
+						value={form.PlannedEndDate ?? ''}
+						onChange={(e) => update('PlannedEndDate')(e.target.value || undefined)}
 					/>
 				</div>
 
-				{/* Fecha de fin del proyecto */}
+				{/* Fin real */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">event_busy</span>
-						Fecha de fin del proyecto{selectedType?.RequiresActualEndDate ? ' *' : ''}
+						Fin real
 					</label>
 
 					<input
@@ -245,7 +244,21 @@ export const ProyectEditForm: FC = () => {
 						type="date"
 						value={form.ActualEndDate ?? ''}
 						onChange={(e) => update('ActualEndDate')(e.target.value || undefined)}
-						required={selectedType?.RequiresActualEndDate ?? false}
+					/>
+				</div>
+
+				{/* Fecha implementación */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">rocket_launch</span>
+						Fecha implementación
+					</label>
+
+					<input
+						className="proyect-create-input"
+						type="date"
+						value={form.ImplementationDate ?? ''}
+						onChange={(e) => update('ImplementationDate')(e.target.value || undefined)}
 					/>
 				</div>
 

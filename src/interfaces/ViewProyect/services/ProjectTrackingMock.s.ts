@@ -10,8 +10,6 @@ import {
 const MOCK_TRACKING: ProjectTrackingDto = {
 	id: 1,
 
-	projectId: 1,
-
 	startDate: '2026-05-01',
 
 	plannedEndDate: '2026-08-30',
@@ -30,7 +28,7 @@ const MOCK_TRACKING: ProjectTrackingDto = {
 
 			projectTrackingId: 1,
 
-			changeEndDate: '2026-09-10',
+			milestoneDate: '2026-09-10',
 
 			observations: 'Demora por redefinición funcional.',
 
@@ -44,14 +42,6 @@ const MOCK_TRACKING: ProjectTrackingDto = {
 export class ProjectTrackingMock implements ProjectTrackingInterface {
 	async getTracking(): Promise<ProjectTrackingDto | null> {
 		return MOCK_TRACKING
-	}
-
-	async createTracking(_: number, dto: UpsertProjectTrackingDto): Promise<ProjectTrackingDto> {
-		return {
-			...MOCK_TRACKING,
-
-			...dto,
-		}
 	}
 
 	async updateTracking(_: number, dto: UpsertProjectTrackingDto): Promise<ProjectTrackingDto> {
@@ -68,7 +58,7 @@ export class ProjectTrackingMock implements ProjectTrackingInterface {
 
 			projectTrackingId: 1,
 
-			changeEndDate: dto.changeEndDate,
+			milestoneDate: dto.milestoneDate,
 
 			observations: dto.observations,
 
@@ -84,9 +74,9 @@ export class ProjectTrackingMock implements ProjectTrackingInterface {
 
 			projectTrackingId: 1,
 
-			changeEndDate: dto.changeEndDate,
+			milestoneDate: dto.milestoneDate ?? null,
 
-			observations: dto.observations,
+			observations: dto.observations ?? null,
 
 			createdAt: new Date().toISOString(),
 

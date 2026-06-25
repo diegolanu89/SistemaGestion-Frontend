@@ -1,18 +1,17 @@
 /**
  * DTO del módulo "Seguimiento de Proyectos: Planificación, Desvíos y Fechas Reales".
  *
- * Shape real del backend `GET /api/project-trackings/{projectId}` envuelto en
+ * Shape real del backend `GET /api/project-trackings/{trackingId}` envuelto en
  * `{ success, data }`. La respuesta puede ser `data: null` si el proyecto no
  * tiene tracking registrado.
  *
- * El Dashboard EVM lo consume para:
- *  - colorear el chip "S" en la columna Proyecto (azul si tiene tracking, gris si no)
- *  - poblar el modal de seguimiento al hacer click en ese chip
+ * El Dashboard EVM lo consume para poblar el modal de seguimiento al hacer click
+ * en el chip "S" de la columna Proyecto.
  */
 export interface ProjectTrackingUpdateDto {
 	id: number
 	projectTrackingId: number
-	changeEndDate: string | null
+	milestoneDate: string | null
 	observations: string | null
 	createdAt: string
 	updatedAt: string
@@ -20,7 +19,6 @@ export interface ProjectTrackingUpdateDto {
 
 export interface ProjectTrackingDto {
 	id: number
-	projectId: number
 	startDate: string | null
 	plannedEndDate: string | null
 	actualEndDate: string | null

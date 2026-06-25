@@ -30,26 +30,10 @@ export class ProjectTrackingBDT implements ProjectTrackingInterface {
 	🔹 GET TRACKING
 	===================================================== */
 
-	async getTracking(projectId: number): Promise<ProjectTrackingDto | null> {
-		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] getTracking -> ${projectId}`)
+	async getTracking(trackingId: number): Promise<ProjectTrackingDto | null> {
+		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] getTracking -> ${trackingId}`)
 
-		const response = await HttpClient.request<GetProjectTrackingResponseDto>(`${BASE_URL}/${projectId}`)
-
-		return response.data
-	}
-
-	/* =====================================================
-	🔹 CREATE TRACKING
-	===================================================== */
-
-	async createTracking(projectId: number, dto: UpsertProjectTrackingDto): Promise<ProjectTrackingDto> {
-		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] createTracking -> ${projectId}`)
-
-		const response = await HttpClient.request<ApiResponse<ProjectTrackingDto>>(`${BASE_URL}/${projectId}`, {
-			method: 'POST',
-
-			body: JSON.stringify(dto),
-		})
+		const response = await HttpClient.request<GetProjectTrackingResponseDto>(`${BASE_URL}/${trackingId}`)
 
 		return response.data
 	}
@@ -58,10 +42,10 @@ export class ProjectTrackingBDT implements ProjectTrackingInterface {
 	🔹 UPDATE TRACKING
 	===================================================== */
 
-	async updateTracking(projectId: number, dto: UpsertProjectTrackingDto): Promise<ProjectTrackingDto> {
-		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] updateTracking -> ${projectId}`)
+	async updateTracking(trackingId: number, dto: UpsertProjectTrackingDto): Promise<ProjectTrackingDto> {
+		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] updateTracking -> ${trackingId}`)
 
-		const response = await HttpClient.request<ApiResponse<ProjectTrackingDto>>(`${BASE_URL}/${projectId}`, {
+		const response = await HttpClient.request<ApiResponse<ProjectTrackingDto>>(`${BASE_URL}/${trackingId}`, {
 			method: 'PUT',
 
 			body: JSON.stringify(dto),
@@ -74,10 +58,10 @@ export class ProjectTrackingBDT implements ProjectTrackingInterface {
 	🔹 ADD UPDATE
 	===================================================== */
 
-	async addUpdate(projectId: number, dto: CreateTrackingUpdateDto): Promise<ProjectTrackingUpdateDto> {
-		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] addUpdate -> ${projectId}`)
+	async addUpdate(trackingId: number, dto: CreateTrackingUpdateDto): Promise<ProjectTrackingUpdateDto> {
+		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] addUpdate -> ${trackingId}`)
 
-		const response = await HttpClient.request<ApiResponse<ProjectTrackingUpdateDto>>(`${BASE_URL}/${projectId}/updates`, {
+		const response = await HttpClient.request<ApiResponse<ProjectTrackingUpdateDto>>(`${BASE_URL}/${trackingId}/updates`, {
 			method: 'POST',
 
 			body: JSON.stringify(dto),
@@ -90,10 +74,10 @@ export class ProjectTrackingBDT implements ProjectTrackingInterface {
 	🔹 EDIT UPDATE
 	===================================================== */
 
-	async editUpdate(projectId: number, updateId: number, dto: UpdateTrackingUpdateDto): Promise<ProjectTrackingUpdateDto> {
-		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] editUpdate -> ${projectId} / ${updateId}`)
+	async editUpdate(trackingId: number, updateId: number, dto: UpdateTrackingUpdateDto): Promise<ProjectTrackingUpdateDto> {
+		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] editUpdate -> ${trackingId} / ${updateId}`)
 
-		const response = await HttpClient.request<ApiResponse<ProjectTrackingUpdateDto>>(`${BASE_URL}/${projectId}/updates/${updateId}`, {
+		const response = await HttpClient.request<ApiResponse<ProjectTrackingUpdateDto>>(`${BASE_URL}/${trackingId}/updates/${updateId}`, {
 			method: 'PUT',
 
 			body: JSON.stringify(dto),
@@ -106,10 +90,10 @@ export class ProjectTrackingBDT implements ProjectTrackingInterface {
 	🔹 DELETE UPDATE
 	===================================================== */
 
-	async deleteUpdate(projectId: number, updateId: number): Promise<void> {
-		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] deleteUpdate -> ${projectId} / ${updateId}`)
+	async deleteUpdate(trackingId: number, updateId: number): Promise<void> {
+		logger.infoTag(LogTag.Adapter, `[TRACKING][BDT] deleteUpdate -> ${trackingId} / ${updateId}`)
 
-		await HttpClient.request(`${BASE_URL}/${projectId}/updates/${updateId}`, {
+		await HttpClient.request(`${BASE_URL}/${trackingId}/updates/${updateId}`, {
 			method: 'DELETE',
 		})
 	}

@@ -52,12 +52,11 @@ export class ProyectMock implements ProyectInterface {
 			CategoryCode: data.CategoryCode ?? null,
 			ProjectStatusCode: data.ProjectStatusCode ?? null,
 
-			BusinessStatusDate: data.BusinessStatusDate ?? null,
-			EstimatedEndDate: data.EstimatedEndDate ?? null,
-			ActualEndDate: data.ActualEndDate ?? null,
+			ProjectTrackingId: null,
+			Tracking: null,
 
 			CommercialStatus: data.CommercialStatus ?? null,
-			LeaderName: data.LeaderName ?? null,
+			LeaderName: null,
 			Observations: data.Observations ?? null,
 
 			RequiresTimesheetCreation: data.RequiresTimesheetCreation ?? false,
@@ -110,12 +109,11 @@ export class ProyectMock implements ProyectInterface {
 			CategoryCode: data.CategoryCode ?? prev.CategoryCode,
 			ProjectStatusCode: data.ProjectStatusCode ?? prev.ProjectStatusCode,
 
-			BusinessStatusDate: data.BusinessStatusDate ?? prev.BusinessStatusDate,
-			EstimatedEndDate: data.EstimatedEndDate ?? prev.EstimatedEndDate,
-			ActualEndDate: data.ActualEndDate ?? prev.ActualEndDate,
+			ProjectTrackingId: prev.ProjectTrackingId,
+			Tracking: prev.Tracking,
 
 			CommercialStatus: data.CommercialStatus ?? prev.CommercialStatus,
-			LeaderName: data.LeaderName ?? prev.LeaderName,
+			LeaderName: prev.LeaderName,
 			Observations: data.Observations ?? prev.Observations,
 
 			UpdatedAt: new Date().toISOString(),

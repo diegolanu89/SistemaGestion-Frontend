@@ -76,11 +76,11 @@ export const ProyectGrid: FC = () => {
 								</p>
 
 								<p>
-									<strong>Inicio:</strong> {p.startDate ?? '-'}
+									<strong>Inicio:</strong> {p.tracking?.startDate ?? '-'}
 								</p>
 
 								<p>
-									<strong>Fin planificado:</strong> {p.endDatePlanned ?? '-'}
+									<strong>Fin planificado:</strong> {p.tracking?.plannedEndDate ?? '-'}
 								</p>
 							</div>
 

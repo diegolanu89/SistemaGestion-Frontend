@@ -94,19 +94,16 @@ export const useDashboardEvmController = () => {
 				return
 			}
 
-			// 2) En paralelo: métricas EVM reales (batch) + change requests + tracking por proyecto.
-			// - change requests determinan el número de "Control de cambios"
-			// - tracking determina si la "S" del chip queda azul (tiene) o gris (no tiene)
-			// Es N+1 hasta que el back lo incluya en /projects/evm o /metrics/batch.
+			// 2) En paralelo: métricas EVM reales (batch) + change requests.
+			// hasTracking se deriva de projectTrackingId en el row (ya viene del back).
 			const ids = baseRows.map((r) => r.id)
 
-			const [metricsResult, crResults, trackingResults] = await Promise.all([
+			const [metricsResult, crResults] = await Promise.all([
 				dashboardEvmService.getMetricsBatch(ids).catch((e) => {
 					logger.errorTag(LogTag.Adapter, '[DASHBOARD_EVM] Metrics batch error', e)
 					return [] as ProjectMetricsDto[]
 				}),
 				Promise.allSettled(ids.map((id) => dashboardEvmService.getChangeRequests(id))),
-				Promise.allSettled(ids.map((id) => dashboardEvmService.getTracking(id))),
 			])
 
 			const metricsById = new Map<number, ProjectMetricsDto>()
@@ -124,29 +121,18 @@ export const useDashboardEvmController = () => {
 				}
 			})
 
-			const trackingById = new Map<number, boolean>()
-			trackingResults.forEach((result, idx) => {
-				const projectId = ids[idx]
-				if (result.status === 'fulfilled') {
-					trackingById.set(projectId, result.value !== null)
-				} else {
-					logger.warnTag(LogTag.Adapter, '[DASHBOARD_EVM] Tracking error', { projectId, reason: result.reason })
-					trackingById.set(projectId, false)
-				}
-			})
-
-			// 3) Merge: cada row queda con changesCount + hasTracking
+			// 3) Merge: cada row queda con changesCount + hasTracking (derivado de projectTrackingId)
 			const enriched: DashboardEvmRowDto[] = baseRows.map((row) => ({
 				...row,
 				changesCount: changesById.get(row.id) ?? 0,
-				hasTracking: trackingById.get(row.id) ?? false,
+				hasTracking: row.projectTrackingId != null,
 			}))
 
 			logger.infoTag(LogTag.Adapter, '[DASHBOARD_EVM] Fetch success', {
 				count: enriched.length,
 				withMetrics: metricsById.size,
 				withChanges: Array.from(changesById.values()).filter((n) => n > 0).length,
-				withTracking: Array.from(trackingById.values()).filter(Boolean).length,
+				withTracking: enriched.filter((r) => r.hasTracking).length,
 			})
 
 			setRows(enriched)
@@ -203,24 +189,6 @@ export const useDashboardEvmController = () => {
 					if (!haystack.includes(projectQ)) return false
 				}
 				if (statusQ && (row.status ?? '').toLowerCase() !== statusQ) return false
-				if (filters.dateFrom || filters.dateTo) {
-					const start = row.startDate ? row.startDate.slice(0, 10) : null
-					if (!start) return false
-					if (filters.dateFrom && start < filters.dateFrom) return false
-					if (filters.dateTo && start > filters.dateTo) return false
-				}
-				if (filters.endPlannedFrom || filters.endPlannedTo) {
-					const planned = row.endDatePlanned ? row.endDatePlanned.slice(0, 10) : null
-					if (!planned) return false
-					if (filters.endPlannedFrom && planned < filters.endPlannedFrom) return false
-					if (filters.endPlannedTo && planned > filters.endPlannedTo) return false
-				}
-				if (filters.endActualFrom || filters.endActualTo) {
-					const actual = row.endDateActual ? row.endDateActual.slice(0, 10) : null
-					if (!actual) return false
-					if (filters.endActualFrom && actual < filters.endActualFrom) return false
-					if (filters.endActualTo && actual > filters.endActualTo) return false
-				}
 				return true
 			})
 			.map((row) => ({ row, metrics: computeMetrics(row) }))

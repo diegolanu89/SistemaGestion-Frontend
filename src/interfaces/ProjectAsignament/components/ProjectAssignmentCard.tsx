@@ -147,17 +147,17 @@ const ProjectAssignmentCard = ({ project }: Props) => {
 							<div className="project-detail-modal__grid">
 								<div className="project-detail-modal__item">
 									<label>Inicio</label>
-									<strong>{formatDate(project.startDate)}</strong>
+									<strong>{formatDate(project.tracking?.startDate)}</strong>
 								</div>
 
 								<div className="project-detail-modal__item">
 									<label>Fin planificado</label>
-									<strong>{formatDate(project.endDatePlanned)}</strong>
+									<strong>{formatDate(project.tracking?.plannedEndDate)}</strong>
 								</div>
 
 								<div className="project-detail-modal__item">
 									<label>Fin real</label>
-									<strong>{formatDate(project.endDateActual)}</strong>
+									<strong>{formatDate(project.tracking?.actualEndDate)}</strong>
 								</div>
 
 								<div className="project-detail-modal__item">
