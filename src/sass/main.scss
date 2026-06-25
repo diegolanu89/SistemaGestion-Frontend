@@ -45,7 +45,7 @@
 @use '../interfaces/Proyect/components/_proyectTable';
 @use '../interfaces/Proyect/components/proyectCreateModal';
 @use '../interfaces/Proyect/components/proyectCreateForm';
-@use '../interfaces/Proyect/components/proyectClockifyStatus';
+@use '../interfaces/Proyect/components/proyectTimesheetStatus';
 @use '../interfaces/Proyect/components/proyectDeleteModal';
 @use '../interfaces/Proyect/components/proyectSearch';
 
@@ -60,6 +60,8 @@
 @use '../interfaces/ViewProyect/components/section/projectHoursAccordion';
 @use '../interfaces/ViewProyect/components/section/projectChangesAccordion';
 @use '../interfaces/ViewProyect/components/section/projectTrackinAccordion';
+@use '../interfaces/ViewProyect/components/section/projectHoursDetailTable';
+@use '../interfaces/ViewProyect/components/section/projectHoursKpiTable';
 
 /**ETC**/
 @use '../interfaces/Etc/views/etcLoadView';
@@ -83,8 +85,12 @@
 @use '../interfaces/DashboardHours/components/dashboard-hor-header';
 @use '../interfaces/DashboardHours/components/dashboardHourFilters';
 @use '../interfaces/DashboardHours/components/dashboardHourToolbar';
-@use '../interfaces/DashboardHours/components/dashboardHoursTable';
+//@use '../interfaces/DashboardHours/components/dashboardHoursTable';
 @use '../interfaces/DashboardHours/components/dashboard-filters-modal';
+@use '../interfaces/DashboardHours/components/dashboardHoursIndicatorTooltip';
+@use '../interfaces/DashboardHours/components/table/dashboardHoursCards';
+@use '../interfaces/DashboardHours/components/table/dashboardHoursDetails';
+@use '../interfaces/DashboardHours/components/table/dashboardHoursKpi';
 
 /**ProjectAsignment**/
 @use '../interfaces/ProjectAsignament/views/_projectAssignment';

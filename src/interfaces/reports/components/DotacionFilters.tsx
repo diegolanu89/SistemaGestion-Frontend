@@ -22,21 +22,21 @@ export const DotationFilters: FC<Props> = ({ fromDate, toDate, loading, isValidR
 			<div className="dotation-report__field">
 				<label>Fecha Desde</label>
 
-				<div className="dotation-report__date-input">
+				<label className="dotation-report__date-input">
 					<span className="material-icons">calendar_month</span>
 
 					<input type="date" value={fromDate} onChange={(event) => onFromDateChange(event.target.value)} />
-				</div>
+				</label>
 			</div>
 
 			<div className="dotation-report__field">
 				<label>Fecha Hasta</label>
 
-				<div className="dotation-report__date-input">
+				<label className="dotation-report__date-input">
 					<span className="material-icons">calendar_month</span>
 
 					<input type="date" value={toDate} onChange={(event) => onToDateChange(event.target.value)} />
-				</div>
+				</label>
 			</div>
 
 			<button type="button" className="dotation-report__generate" onClick={onGenerate} disabled={!isValidRange || loading}>

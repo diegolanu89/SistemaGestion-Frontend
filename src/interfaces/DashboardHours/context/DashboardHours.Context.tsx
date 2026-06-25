@@ -23,6 +23,14 @@ interface Props {
 	children: ReactNode
 }
 
+const buildDefaultMonthKeys = (): string[] => {
+	const now = new Date()
+	return Array.from({ length: 12 }, (_, i) => {
+		const d = new Date(now.getFullYear(), now.getMonth() + i, 1)
+		return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+	})
+}
+
 export const DashboardHoursProvider = ({ children }: Props) => {
 	// =========================================================
 	// 🔹 STATE
@@ -39,7 +47,7 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 
 		project_id: null,
 
-		month_keys: [],
+		month_keys: buildDefaultMonthKeys(),
 
 		source_type: 'ALL',
 	})
@@ -90,7 +98,7 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 
 			project_id: null,
 
-			month_keys: [],
+			month_keys: buildDefaultMonthKeys(),
 
 			source_type: 'ALL',
 		})

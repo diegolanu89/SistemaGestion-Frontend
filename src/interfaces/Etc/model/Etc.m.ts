@@ -3,7 +3,7 @@
 export interface EtcEntryDto {
 	userName: string
 	monthKey: string
-	monthLabel: string
+	monthLabel?: string
 	hours: number
 }
 
@@ -23,14 +23,12 @@ export interface EtcRecordDto {
 export interface CreateEtcRecordDto {
 	users: string[]
 	monthKey: string
-	monthLabel: string
 	hours: number
 }
 
 export interface UpdateEtcRecordDto {
 	userName: string
 	monthKey: string
-	monthLabel: string
 	hours: number
 }
 
@@ -46,4 +44,17 @@ export interface CreateSnapshotDto {
 export interface ValidateEtcCapacityDto {
 	projectId: number
 	entries: EtcEntryDto[]
+}
+
+export interface UpdateBulkEntryDto {
+	id?: number
+	userName: string
+	monthKey: string
+	hours: number
+}
+
+export interface UpdateBulkEtcDto {
+	projectId: number
+	snapshotId?: number
+	entries: UpdateBulkEntryDto[]
 }

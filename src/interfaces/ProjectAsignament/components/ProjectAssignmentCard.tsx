@@ -90,7 +90,7 @@ const ProjectAssignmentCard = ({ project }: Props) => {
 
 								<div className="project-detail-modal__item">
 									<label>Clockify ID</label>
-									<strong>{project.clockifyProjectId ?? '-'}</strong>
+									<strong>{project.timesheetProjectId ?? '-'}</strong>
 								</div>
 
 								<div className="project-detail-modal__item">

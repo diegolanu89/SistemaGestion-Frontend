@@ -31,7 +31,7 @@ export const ProyectViewProvider = ({ children }: IProviderProps) => {
 
 	const [page, setPage] = useState(1)
 
-	const [perPage, setPerPage] = useState(15)
+	const [perPage, setPerPage] = useState(12)
 
 	const [total, setTotal] = useState(0)
 
@@ -39,7 +39,7 @@ export const ProyectViewProvider = ({ children }: IProviderProps) => {
 		search: '',
 		client: 'all',
 		status: 'all',
-		code: 'all',
+		code: '',
 	})
 
 	const [refetchFn, setRefetchFn] = useState<() => Promise<void>>(async () => {})

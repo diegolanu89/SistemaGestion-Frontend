@@ -158,7 +158,7 @@
 
 .dashboard-hours-table__wrapper {
 	width: 100%;
-
+	min-height: 400px;
 	overflow-x: auto;
 
 	background: var(--color-surface);
@@ -235,10 +235,15 @@
 	tbody {
 		tr {
 			position: relative;
+			z-index: 1;
 
 			transition:
 				background 0.2s ease,
 				transform 0.15s ease;
+
+			&:hover {
+				z-index: 100;
+			}
 
 			&::after {
 				content: '';

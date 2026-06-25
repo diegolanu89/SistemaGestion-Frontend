@@ -12,9 +12,6 @@ export const ProyectViewItem: FC = () => {
 	const { id } = useParams()
 	const { projects, loading: listLoading, error: listError } = useProyectViewContext()
 
-	// El array del context puede estar vacío si entramos por URL directa o
-	// si volvimos desde una ruta cubierta por otro provider (ej: Etc), que
-	// desmonta ProyectViewProvider. En ese caso, fetcheamos por id.
 	const fromContext = projects.find((p) => String(p.id) === id)
 
 	const [fetched, setFetched] = useState<ProjectDto | null>(null)
@@ -22,17 +19,17 @@ export const ProyectViewItem: FC = () => {
 	const [itemError, setItemError] = useState<string | null>(null)
 
 	useEffect(() => {
-		console.log(projects)
 		if (!id || fromContext) {
 			setFetched(null)
 			setItemError(null)
+			if (fromContext) setItemLoading(false)
 			return
 		}
 
 		let cancelled = false
 		setItemLoading(true)
 		setItemError(null)
-		console.log('AAAAAAAAA')
+
 		proyectViewAdapter
 			.getById(Number(id))
 			.then((p) => {
@@ -51,10 +48,9 @@ export const ProyectViewItem: FC = () => {
 	}, [id, fromContext])
 
 	const project = fromContext ?? fetched
-	const loading = listLoading || itemLoading
 	const error = listError || itemError
 
-	if (loading) return <div className="empty">Cargando proyecto...</div>
+	if (itemLoading && !project) return <div className="empty">Cargando proyecto...</div>
 	if (error) return <div className="empty">{error}</div>
 	if (!project) return <div className="empty">Proyecto no encontrado</div>
 

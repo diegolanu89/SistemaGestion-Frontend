@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react'
 
-import type { EtcEntryDto } from './Etc.m'
+import type { EtcEntryDto, EtcRecordDto } from './Etc.m'
+import type { EtcSnapshotDto } from './IEtcApi.m'
 
 import type { UserRefDto } from '../../EstimatedProjects/models/EstimatedProjectDTO.m'
 
@@ -17,6 +18,10 @@ export interface IEtcContext {
 
 	setProjectId: Dispatch<SetStateAction<number>>
 
+	snapshot: EtcSnapshotDto | null
+
+	setSnapshot: Dispatch<SetStateAction<EtcSnapshotDto | null>>
+
 	projectName: string
 
 	setProjectName: Dispatch<SetStateAction<string>>
@@ -28,6 +33,10 @@ export interface IEtcContext {
 	/* =========================================
 	🔹 ETC
 	========================================= */
+
+	records: EtcRecordDto[]
+
+	setRecords: Dispatch<SetStateAction<EtcRecordDto[]>>
 
 	entries: EtcEntryDto[]
 
@@ -46,6 +55,7 @@ export interface IEtcContext {
 	}[]
 
 	setErrors: Dispatch<SetStateAction<IEtcContext['errors']>>
+
 
 	/* =========================================
 	🔹 LOADING

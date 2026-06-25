@@ -12,55 +12,123 @@
 		box-shadow: 0 4px 12px var(--color-shadow-soft);
 	}
 
+	// =========================
+	// BASE CELL STYLES
+	// =========================
+
 	th,
 	td {
 		padding: 12px 14px;
-		text-align: left;
+		text-align: center;
 		border-bottom: 1px solid var(--color-border);
 	}
+
+	// Nesting under `th` and `td` raises specificity to (0,2,1),
+	// beating the base rule above at (0,1,1).
 
 	th {
 		font-size: 13px;
 		color: var(--color-text-secondary);
 		background: var(--color-bg-alt);
+
+		// Usuario column — left-aligned (0,2,1 wins over 0,1,1)
+		&.etc-table__th--user {
+			text-align: left;
+		}
+
+		// Sub-header for Total column — left border separator
+		&.etc-table__subheader--total {
+			border-left: 2px solid var(--color-border);
+		}
+
+		// Total group header — left border separator
+		&.etc-table__total-header {
+			border-left: 2px solid var(--color-border);
+		}
 	}
 
 	td {
 		font-size: 14px;
 		color: var(--color-text-primary);
+
+		// Usuario column — left-aligned (0,2,1 wins over 0,1,1)
+		&.etc-table__td--user {
+			text-align: left;
+		}
+
+		// Baseline values — blue text (0,2,1 wins over 0,1,1)
+		&.etc-table__cell--baseline {
+			color: var(--color-primary);
+			font-weight: 500;
+		}
+
+		// Removed-user cells (baseline-only, current column shows —)
+		&.etc-table__cell--removed {
+			color: var(--color-text-secondary);
+			font-style: italic;
+		}
+
+		// Total column — shaded background + left border separator
+		&.etc-table__total {
+			background: var(--color-bg-alt);
+			border-left: 2px solid var(--color-border);
+			font-weight: 600;
+		}
+
+		// LB Total cell — shares shading but drops the left border (0,3,1)
+		&.etc-table__total.etc-table__cell--baseline {
+			border-left: none;
+			color: var(--color-primary);
+		}
+
+		// Removed-user Actual total — shares shading, keeps italic, drops bold (0,3,1)
+		&.etc-table__total.etc-table__cell--removed {
+			font-weight: normal;
+		}
+
+		// Grand total row
+		&.etc-table__grand-total {
+			background: var(--color-bg-alt);
+			border-left: 2px solid var(--color-border);
+			font-size: 16px;
+			font-weight: 700;
+			color: var(--color-text-primary);
+		}
+
+		&.etc-table__grand-total.etc-table__cell--baseline {
+			border-left: none;
+			color: var(--color-primary);
+		}
 	}
 
-	&__total {
+	// =========================
+	// SUB-HEADERS (Actual / LB)
+	// =========================
+
+	&__subheader {
+		font-size: 11px;
 		font-weight: 600;
+		padding: 5px 8px;
+
+		&--baseline {
+			color: var(--color-primary);
+		}
 	}
 
-	&__grand-total {
-		font-size: 16px;
-		color: var(--color-primary);
-	}
+	// =========================
+	// BASELINE BADGE (LB-only users)
+	// =========================
 
-	&__action-btn {
-		width: 36px;
-		height: 36px;
-
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		border-radius: 8px;
-		border: 1px solid var(--color-border);
-
-		background: var(--color-bg-alt);
-		cursor: pointer;
-
-		transition: all 0.2s ease;
-
-		&:hover {
-			background: var(--color-primary-opacity-08);
-		}
-
-		.etc-table__icon {
-			font-size: 18px;
-		}
+	&__baseline-badge {
+		display: inline-block;
+		margin-left: 6px;
+		padding: 1px 5px;
+		border-radius: 4px;
+		font-size: 10px;
+		font-weight: 700;
+		background: var(--color-primary);
+		color: #fff;
+		vertical-align: middle;
+		line-height: 1.4;
 	}
 }

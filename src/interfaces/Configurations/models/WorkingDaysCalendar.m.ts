@@ -27,7 +27,6 @@ export interface WorkingDaysCalendarListResponse {
 
 export interface CreateWorkingDaysCalendarDto {
 	monthKey: string
-	monthLabel: string
 	year: number
 	month: number
 	totalDays: number

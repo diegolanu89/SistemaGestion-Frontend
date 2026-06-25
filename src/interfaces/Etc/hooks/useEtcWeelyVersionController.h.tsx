@@ -11,6 +11,7 @@ import { etcAdapter } from '../service/EtcAdapter'
 import type { EtcEntryDto } from '../model/Etc.m'
 
 import { useEtcContext } from './useEtcContext.h'
+import { useEtcProjectController } from './useEtcProjectController.h'
 
 export const useEtcWeeklyVersionController = () => {
 	const navigate = useNavigate()
@@ -18,6 +19,8 @@ export const useEtcWeeklyVersionController = () => {
 	const location = useLocation()
 
 	const projectId = Number(location.state?.projectId)
+
+	const { loadProject } = useEtcProjectController()
 
 	const {
 		loading,
@@ -43,6 +46,11 @@ export const useEtcWeeklyVersionController = () => {
 
 		values,
 		setValues,
+
+		errors,
+		setErrors,
+
+		setSnapshot,
 	} = useEtcContext()
 
 	// =========================
@@ -174,6 +182,7 @@ export const useEtcWeeklyVersionController = () => {
 	const saveSnapshot = useCallback(async () => {
 		try {
 			setLoading(true)
+			setErrors([])
 
 			const entries: EtcEntryDto[] = []
 
@@ -181,39 +190,126 @@ export const useEtcWeeklyVersionController = () => {
 				selectedMonths.forEach((month) => {
 					const hours = values[u.Id]?.[month] ?? 0
 
-					if (hours <= 0) {
-						return
-					}
+					if (hours <= 0) return
 
-					entries.push({
-						userName: u.FullName,
-
-						monthKey: month,
-
-						monthLabel: month,
-
-						hours,
-					})
+					entries.push({ userName: u.FullName, monthKey: month, hours })
 				})
 			})
 
-			await etcAdapter.createSnapshot(projectId, {
-				entries,
-			})
+			await etcAdapter.createSnapshot(projectId, { entries })
 
-			logger.infoTag(LogTag.Adapter, '[ETC WEEKLY] Snapshot created', {
-				projectId,
+			await loadProject(projectId)
 
-				entries: entries.length,
-			})
+			logger.infoTag(LogTag.Adapter, '[ETC WEEKLY] Snapshot created', { projectId, entries: entries.length })
 
 			navigate(-1)
 		} catch (e: unknown) {
 			logger.errorTag(LogTag.Adapter, '[ETC WEEKLY] Save snapshot error', e)
+
+			const msg = e instanceof Error ? e.message : 'Error al guardar la versión semanal'
+
+			setErrors(msg.split('\n').filter(Boolean).map((message) => ({ message })))
 		} finally {
 			setLoading(false)
 		}
-	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading])
+	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading, setErrors, loadProject])
+
+	// =========================
+	// FINALIZE BASELINE
+	// =========================
+
+	const finalizeBaseline = useCallback(async () => {
+		try {
+			setLoading(true)
+			setErrors([])
+
+			const entries: EtcEntryDto[] = []
+
+			selectedUsers.forEach((u) => {
+				selectedMonths.forEach((month) => {
+					const hours = values[u.Id]?.[month] ?? 0
+
+					if (hours <= 0) return
+
+					entries.push({ userName: u.FullName, monthKey: month, hours })
+				})
+			})
+
+					if (entries.length > 0) {
+				await etcAdapter.storeBulk({ projectId, entries })
+			}
+
+			await etcAdapter.finalizeBaseline(projectId)
+
+			await loadProject(projectId)
+
+			logger.infoTag(LogTag.Adapter, '[ETC BASELINE] Baseline finalized', { projectId, entries: entries.length })
+
+			navigate(-1)
+		} catch (e: unknown) {
+			logger.errorTag(LogTag.Adapter, '[ETC BASELINE] Finalize error', e)
+
+			const msg = e instanceof Error ? e.message : 'Error al grabar la línea base'
+
+			setErrors(msg.split('\n').filter(Boolean).map((message) => ({ message })))
+		} finally {
+			setLoading(false)
+		}
+	}, [projectId, selectedUsers, selectedMonths, values, navigate, setLoading, setErrors, loadProject])
+
+	// =========================
+	// ADD MONTH DIRECT
+	// =========================
+
+	const addMonthDirect = useCallback(
+		(month: string) => {
+			if (!month) {
+				return
+			}
+
+			setSelectedMonths((prev) => {
+				if (prev.includes(month)) {
+					return prev
+				}
+
+				return [...prev, month].sort()
+			})
+		},
+		[setSelectedMonths]
+	)
+
+	// =========================
+	// ADD MULTIPLE MONTHS
+	// =========================
+
+	const addMultipleMonths = useCallback(
+		(months: string[]) => {
+			if (months.length === 0) {
+				return
+			}
+
+			setSelectedMonths((prev) => {
+				const next = new Set(prev)
+
+				months.forEach((month) => {
+					if (month) {
+						next.add(month)
+					}
+				})
+
+				return Array.from(next).sort()
+			})
+		},
+		[setSelectedMonths]
+	)
+
+	// =========================
+	// CLEAR MONTHS
+	// =========================
+
+	const clearMonths = useCallback(() => {
+		setSelectedMonths([])
+	}, [setSelectedMonths])
 
 	const handleBack = () => {
 		navigate(-1)
@@ -259,12 +355,20 @@ export const useEtcWeeklyVersionController = () => {
 		updateHours,
 
 		addMonth,
+		addMonthDirect,
+		addMultipleMonths,
 
 		removeMonth,
+		clearMonths,
+
+		errors,
 
 		saveSnapshot,
 
+		finalizeBaseline,
+
 		handleBack,
+
 		setLoading,
 	}
 }

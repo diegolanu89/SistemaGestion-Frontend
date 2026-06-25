@@ -9,7 +9,7 @@ export const ProyectCreateForm: FC = () => {
 	const { CREATE, ACTIONS } = PROYECT_CONFIG
 	const isSmallScreen = useIsSmallScreen()
 
-	const { form, update, submit, submitting, validationErrors, nextNumber, loadingNextNumber } = useProyectCreateForm()
+	const { form, update, submit, submitting, validationErrors, backendError, nextNumber, loadingNextNumber } = useProyectCreateForm()
 
 	const selectedType = refs?.types.find((t) => t.Code === form.projectType)
 
@@ -27,17 +27,17 @@ export const ProyectCreateForm: FC = () => {
 				void submit()
 			}}
 		>
-			<div className="proyect-create-clockify">
+			<div className="proyect-create-timesheet">
 				<div>
 					<h3>
-						<span className="material-icons">{CREATE.CLOCKIFY.ICON}</span>
-						{CREATE.CLOCKIFY.TITLE}
+						<span className="material-icons">{CREATE.TIMESHEET.ICON}</span>
+						{CREATE.TIMESHEET.TITLE}
 					</h3>
-					<p>{CREATE.CLOCKIFY.DESCRIPTION}</p>
+					<p>{CREATE.TIMESHEET.DESCRIPTION}</p>
 				</div>
 
-				<label className="mui-switch" title={!isSmallScreen ? CREATE.CLOCKIFY.TOOLTIP : ''}>
-					<input type="checkbox" checked={form.requiresClockifyCreation} onChange={(e) => update('requiresClockifyCreation')(e.target.checked)} />
+				<label className="mui-switch" title={!isSmallScreen ? CREATE.TIMESHEET.TOOLTIP : ''}>
+					<input type="checkbox" checked={form.requiresTimesheetCreation} onChange={(e) => update('requiresTimesheetCreation')(e.target.checked)} />
 					<span className="mui-switch__track">
 						<span className="mui-switch__thumb" />
 					</span>
@@ -262,8 +262,8 @@ export const ProyectCreateForm: FC = () => {
 
 					<select
 						className="proyect-create-select"
-						value={form.leaderClockifyUserId ?? ''}
-						onChange={(e) => update('leaderClockifyUserId')(e.target.value ? Number(e.target.value) : null)}
+						value={form.leaderTimesheetUserId ?? ''}
+						onChange={(e) => update('leaderTimesheetUserId')(e.target.value ? Number(e.target.value) : null)}
 					>
 						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
 						{(refs.leaders ?? []).map((l) => (
@@ -291,6 +291,17 @@ export const ProyectCreateForm: FC = () => {
 						<li key={i} className="proyect-create-error-item">
 							<span className="material-icons">error_outline</span>
 							{err}
+						</li>
+					))}
+				</ul>
+			)}
+
+			{backendError && (
+				<ul className="proyect-create-errors">
+					{backendError.split('\n').filter(Boolean).map((line, i) => (
+						<li key={i} className="proyect-create-error-item">
+							<span className="material-icons">error_outline</span>
+							{line}
 						</li>
 					))}
 				</ul>

@@ -6,12 +6,24 @@ import { proyectAdapter } from '../services/ProyectAdapter.s'
 import { useProyectContext } from './useProyectContext.h'
 import { ApiError } from '../../base/services/HttpClient.s'
 
+const extractMessage = (raw: string): string => {
+	const idx = raw.indexOf(': {')
+	if (idx !== -1) {
+		try {
+			const parsed = JSON.parse(raw.slice(idx + 2)) as { message?: string }
+			if (parsed.message) return parsed.message
+		} catch { /* ignore */ }
+	}
+	return raw
+}
+
 export const useProyectEditForm = () => {
 	const { selectedProject, refetch, closeEdit, setEditStatus, setEditMessage } = useProyectContext()
 
 	const [form, setForm] = useState<UpdateProjectIntakeDto>({})
 	const [submitting, setSubmitting] = useState(false)
 	const [validationErrors, setValidationErrors] = useState<string[]>([])
+	const [backendError, setBackendError] = useState<string | null>(null)
 
 	const update =
 		<K extends keyof UpdateProjectIntakeDto>(key: K) =>
@@ -26,6 +38,7 @@ export const useProyectEditForm = () => {
 			setEditStatus('loading')
 			setEditMessage(null)
 			setValidationErrors([])
+			setBackendError(null)
 
 			await proyectAdapter.update(selectedProject.Id, form)
 
@@ -45,6 +58,9 @@ export const useProyectEditForm = () => {
 				setEditStatus('idle')
 				setEditMessage(null)
 			} else {
+				const lines: string[] = [error instanceof Error ? error.message : 'Error al actualizar el proyecto']
+				if (error instanceof ApiError && error.detail) lines.push(extractMessage(error.detail))
+				setBackendError(lines.join('\n'))
 				setEditStatus('error')
 				setEditMessage('Error al actualizar el proyecto')
 
@@ -65,5 +81,6 @@ export const useProyectEditForm = () => {
 		submit,
 		submitting,
 		validationErrors,
+		backendError,
 	}
 }

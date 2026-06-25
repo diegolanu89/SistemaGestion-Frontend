@@ -1,6 +1,6 @@
-USE pm_clockify_evm;
+USE pm_timesheet_evm;
 
-INSERT INTO clockify_clients (
+INSERT INTO timesheet_clients (
     name,
     created_at,
     updated_at
@@ -13,8 +13,8 @@ VALUES (
 
 SET @client_id = LAST_INSERT_ID();
 
-INSERT INTO clockify_projects (
-    clockify_project_id,
+INSERT INTO timesheet_projects (
+    timesheet_project_id,
     name,
     code,
     client_id,
@@ -42,7 +42,7 @@ VALUES
 (UUID(), 'Sistema Tickets', 'TCK-009', @client_id, 'activo', '2026-04-05', '2026-09-30', 160, 9600, 160, 9600, 60, 'automatic', NOW(), NOW()),
 (UUID(), 'Proyecto IA Forecast', 'IA-010', @client_id, 'activo', '2026-05-15', '2027-01-10', 400, 32000, 400, 32000, 80, 'manual', NOW(), NOW());
 
-USE pm_clockify_evm;
+USE pm_timesheet_evm;
 
 INSERT IGNORE INTO app_user_visible_projects (
     user_id,
@@ -52,7 +52,7 @@ SELECT
     u.id,
     p.id
 FROM users u
-CROSS JOIN clockify_projects p
+CROSS JOIN timesheet_projects p
 WHERE u.email = 'diego@test.com';
 
 

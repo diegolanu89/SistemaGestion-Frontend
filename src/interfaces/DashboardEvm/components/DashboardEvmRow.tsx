@@ -2,9 +2,11 @@ import { FC } from 'react'
 import { DashboardEvmComputedRow } from '../hooks/useDashboardEvmController.h'
 import { DashboardEvmRowDto } from '../models/DashboardEvmDTO.m'
 import { DashboardEvmChangeControlCell } from './DashboardEvmChangeControlCell'
+import { DateMode } from './DashboardEvmTable'
 
 interface Props {
 	row: DashboardEvmComputedRow
+	dateMode: DateMode
 	clientName: string | null
 	onOpenChanges: (row: DashboardEvmRowDto) => void
 	onOpenTracking: (row: DashboardEvmRowDto) => void
@@ -12,9 +14,21 @@ interface Props {
 
 const formatHours = (value: number): string => value.toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
-export const DashboardEvmRow: FC<Props> = ({ row, clientName, onOpenChanges, onOpenTracking }) => {
+const formatDate = (value: string | null | undefined): string => {
+	if (!value) return '-'
+	const parts = value.slice(0, 10).split('-')
+	if (parts.length !== 3) return '-'
+	return `${parts[2]}/${parts[1]}/${parts[0]}`
+}
+
+export const DashboardEvmRow: FC<Props> = ({ row, dateMode, clientName, onOpenChanges, onOpenTracking }) => {
 	const { row: project, metrics } = row
 	const vacClass = metrics.vac < 0 ? 'is-negative' : 'is-positive'
+
+	const activeDateValue =
+		dateMode === 'I' ? project.startDate :
+		dateMode === 'P' ? project.endDatePlanned :
+		project.endDateActual
 
 	return (
 		<tr className="dashboard-evm-table__row">
@@ -23,7 +37,7 @@ export const DashboardEvmRow: FC<Props> = ({ row, clientName, onOpenChanges, onO
 			<td className="dashboard-evm-table__project">
 				<div className="dashboard-evm-table__project-content">
 					<span className="dashboard-evm-table__project-name">
-						{project.code ? `${project.code} - ${project.name}` : project.name}
+						{project.name}
 					</span>
 
 					<div className="dashboard-evm-table__project-chips">
@@ -44,6 +58,8 @@ export const DashboardEvmRow: FC<Props> = ({ row, clientName, onOpenChanges, onO
 			<td className="dashboard-evm-table__cc">
 				<DashboardEvmChangeControlCell count={project.changesCount} onOpen={() => onOpenChanges(project)} />
 			</td>
+
+			<td className="dashboard-evm-table__date">{formatDate(activeDateValue)}</td>
 
 			<td className="dashboard-evm-table__numeric">{formatHours(metrics.bac)}</td>
 			<td className="dashboard-evm-table__numeric">{formatHours(metrics.ac)}</td>

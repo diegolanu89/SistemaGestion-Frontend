@@ -1,6 +1,6 @@
-export interface ClockifyUserDto {
+export interface TimesheetUserDto {
 	id: number
-	clockifyUserId: string | null
+	timesheetUserId: string | null
 	name: string
 	email: string | null
 	active: boolean
@@ -8,10 +8,10 @@ export interface ClockifyUserDto {
 	defaultMonthHours?: number | null
 }
 
-export interface ClockifyUserListResponse {
+export interface TimesheetUserListResponse {
 	success: boolean
 	data: {
-		data: ClockifyUserDto[]
+		data: TimesheetUserDto[]
 		current_page: number
 		per_page: number
 		total: number
@@ -19,7 +19,7 @@ export interface ClockifyUserListResponse {
 	}
 }
 
-export interface ClockifyUserOptionsResponse {
+export interface TimesheetUserOptionsResponse {
 	success: boolean
 	data: {
 		users: UserOption[]
@@ -45,8 +45,8 @@ export interface CapacityListResponse {
 	data: UserMonthlyCapacityEntry[]
 }
 
-export interface CreateClockifyUserDto {
-	clockifyUserId?: string | null
+export interface CreateTimesheetUserDto {
+	timesheetUserId?: string | null
 	name: string
 	email?: string | null
 	active?: boolean
@@ -54,7 +54,7 @@ export interface CreateClockifyUserDto {
 	defaultMonthHours?: number | null
 }
 
-export interface UpdateClockifyUserDto {
+export interface UpdateTimesheetUserDto {
 	name?: string
 	email?: string | null
 	active?: boolean
@@ -63,5 +63,5 @@ export interface UpdateClockifyUserDto {
 }
 
 export interface SaveCapacitiesDto {
-	entries: Array<{ monthKey: string; monthLabel: string; hours: number }>
+	entries: Array<{ monthKey: string; hours: number }>
 }

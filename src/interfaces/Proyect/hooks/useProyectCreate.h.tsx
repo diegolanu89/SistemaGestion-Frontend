@@ -23,10 +23,21 @@ type FormState = {
 	actualEndDate?: string | null
 
 	commercialStatus?: string | null
-	leaderClockifyUserId?: number | null
+	leaderTimesheetUserId?: number | null
 	observations?: string | null
 
-	requiresClockifyCreation: boolean
+	requiresTimesheetCreation: boolean
+}
+
+const extractMessage = (raw: string): string => {
+	const idx = raw.indexOf(': {')
+	if (idx !== -1) {
+		try {
+			const parsed = JSON.parse(raw.slice(idx + 2)) as { message?: string }
+			if (parsed.message) return parsed.message
+		} catch { /* ignore */ }
+	}
+	return raw
 }
 
 export const useProyectCreateForm = () => {
@@ -35,12 +46,13 @@ export const useProyectCreateForm = () => {
 	const [form, setForm] = useState<FormState>({
 		projectType: '',
 		projectName: '',
-		requiresClockifyCreation: false,
+		requiresTimesheetCreation: false,
 	})
 
 	const [submitting, setSubmitting] = useState(false)
 
 	const [validationErrors, setValidationErrors] = useState<string[]>([])
+	const [backendError, setBackendError] = useState<string | null>(null)
 
 	const [nextNumber, setNextNumber] = useState<string>('')
 	const [loadingNextNumber, setLoadingNextNumber] = useState(false)
@@ -98,10 +110,10 @@ export const useProyectCreateForm = () => {
 		ActualEndDate: form.actualEndDate ?? undefined,
 
 		CommercialStatus: form.commercialStatus ?? undefined,
-		LeaderClockifyUserId: form.leaderClockifyUserId ?? undefined,
+		LeaderTimesheetUserId: form.leaderTimesheetUserId ?? undefined,
 		Observations: form.observations ?? undefined,
 
-		RequiresClockifyCreation: form.requiresClockifyCreation,
+		RequiresTimesheetCreation: form.requiresTimesheetCreation,
 	})
 
 	// ==========================
@@ -119,6 +131,7 @@ export const useProyectCreateForm = () => {
 			setCreateStatus('loading')
 			setCreateMessage(null)
 			setValidationErrors([])
+			setBackendError(null)
 
 			const result = await proyectAdapter.create(payload)
 
@@ -142,6 +155,9 @@ export const useProyectCreateForm = () => {
 				setCreateStatus('idle')
 				setCreateMessage(null)
 			} else {
+				const lines: string[] = [error instanceof Error ? error.message : ProyectCreateMessages.ERROR]
+				if (error instanceof ApiError && error.detail) lines.push(extractMessage(error.detail))
+				setBackendError(lines.join('\n'))
 				setCreateStatus('error')
 				setCreateMessage(ProyectCreateMessages.ERROR)
 
@@ -162,6 +178,7 @@ export const useProyectCreateForm = () => {
 		submit,
 		submitting,
 		validationErrors,
+		backendError,
 		nextNumber,
 		loadingNextNumber,
 	}

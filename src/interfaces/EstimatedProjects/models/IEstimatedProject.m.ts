@@ -61,6 +61,6 @@ export interface EstimatedProjectInterface {
 	/** POST /api/potencial-clients — devuelve el cliente recién creado. */
 	createClient(name: string): Promise<ClientRefDto>
 
-	/** Listado de usuarios de Clockify (asumimos endpoint en /api/clockify-users). */
+	/** Listado de usuarios de Clockify (asumimos endpoint en /api/timesheet-users). */
 	getUsers(): Promise<UserRefDto[]>
 }

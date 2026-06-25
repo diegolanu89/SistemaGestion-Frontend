@@ -1,15 +1,15 @@
 import { HttpClient } from '../../base/services/HttpClient.s'
 import type {
-	ClockifyUserDto,
-	ClockifyUserListResponse,
-	ClockifyUserOptionsResponse,
+	TimesheetUserDto,
+	TimesheetUserListResponse,
+	TimesheetUserOptionsResponse,
 	UserMonthlyCapacityEntry,
 	CapacityListResponse,
-	CreateClockifyUserDto,
-	UpdateClockifyUserDto,
+	CreateTimesheetUserDto,
+	UpdateTimesheetUserDto,
 	SaveCapacitiesDto,
 	UserOption,
-} from '../models/ClockifyUser.m'
+} from '../models/TimesheetUser.m'
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
@@ -22,13 +22,13 @@ function buildQuery(params: Record<string, string | number | boolean | undefined
 	return s ? `?${s}` : ''
 }
 
-export const clockifyUsersBDT = {
+export const timesheetUsersBDT = {
 	async list(params?: { search?: string; active?: boolean; per_page?: number; page?: number }): Promise<{
-		users: ClockifyUserDto[]
+		users: TimesheetUserDto[]
 		pagination: { total: number; per_page: number; current_page: number }
 	}> {
 		const qs = buildQuery({ ...params })
-		const res = await HttpClient.request<ClockifyUserListResponse>(`${BASE_URL}/clockify-users${qs}`)
+		const res = await HttpClient.request<TimesheetUserListResponse>(`${BASE_URL}/timesheet-users${qs}`)
 		const users = res.data?.data ?? []
 		return {
 			users,
@@ -41,35 +41,35 @@ export const clockifyUsersBDT = {
 	},
 
 	async getOptions(): Promise<UserOption[]> {
-		const res = await HttpClient.request<ClockifyUserOptionsResponse>(`${BASE_URL}/clockify-users/options`)
+		const res = await HttpClient.request<TimesheetUserOptionsResponse>(`${BASE_URL}/timesheet-users/options`)
 		return res.data?.users ?? []
 	},
 
-	async create(payload: CreateClockifyUserDto): Promise<void> {
-		await HttpClient.request(`${BASE_URL}/clockify-users`, {
+	async create(payload: CreateTimesheetUserDto): Promise<void> {
+		await HttpClient.request(`${BASE_URL}/timesheet-users`, {
 			method: 'POST',
 			body: JSON.stringify(payload),
 		})
 	},
 
-	async update(id: number, payload: UpdateClockifyUserDto): Promise<void> {
-		await HttpClient.request(`${BASE_URL}/clockify-users/${id}`, {
+	async update(id: number, payload: UpdateTimesheetUserDto): Promise<void> {
+		await HttpClient.request(`${BASE_URL}/timesheet-users/${id}`, {
 			method: 'PUT',
 			body: JSON.stringify(payload),
 		})
 	},
 
 	async remove(id: number): Promise<void> {
-		await HttpClient.request(`${BASE_URL}/clockify-users/${id}`, { method: 'DELETE' })
+		await HttpClient.request(`${BASE_URL}/timesheet-users/${id}`, { method: 'DELETE' })
 	},
 
 	async listCapacities(userId: number): Promise<UserMonthlyCapacityEntry[]> {
-		const res = await HttpClient.request<CapacityListResponse>(`${BASE_URL}/clockify-users/${userId}/capacities`)
+		const res = await HttpClient.request<CapacityListResponse>(`${BASE_URL}/timesheet-users/${userId}/capacities`)
 		return res.data ?? []
 	},
 
 	async saveCapacities(userId: number, entries: SaveCapacitiesDto['entries']): Promise<UserMonthlyCapacityEntry[]> {
-		const res = await HttpClient.request<CapacityListResponse>(`${BASE_URL}/clockify-users/${userId}/capacities`, {
+		const res = await HttpClient.request<CapacityListResponse>(`${BASE_URL}/timesheet-users/${userId}/capacities`, {
 			method: 'POST',
 			body: JSON.stringify({ entries }),
 		})
@@ -77,6 +77,10 @@ export const clockifyUsersBDT = {
 	},
 
 	async sync(): Promise<void> {
-		await HttpClient.request(`${BASE_URL}/clockify/sync-users`, { method: 'POST' })
+		await HttpClient.request(`${BASE_URL}/timesheet/sync-users`, { method: 'POST' })
+	},
+
+	async syncProjects(): Promise<void> {
+		await HttpClient.request(`${BASE_URL}/timesheet/sync-projects`, { method: 'POST' })
 	},
 }

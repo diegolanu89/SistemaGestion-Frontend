@@ -64,22 +64,6 @@ export const ProyectViewFilters: FC = () => {
 		]
 	}, [projects])
 
-	const codeOptions: SelectOption[] = useMemo(() => {
-		const values = Array.from(new Set(projects.map((p) => p.code).filter(Boolean)))
-
-		return [
-			{
-				value: 'all',
-				label: 'Todos',
-			},
-
-			...values.map((value) => ({
-				value: String(value),
-				label: String(value),
-			})),
-		]
-	}, [projects])
-
 	return (
 		<div className="proyect-view-filters">
 			<div className="proyect-view-search">
@@ -121,16 +105,19 @@ export const ProyectViewFilters: FC = () => {
 				</select>
 			</div>
 
-			<div className="proyect-view-filters__field">
-				<label className="proyect-view-filters__label">Código</label>
+			<div className="proyect-view-search">
+				<label className="proyect-view-search__label">Código</label>
 
-				<select className="proyect-view-filters__select" value={filters.code} onChange={(e) => updateFilter('code', e.target.value)}>
-					{codeOptions.map((opt) => (
-						<option key={opt.value} value={opt.value}>
-							{opt.label}
-						</option>
-					))}
-				</select>
+				<div className="proyect-view-search__control">
+					<span className="material-icons proyect-view-search__icon">tag</span>
+
+					<input
+						className="proyect-view-search__input"
+						value={filters.code}
+						placeholder="Ej: 30.006"
+						onChange={(e) => updateFilter('code', e.target.value.toUpperCase())}
+					/>
+				</div>
 			</div>
 
 			<div className="proyect-view-filters__refresh">

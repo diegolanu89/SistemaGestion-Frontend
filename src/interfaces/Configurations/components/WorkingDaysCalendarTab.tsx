@@ -160,7 +160,6 @@ const WorkingDaysCalendarTab: React.FC = () => {
 			} else {
 				await workingDaysCalendarBDT.create({
 					monthKey: formData.monthKey!,
-					monthLabel: `${MONTH_NAMES[formData.month! - 1]} ${formData.year}`,
 					year: formData.year!,
 					month: formData.month!,
 					totalDays: new Date(formData.year!, formData.month!, 0).getDate(),

@@ -1,7 +1,7 @@
 import { HttpClient } from '../../base/services/HttpClient.s'
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
-import { CreateEtcRecordDto, UpdateEtcRecordDto, CreateSnapshotDto, BulkEtcDto, ValidateEtcCapacityDto } from '../model/Etc.m'
+import { CreateEtcRecordDto, UpdateEtcRecordDto, CreateSnapshotDto, BulkEtcDto, UpdateBulkEtcDto, ValidateEtcCapacityDto } from '../model/Etc.m'
 import {
 	IEtcApi,
 	GetEtcByProjectResponse,
@@ -26,7 +26,7 @@ export class EtcBDT implements IEtcApi {
 	// GET BY PROJECT
 	// ==========================
 
-	async getByProject(projectId: number, snapshot?: 'baseline'): Promise<GetEtcByProjectResponse> {
+	async getByProject(projectId: number, snapshot?: string): Promise<GetEtcByProjectResponse> {
 		logger.infoTag(LogTag.Adapter, `[ETC][BDT] getByProject -> id=${projectId}`)
 
 		try {
@@ -174,6 +174,28 @@ export class EtcBDT implements IEtcApi {
 		try {
 			return await HttpClient.request<CreateSnapshotResponse>(`${BASE}/projects/${projectId}/etc/snapshot`, {
 				method: 'POST',
+
+				body: JSON.stringify(dto),
+			})
+		} catch (error: unknown) {
+			const err = normalizeError(error)
+
+			logger.errorTag(LogTag.Adapter, err)
+
+			throw err
+		}
+	}
+
+	// ==========================
+	// UPDATE BULK
+	// ==========================
+
+	async updateBulk(dto: UpdateBulkEtcDto): Promise<BulkEtcResponse> {
+		logger.infoTag(LogTag.Adapter, '[ETC][BDT] updateBulk', dto)
+
+		try {
+			return await HttpClient.request<BulkEtcResponse>(`${BASE}/etc/bulk`, {
+				method: 'PUT',
 
 				body: JSON.stringify(dto),
 			})

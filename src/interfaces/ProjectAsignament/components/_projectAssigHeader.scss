@@ -113,13 +113,13 @@
 
 	padding: 0 20px;
 
-	border-radius: 16px;
+	border-radius: 12px;
 
-	border: 1px solid var(--color-primary-opacity-20);
+	border: none;
 
-	background: linear-gradient(180deg, var(--color-primary-opacity-20) 0%, var(--color-primary-opacity-10) 100%);
+	background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
 
-	color: var(--color-primary);
+	color: white;
 
 	font-size: 14px;
 
@@ -127,45 +127,19 @@
 
 	cursor: pointer;
 
-	position: relative;
+	box-shadow: 0 4px 12px var(--color-shadow-soft);
 
-	overflow: hidden;
-
-	transition:
-		transform 0.2s ease,
-		box-shadow 0.25s ease,
-		border-color 0.25s ease,
-		background 0.25s ease;
-}
-
-.project-assignment-header__button::before {
-	content: '';
-
-	position: absolute;
-
-	inset: 0;
-
-	background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.12) 50%, transparent 100%);
-
-	transform: translateX(-120%);
-
-	transition: transform 0.6s ease;
+	transition: all 0.2s ease;
 }
 
 .project-assignment-header__button:hover {
-	transform: translateY(-2px);
+	transform: translateY(-1px);
 
-	border-color: var(--color-primary-opacity-30);
-
-	box-shadow: 0 10px 24px var(--color-primary-opacity-20);
-}
-
-.project-assignment-header__button:hover::before {
-	transform: translateX(120%);
+	box-shadow: 0 8px 20px var(--color-shadow-medium);
 }
 
 .project-assignment-header__button:active {
-	transform: scale(0.98);
+	transform: scale(0.97);
 }
 
 .project-assignment-header__button .material-icons {

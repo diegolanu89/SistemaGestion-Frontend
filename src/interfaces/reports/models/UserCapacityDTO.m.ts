@@ -17,8 +17,6 @@ export interface UserMonthlyCapacityDto {
 export interface CreateUserMonthlyCapacityEntryDto {
 	monthKey: string
 
-	monthLabel: string
-
 	hours: number
 }
 

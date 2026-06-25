@@ -5,6 +5,9 @@ import { ESTIMATED_PROJECT_PATHS } from '../routes/paths'
 import { useEstimatedProjectContext } from '../hooks/useEstimatedProjectContext.h'
 import { removeCache } from '../utils/getCache'
 import { RefreshButton } from '../../base/components/RefreshButton/RefreshButton'
+import { IDLE_PATHS } from '../../Idle/routes/paths'
+import logger from '../../base/controllers/Logger.c'
+import { LogTag } from '../../base/model/LogTag.m'
 
 export const EstimatedProjectHeader: FC = () => {
 	const navigate = useNavigate()
@@ -19,9 +22,19 @@ export const EstimatedProjectHeader: FC = () => {
 
 	return (
 		<header className="estimated-project__header">
-			<div className="estimated-project__header-left">
-				<h1 className="estimated-project__title">{TEXTS.TITLE}</h1>
-				<p className="estimated-project__description">{TEXTS.DESCRIPTION}</p>
+			<div className="proyect-header__left">
+				<button
+					className="proyect-header__back"
+					onClick={() => { logger.infoTag(LogTag.Navigation, '[ESTIMATED_PROJECT] Navigate to home'); navigate(IDLE_PATHS.HOME) }}
+					data-tooltip="Ir al inicio"
+				>
+					<span className="material-icons">arrow_back</span>
+				</button>
+
+				<div className="estimated-project__header-left">
+					<h1 className="estimated-project__title">{TEXTS.TITLE}</h1>
+					<p className="estimated-project__description">{TEXTS.DESCRIPTION}</p>
+				</div>
 			</div>
 
 			<div className="estimated-project__header-actions">

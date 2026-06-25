@@ -2,7 +2,6 @@ import { FC } from 'react'
 import AddProjectsModal from '../components/AddProjectsModal'
 import MyProjectsSection from '../components/MyProjectsSection'
 import ProjectAssignmentHeader from '../components/ProjectAssignmentHeader'
-import ProjectAssignmentSearch from '../components/ProjectAssignmentSearch'
 import { useProjectAssignmentController } from '../hooks/useAsignmentController.h'
 
 export const ProjectAssignment: FC = () => {
@@ -11,8 +10,6 @@ export const ProjectAssignment: FC = () => {
 	return (
 		<div className="project-assignment">
 			<ProjectAssignmentHeader />
-
-			<ProjectAssignmentSearch />
 
 			<MyProjectsSection onAddProjects={openModal} />
 

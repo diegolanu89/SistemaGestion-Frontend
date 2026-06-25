@@ -22,9 +22,10 @@
 
 	gap: 8px;
 
-	label {
+	> label:first-child {
 		font-size: 13px;
-		font-weight: 700;
+		font-weight: 600;
+		color: var(--color-primary);
 	}
 }
 
@@ -45,7 +46,7 @@
 	background: var(--color-surface);
 
 	.material-icons {
-		color: var(--color-primary);
+		color: #000;
 	}
 
 	input {
@@ -57,17 +58,19 @@
 
 		outline: none;
 
-		color: white;
+		color: #000;
 
 		font-size: 14px;
 
+		cursor: pointer;
+
 		&::placeholder {
-			color: rgba(255, 255, 255, 0.7);
+			color: var(--color-text-secondary);
 		}
 
 		&::-webkit-calendar-picker-indicator {
-			filter: invert(1);
 			cursor: pointer;
+			filter: none;
 		}
 	}
 }

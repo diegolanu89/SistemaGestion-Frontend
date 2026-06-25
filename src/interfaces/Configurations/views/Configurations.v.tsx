@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import ClockifyUsersTab from '../components/ClockifyUsersTab'
+import TimesheetUsersTab from '../components/TimesheetUsersTab'
 import UserLeadersTab from '../components/UserLeadersTab'
 import WorkingDaysCalendarTab from '../components/WorkingDaysCalendarTab'
 import VacacionesTab from '../components/VacacionesTab'
@@ -60,7 +60,7 @@ const ConfigurationsView: React.FC = () => {
 			</div>
 
 			<div className="configurations__content">
-				{activeTab === 'usuarios-clocky' && <ClockifyUsersTab />}
+				{activeTab === 'usuarios-clocky' && <TimesheetUsersTab />}
 
 				{activeTab === 'leaders' && <UserLeadersTab />}
 

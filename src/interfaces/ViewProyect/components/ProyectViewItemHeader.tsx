@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { ProjectDto } from '../models/ProyectViewDTO.m'
 
 import { PROYECT_PATHS_VIEWS } from '../routes/paths'
+import { ETC_LOAD_PROJECT } from '../../Etc/routes/paths'
 
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
@@ -26,7 +27,7 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 			projectId: project.id,
 		})
 
-		navigate('/operaciones/etc', {
+		navigate(ETC_LOAD_PROJECT.ETC_LOAD, {
 			state: {
 				projectId: project.id,
 			},
@@ -57,11 +58,7 @@ export const ProyectViewItemHeader: FC<Props> = ({ project }) => {
 
 					<div className="project-detail-header__titles">
 						<h1 className="project-detail-header__title">
-							<span>{project.code ?? '-'}</span>
-							<span>-</span>
-							<span>{project.clientName ?? '-'}</span>
-							<span>-</span>
-							<span>{project.name}</span>
+							{project.name}
 						</h1>
 
 						<p className="project-detail-header__subtitle">

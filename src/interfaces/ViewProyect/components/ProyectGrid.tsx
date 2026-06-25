@@ -1,6 +1,6 @@
 // components/ProyectGrid.tsx
 
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -9,25 +9,14 @@ import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 import { PROYECT_PATHS_VIEWS } from '../routes/paths'
 
 export const ProyectGrid: FC = () => {
-	const {
-		projects,
-		loading,
-		error,
-
-		page,
-		setPage,
-
-		total,
-		perPage,
-	} = useProyectViewContext()
+	const { projects, loading, error } = useProyectViewContext()
 
 	const navigate = useNavigate()
 
-	// =========================
-	// PAGINATION
-	// =========================
-
-	const totalPages = Math.ceil(total / perPage)
+	const sortedProjects = useMemo(
+		() => [...projects].sort((a, b) => (b.code ?? '').localeCompare(a.code ?? '')),
+		[projects],
+	)
 
 	// =========================
 	// PROGRESS COLOR
@@ -60,8 +49,8 @@ export const ProyectGrid: FC = () => {
 			{/* ========================= */}
 
 			<div className="grid">
-				{projects.map((p) => {
-					const progress = p.hourlyRate ?? 0
+				{sortedProjects.map((p) => {
+					const progress = p.bacBaseHours > 0 ? Math.min(Math.round((p.etcTotalHours / p.bacBaseHours) * 100), 100) : 0
 
 					return (
 						<div className="card card--project" key={p.id} onClick={() => navigate(PROYECT_PATHS_VIEWS.PROYECT_ITEM.replace(':id', String(p.id)))}>
@@ -71,10 +60,6 @@ export const ProyectGrid: FC = () => {
 
 							<div className="card__header">
 								<div className="card__title">
-									<span className="card__code">{p.code}</span>
-
-									<span className="card__separator">-</span>
-
 									<span className="card__name">{p.name}</span>
 								</div>
 
@@ -142,7 +127,7 @@ export const ProyectGrid: FC = () => {
 								<button className="metric metric--etc" data-tooltip="Estimación restante del proyecto">
 									<span className="metric__label">ETC</span>
 
-									<span className="metric__value">{p.etcHours ?? 0}h</span>
+									<span className="metric__value">{p.etcTotalHours}h</span>
 								</button>
 
 								<button className="metric metric--success" data-tooltip="Costo base inicial">
@@ -162,29 +147,6 @@ export const ProyectGrid: FC = () => {
 				})}
 			</div>
 
-			{/* ========================= */}
-			{/* PAGINATION */}
-			{/* ========================= */}
-
-			{totalPages > 1 && (
-				<div className="pagination">
-					<button className="pagination__button" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-						Anterior
-					</button>
-
-					<div className="pagination__info">
-						<span>
-							Página {page} de {totalPages}
-						</span>
-
-						<span>({total} proyectos)</span>
-					</div>
-
-					<button className="pagination__button" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
-						Siguiente
-					</button>
-				</div>
-			)}
 		</>
 	)
 }

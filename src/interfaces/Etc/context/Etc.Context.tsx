@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState, ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import type { EtcEntryDto } from '../model/Etc.m'
+import type { EtcEntryDto, EtcRecordDto } from '../model/Etc.m'
+import type { EtcSnapshotDto } from '../model/IEtcApi.m'
 import type { IEtcContext, GridValues } from '../model/IEtcContext.m'
 
 import { etcContext } from '../hooks/useEtcContext.h'
@@ -33,6 +34,10 @@ export const EtcProvider = ({ children }: Props) => {
 	// =========================
 	// BASE ETC
 	// =========================
+
+	const [snapshot, setSnapshot] = useState<EtcSnapshotDto | null>(null)
+
+	const [records, setRecords] = useState<EtcRecordDto[]>([])
 
 	const [entries, setEntries] = useState<EtcEntryDto[]>([])
 
@@ -93,7 +98,13 @@ export const EtcProvider = ({ children }: Props) => {
 
 				if (cancelled) return
 
-				const records: EtcEntryDto[] = (response.records ?? []).map(
+				setSnapshot(response.snapshot)
+
+				const rawRecords = response.records ?? []
+
+				if (!cancelled) setRecords(rawRecords)
+
+				const mappedEntries: EtcEntryDto[] = rawRecords.map(
 					(record: { userName?: string | null; monthKey: string; monthLabel?: string | null; hours?: number | null }) => ({
 						userName: record.userName ?? 'Sin usuario',
 
@@ -105,9 +116,11 @@ export const EtcProvider = ({ children }: Props) => {
 					})
 				)
 
+				if (!cancelled) setEntries(mappedEntries)
+
 				const monthSet = new Set<string>()
 
-				records.forEach((r) => monthSet.add(r.monthKey))
+				mappedEntries.forEach((r) => monthSet.add(r.monthKey))
 
 				if (monthSet.size > 0) {
 					setSelectedMonths(Array.from(monthSet).sort())
@@ -120,7 +133,7 @@ export const EtcProvider = ({ children }: Props) => {
 				const nextValues: GridValues = {}
 
 				allUsers.forEach((u) => {
-					const userRecords = records.filter((r) => r.userName === u.FullName)
+					const userRecords = mappedEntries.filter((r) => r.userName === u.FullName)
 
 					if (userRecords.length <= 0) {
 						return
@@ -180,6 +193,12 @@ export const EtcProvider = ({ children }: Props) => {
 			projectId,
 			setProjectId,
 
+			snapshot,
+			setSnapshot,
+
+			records,
+			setRecords,
+
 			entries,
 			setEntries,
 
@@ -215,7 +234,7 @@ export const EtcProvider = ({ children }: Props) => {
 			values,
 			setValues,
 		}),
-		[projectId, entries, errors, loading, projectName, bac, search, selectedMonths, monthToAdd, users, selectedUserIds, values]
+		[projectId, snapshot, records, entries, errors, loading, projectName, bac, search, selectedMonths, monthToAdd, users, selectedUserIds, values]
 	)
 
 	return <etcContext.Provider value={value}>{children}</etcContext.Provider>

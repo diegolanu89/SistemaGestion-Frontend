@@ -2,6 +2,8 @@
 
 import { FC, useEffect, useState } from 'react'
 
+import { useLocation } from 'react-router-dom'
+
 import { useEtcContext } from '../hooks/useEtcContext.h'
 import { useEtcProjectController } from '../hooks/useEtcProjectController.h'
 
@@ -19,7 +21,11 @@ type NotificationState = {
 }
 
 export const EtcProjectToolbar: FC = () => {
-	const { projectId, bac, setBac } = useEtcContext()
+	const location = useLocation()
+
+	const isLocked = Boolean(location.state?.projectId)
+
+	const { projectId, projectName, bac, setBac, setProjectId, setProjectName } = useEtcContext()
 
 	const { loadProject } = useEtcProjectController()
 
@@ -42,8 +48,14 @@ export const EtcProjectToolbar: FC = () => {
 	}, [bac])
 
 	useEffect(() => {
+		if (isLocked) return
+
 		void loadProjects()
-	}, [])
+
+		setProjectId(0)
+		setProjectName('')
+		setBac(0)
+	}, [isLocked])
 
 	const loadProjects = async (): Promise<void> => {
 		try {
@@ -54,7 +66,7 @@ export const EtcProjectToolbar: FC = () => {
 				per_page: 500,
 			})
 
-			setProjects(response.data)
+			setProjects([...response.data].sort((a, b) => (b.code ?? '').localeCompare(a.code ?? '')))
 		} catch (error: unknown) {
 			logger.errorTag(LogTag.Adapter, error instanceof Error ? error : new Error(String(error)))
 		} finally {
@@ -116,28 +128,32 @@ export const EtcProjectToolbar: FC = () => {
 			<div className="etc-toolbar__field">
 				<label className="etc-toolbar__label">Proyecto</label>
 
-				<select
-					className="etc-toolbar__input"
-					value={projectId || ''}
-					disabled={loadingProjects}
-					onChange={(event) => {
-						const id = Number(event.target.value)
+				{isLocked ? (
+					<div className="etc-toolbar__readonly">{projectName}</div>
+				) : (
+					<select
+						className="etc-toolbar__input"
+						value={projectId || ''}
+						disabled={loadingProjects}
+						onChange={(event) => {
+							const id = Number(event.target.value)
 
-						if (!id) {
-							return
-						}
+							if (!id) {
+								return
+							}
 
-						void loadProject(id)
-					}}
-				>
-					<option value="">Seleccionar proyecto...</option>
+							void loadProject(id)
+						}}
+					>
+						<option value="">Seleccionar proyecto...</option>
 
-					{projects.map((project) => (
-						<option key={project.id} value={project.id}>
-							{project.code} - {project.clientName} - {project.name}
-						</option>
-					))}
-				</select>
+						{projects.map((project) => (
+							<option key={project.id} value={project.id}>
+								{project.name}
+							</option>
+						))}
+					</select>
+				)}
 			</div>
 
 			{/* BAC */}

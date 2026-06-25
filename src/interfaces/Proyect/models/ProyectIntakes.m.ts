@@ -45,11 +45,11 @@ export interface ProjectIntakeRecordWire {
 	estimatedEndDate?: string | null
 	actualEndDate?: string | null
 	commercialStatus?: string | null
-	leaderClockifyUserId?: number | null
+	leaderTimesheetUserId?: number | null
 	leaderName?: string | null
 	observations?: string | null
-	requiresClockifyCreation: boolean
-	clockifyRecordId?: number | null
+	requiresTimesheetCreation: boolean
+	timesheetRecordId?: number | null
 	isActive: boolean
 	createdBy?: number | null
 	updatedBy?: number | null
@@ -58,7 +58,7 @@ export interface ProjectIntakeRecordWire {
 	typeRef?: ProjectIntakeTypeRefWire | null
 	categoryRef?: ProjectIntakeCategoryRefWire | null
 	statusRef?: ProjectIntakeStatusRefWire | null
-	clockifyProjectName?: string | null
+	timesheetProjectName?: string | null
 }
 
 export const mapTypeRef = (w: ProjectIntakeTypeRefWire): ProjectIntakeTypeRefDto => ({
@@ -106,11 +106,11 @@ export const mapRecord = (w: ProjectIntakeRecordWire): ProjectIntakeRecordDto =>
 	EstimatedEndDate: w.estimatedEndDate ?? null,
 	ActualEndDate: w.actualEndDate ?? null,
 	CommercialStatus: w.commercialStatus ?? null,
-	LeaderClockifyUserId: w.leaderClockifyUserId ?? null,
+	LeaderTimesheetUserId: w.leaderTimesheetUserId ?? null,
 	LeaderName: w.leaderName ?? null,
 	Observations: w.observations ?? null,
-	RequiresClockifyCreation: w.requiresClockifyCreation,
-	ClockifyRecordId: w.clockifyRecordId ?? null,
+	RequiresTimesheetCreation: w.requiresTimesheetCreation,
+	TimesheetRecordId: w.timesheetRecordId ?? null,
 	IsActive: w.isActive,
 	CreatedBy: w.createdBy ?? null,
 	UpdatedBy: w.updatedBy ?? null,
@@ -119,5 +119,5 @@ export const mapRecord = (w: ProjectIntakeRecordWire): ProjectIntakeRecordDto =>
 	TypeRef: w.typeRef ? mapTypeRef(w.typeRef) : null,
 	CategoryRef: w.categoryRef ? mapCategoryRef(w.categoryRef) : null,
 	StatusRef: w.statusRef ? mapStatusRef(w.statusRef) : null,
-	ClockifyProjectName: w.clockifyProjectName ?? null,
+	TimesheetProjectName: w.timesheetProjectName ?? null,
 })

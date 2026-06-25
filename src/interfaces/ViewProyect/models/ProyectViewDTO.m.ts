@@ -4,7 +4,7 @@
 
 export interface ProjectDto {
 	id: number
-	clockifyProjectId: string
+	timesheetProjectId: string
 	name: string
 	code?: string | null
 	clientId?: number | null
@@ -28,7 +28,7 @@ export interface ProjectDto {
 
 	filter?: unknown | null
 
-	etcHours?: number
+	etcTotalHours: number
 }
 
 export interface UpdateBacDto {

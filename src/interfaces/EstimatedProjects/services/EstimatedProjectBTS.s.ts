@@ -407,7 +407,7 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 						active: boolean
 					}>
 				}
-			}>(`${BASE_URL}/clockify-users?active=true`)
+			}>(`${BASE_URL}/timesheet-users?active=true`)
 
 			return wire.data.data.map((u) => ({
 				Id: u.id,
@@ -437,8 +437,6 @@ export class EstimatedProjectBDT implements EstimatedProjectInterface {
 
 				entries.push({
 					MonthKey: monthKey,
-
-					MonthLabel: monthKey,
 
 					UserId: r.UserId,
 
