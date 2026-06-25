@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+﻿import React, { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { vacacionesBDT } from '../services/VacacionesBDT'
@@ -7,6 +7,7 @@ import type { UserVacationPeriodDto } from '../models/Vacaciones.m'
 import type { UserOption } from '../models/TimesheetUser.m'
 import { normalizeSearchText } from '../utils/stringUtils'
 import { diffDays } from '../utils/dateUtils'
+import { formatDate } from '../../base/utils/formatDate'
 import { ClearFiltersButton } from '../../base/components/ClearFiltersButton/ClearFiltersButton'
 
 const VacacionesTab: React.FC = () => {
@@ -80,8 +81,8 @@ const VacacionesTab: React.FC = () => {
 	}
 
 	const handleSave = async () => {
-		if (formUserIds.length === 0) { setFormError('Seleccioná al menos un usuario'); return }
-		if (!dateFrom || !dateTo) { setFormError('Completá fecha desde y fecha hasta'); return }
+		if (formUserIds.length === 0) { setFormError('SeleccionÃ¡ al menos un usuario'); return }
+		if (!dateFrom || !dateTo) { setFormError('CompletÃ¡ fecha desde y fecha hasta'); return }
 		const days = diffDays(dateFrom, dateTo)
 		if (days === null || days < 1) { setFormError('La fecha hasta debe ser mayor o igual que la fecha desde'); return }
 		setFormError(null)
@@ -131,7 +132,7 @@ const VacacionesTab: React.FC = () => {
 			</div>
 
 			<p className="conf-tab__hint">
-				Administración de carga de vacaciones de usuarios
+				AdministraciÃ³n de carga de vacaciones de usuarios
 			</p>
 
 			{error && <div className="conf-tab__error">{error}</div>}
@@ -153,7 +154,7 @@ const VacacionesTab: React.FC = () => {
 				<ClearFiltersButton
 					active={search.trim() !== ''}
 					onClear={() => { setSearch(''); void loadPeriods('') }}
-					tooltip="Limpiar búsqueda"
+					tooltip="Limpiar bÃºsqueda"
 				/>
 			</div>
 
@@ -167,21 +168,21 @@ const VacacionesTab: React.FC = () => {
 								<th>Usuario</th>
 								<th>Fecha desde</th>
 								<th>Fecha hasta</th>
-								<th>Total días</th>
+								<th>Total dÃ­as</th>
 								<th>Acciones</th>
 							</tr>
 						</thead>
 						<tbody>
 							{periods.length === 0 ? (
 								<tr><td colSpan={5} style={{ textAlign: 'center', padding: 40 }}>
-									{search.trim() ? 'No hay registros que coincidan con la búsqueda.' : 'No hay registros de vacaciones. Usá "Alta de registros" para cargar usuarios y un rango de fechas.'}
+									{search.trim() ? 'No hay registros que coincidan con la bÃºsqueda.' : 'No hay registros de vacaciones. UsÃ¡ "Alta de registros" para cargar usuarios y un rango de fechas.'}
 								</td></tr>
 							) : (
 								periods.map((p) => (
 									<tr key={p.id}>
 										<td>{p.userName ?? '-'}</td>
-										<td>{p.dateFrom}</td>
-										<td>{p.dateTo}</td>
+										<td>{formatDate(p.dateFrom)}</td>
+										<td>{formatDate(p.dateTo)}</td>
 										<td>{p.totalDays}</td>
 										<td>
 											<div className="conf-tab__row-actions">
@@ -203,7 +204,7 @@ const VacacionesTab: React.FC = () => {
 					<div className="modal conf-modal--md" onClick={(e) => e.stopPropagation()}>
 						<div className="modal__header">
 							<h2>Alta de registros de vacaciones</h2>
-							<button onClick={() => setShowModal(false)}>×</button>
+							<button onClick={() => setShowModal(false)}>Ã—</button>
 						</div>
 						<div className="modal__body">
 							<div className="conf-form">
@@ -242,8 +243,8 @@ const VacacionesTab: React.FC = () => {
 								</div>
 
 								<div className="conf-form__group">
-									<label className="conf-form__label">Total de días</label>
-									<div className="conf-form__computed">{totalDaysComputed != null ? `${totalDaysComputed} días` : '-'}</div>
+									<label className="conf-form__label">Total de dÃ­as</label>
+									<div className="conf-form__computed">{totalDaysComputed != null ? `${totalDaysComputed} dÃ­as` : '-'}</div>
 								</div>
 
 								{formError && <div className="conf-tab__error">{formError}</div>}
@@ -267,10 +268,10 @@ const VacacionesTab: React.FC = () => {
 							</div>
 							<div className="proyect-delete-modal__content">
 								<p>Vas a eliminar:</p>
-								<p className="proyect-delete-modal__project">{itemToDelete.userName ?? 'Usuario'} — {itemToDelete.dateFrom} al {itemToDelete.dateTo}</p>
+								<p className="proyect-delete-modal__project">{itemToDelete.userName ?? 'Usuario'} â€” {formatDate(itemToDelete.dateFrom)} al {formatDate(itemToDelete.dateTo)}</p>
 								<div className="proyect-delete-modal__warning">
 									<span className="material-icons">warning</span>
-									<span>Esta acción es irreversible</span>
+									<span>Esta acciÃ³n es irreversible</span>
 								</div>
 							</div>
 							<div className="proyect-delete-modal__actions">

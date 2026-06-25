@@ -3,6 +3,7 @@ import { DashboardEvmComputedRow } from '../hooks/useDashboardEvmController.h'
 import { DashboardEvmRowDto } from '../models/DashboardEvmDTO.m'
 import { DashboardEvmChangeControlCell } from './DashboardEvmChangeControlCell'
 import { DateMode } from './DashboardEvmTable'
+import { formatDate } from '../../base/utils/formatDate'
 
 interface Props {
 	row: DashboardEvmComputedRow
@@ -13,13 +14,6 @@ interface Props {
 }
 
 const formatHours = (value: number): string => value.toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-
-const formatDate = (value: string | null | undefined): string => {
-	if (!value) return '-'
-	const parts = value.slice(0, 10).split('-')
-	if (parts.length !== 3) return '-'
-	return `${parts[2]}/${parts[1]}/${parts[0]}`
-}
 
 export const DashboardEvmRow: FC<Props> = ({ row, dateMode, clientName, onOpenChanges, onOpenTracking }) => {
 	const { row: project, metrics } = row

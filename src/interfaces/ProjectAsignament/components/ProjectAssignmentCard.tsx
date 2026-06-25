@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ProjectDto } from '../../ViewProyect/models/ProyectViewDTO.m'
+import { formatDate } from '../../base/utils/formatDate'
 
 interface Props {
 	project: ProjectDto
@@ -8,8 +9,6 @@ interface Props {
 const formatMoney = (value?: number | null) => `$${value?.toLocaleString() ?? '0'}`
 
 const formatHours = (value?: number | null) => `${value?.toFixed(2) ?? '0.00'}h`
-
-const formatDate = (value?: string | null) => value ?? 'Sin fecha'
 
 const ProjectAssignmentCard = ({ project }: Props) => {
 	const [open, setOpen] = useState(false)
@@ -162,12 +161,12 @@ const ProjectAssignmentCard = ({ project }: Props) => {
 
 								<div className="project-detail-modal__item">
 									<label>Creado</label>
-									<strong>{formatDate(project.createdAt)}</strong>
+									<strong>{project.createdAt ?? '-'}</strong>
 								</div>
 
 								<div className="project-detail-modal__item">
 									<label>Actualizado</label>
-									<strong>{formatDate(project.updatedAt)}</strong>
+									<strong>{project.updatedAt ?? '-'}</strong>
 								</div>
 							</div>
 						</div>
