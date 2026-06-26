@@ -30,7 +30,12 @@ const INITIAL_COLUMNS: ColumnConfig[] = [
 
 		label: PROYECT_CONFIG.TABLE.HEADERS[0],
 
-		getValue: (p) => p.ProjectName ?? '',
+		getValue: (p) => {
+			const num = p.InternalProjectNumber ?? ''
+			const name = p.ProjectName ?? ''
+			if (num && name) return `${num}-${name}`
+			return name || num
+		},
 	},
 
 	{
@@ -217,6 +222,18 @@ export const ProyectTable = () => {
 					</span>
 				</span>
 			)
+		}
+
+		// ==========================
+		// 🔹 OBSERVATIONS
+		// ==========================
+
+		if (col.key === 'observations') {
+			const fullText = p.Observations ?? ''
+			if (!fullText) return '-'
+			const MAX = 80
+			if (fullText.length <= MAX) return fullText
+			return <span>{fullText.slice(0, MAX)}…</span>
 		}
 
 		// ==========================
