@@ -49,7 +49,7 @@ export interface CreateChangeRequestDto {
 
 	requestedBy?: string | null
 
-	requestedDate: string
+	requestedDate: string | null
 
 	status: ChangeRequestStatus
 
@@ -67,9 +67,15 @@ export interface CreateChangeRequestDto {
 ========================================================= */
 
 export interface UpdateChangeRequestDto {
+	code?: string | null
+
 	title?: string | null
 
 	description?: string | null
+
+	requestedBy?: string | null
+
+	requestedDate?: string | null
 
 	status?: ChangeRequestStatus
 

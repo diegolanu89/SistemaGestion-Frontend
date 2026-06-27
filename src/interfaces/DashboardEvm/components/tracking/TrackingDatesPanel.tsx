@@ -1,17 +1,9 @@
 import { FC } from 'react'
 import { ProjectTrackingDto } from '../../models/ProjectTrackingDTO.m'
+import { formatDate } from '../../../base/utils/dateFormat'
 
 interface Props {
 	tracking: ProjectTrackingDto | null
-}
-
-const formatDate = (value: string | null | undefined): string => {
-	if (!value) return '—'
-
-	const date = new Date(value)
-	if (Number.isNaN(date.getTime())) return value
-
-	return date.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 export const TrackingDatesPanel: FC<Props> = ({ tracking }) => (

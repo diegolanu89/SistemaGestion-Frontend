@@ -6,7 +6,9 @@ import { ProjectDto } from '../../models/ProyectViewDTO.m'
 
 import { ChangeRequestDto, ChangeRequestStatus } from '../../models/IChange.m'
 
-import { useProjectChangesController } from '../../hooks/useProjectChangesController.h'
+import { useProjectChangesController, isApprovalStatus } from '../../hooks/useProjectChangesController.h'
+
+import { useAuth } from '../../../Login/hooks/useAuth.h'
 
 interface Props {
 	project: ProjectDto
@@ -37,6 +39,10 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 		actionMessage,
 	} = useProjectChangesController(project.id, open)
+
+	const { user } = useAuth()
+
+	const currentUserName = user?.name ?? ''
 
 	const [deleteModalId, setDeleteModalId] = useState<number | null>(null)
 
@@ -180,17 +186,7 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 										<div className="project-changes-section__field">
 											<label>Solicitado por</label>
 
-											<input
-												placeholder="Responsable del pedido"
-												value={form.requestedBy ?? ''}
-												onChange={(e) =>
-													setForm((prev) => ({
-														...prev,
-
-														requestedBy: e.target.value,
-													}))
-												}
-											/>
+											<input value={currentUserName} disabled />
 										</div>
 
 										<div className="project-changes-section__field">
@@ -198,7 +194,7 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 											<input
 												type="date"
-												value={form.requestedDate}
+												value={form.requestedDate ?? ''}
 												onChange={(e) =>
 													setForm((prev) => ({
 														...prev,
@@ -262,37 +258,31 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 											/>
 										</div>
 
-										<div className="project-changes-section__field">
-											<label>Aprobado por</label>
+										{isApprovalStatus(form.status) && (
+											<>
+												<div className="project-changes-section__field">
+													<label>Aprobado por</label>
 
-											<input
-												placeholder="Responsable aprobación"
-												value={form.approvedBy ?? ''}
-												onChange={(e) =>
-													setForm((prev) => ({
-														...prev,
+													<input value={currentUserName} disabled />
+												</div>
 
-														approvedBy: e.target.value,
-													}))
-												}
-											/>
-										</div>
+												<div className="project-changes-section__field">
+													<label>Fecha aprobación</label>
 
-										<div className="project-changes-section__field">
-											<label>Fecha aprobación</label>
+													<input
+														type="date"
+														value={form.approvedDate ?? ''}
+														onChange={(e) =>
+															setForm((prev) => ({
+																...prev,
 
-											<input
-												type="date"
-												value={form.approvedDate ?? ''}
-												onChange={(e) =>
-													setForm((prev) => ({
-														...prev,
-
-														approvedDate: e.target.value,
-													}))
-												}
-											/>
-										</div>
+																approvedDate: e.target.value,
+															}))
+														}
+													/>
+												</div>
+											</>
+										)}
 
 										<div className="project-changes-section__field project-changes-section__field--full">
 											<label>Descripción</label>
@@ -364,6 +354,12 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 														<small>${(item.bacCostIncrement ?? 0).toLocaleString()}</small>
 													</span>
+
+													<span>
+														<strong>Aprobó</strong>
+
+														<small>{item.approvedBy ?? '-'}</small>
+													</span>
 												</div>
 
 												<div className="project-changes-section__history-actions">
@@ -432,6 +428,21 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 						<div className="project-changes-section__grid">
 							<div className="project-changes-section__field">
+								<label>Código</label>
+
+								<input
+									value={form.code}
+									onChange={(e) =>
+										setForm((prev) => ({
+											...prev,
+
+											code: e.target.value,
+										}))
+									}
+								/>
+							</div>
+
+							<div className="project-changes-section__field">
 								<label>Título</label>
 
 								<input
@@ -441,6 +452,28 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 											...prev,
 
 											title: e.target.value,
+										}))
+									}
+								/>
+							</div>
+
+							<div className="project-changes-section__field">
+								<label>Solicitado por</label>
+
+								<input value={form.requestedBy || currentUserName} disabled />
+							</div>
+
+							<div className="project-changes-section__field">
+								<label>Fecha solicitud</label>
+
+								<input
+									type="date"
+									value={form.requestedDate ?? ''}
+									onChange={(e) =>
+										setForm((prev) => ({
+											...prev,
+
+											requestedDate: e.target.value,
 										}))
 									}
 								/>
@@ -467,6 +500,64 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 								</select>
 							</div>
 
+							<div className="project-changes-section__field">
+								<label>Incremento horas</label>
+
+								<input
+									type="number"
+									value={form.bacHoursIncrement ?? 0}
+									onChange={(e) =>
+										setForm((prev) => ({
+											...prev,
+
+											bacHoursIncrement: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+
+							<div className="project-changes-section__field">
+								<label>Incremento costo</label>
+
+								<input
+									type="number"
+									value={form.bacCostIncrement ?? 0}
+									onChange={(e) =>
+										setForm((prev) => ({
+											...prev,
+
+											bacCostIncrement: Number(e.target.value),
+										}))
+									}
+								/>
+							</div>
+
+							{isApprovalStatus(form.status) && (
+								<>
+									<div className="project-changes-section__field">
+										<label>Aprobado por</label>
+
+										<input value={form.approvedBy || currentUserName} disabled />
+									</div>
+
+									<div className="project-changes-section__field">
+										<label>Fecha aprobación</label>
+
+										<input
+											type="date"
+											value={form.approvedDate ?? ''}
+											onChange={(e) =>
+												setForm((prev) => ({
+													...prev,
+
+													approvedDate: e.target.value,
+												}))
+											}
+										/>
+									</div>
+								</>
+							)}
+
 							<div className="project-changes-section__field project-changes-section__field--full">
 								<label>Descripción</label>
 
@@ -489,9 +580,9 @@ const ProjectChangesAccordion: FC<Props> = ({ project, open, onToggle }) => {
 							<button
 								className="is-primary"
 								onClick={async () => {
-									await handleSubmit()
+									const ok = await handleSubmit()
 
-									closeEditModal()
+									if (ok) closeEditModal()
 								}}
 							>
 								Guardar cambios

@@ -50,6 +50,10 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 	const [updateForm, setUpdateForm] = useState<CreateTrackingUpdateDto>(EMPTY_UPDATE_FORM)
 
+	const [baseError, setBaseError] = useState<string | null>(null)
+
+	const [updateError, setUpdateError] = useState<string | null>(null)
+
 	/* =====================================================
 	🔹 LOAD TRACKING
 	===================================================== */
@@ -95,18 +99,37 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 	===================================================== */
 
 	const handleSaveTracking = async () => {
+//fecha inicio y planificado obligatorias
+		if (!trackingForm.startDate || !trackingForm.plannedEndDate) {
+			setBaseError('La fecha de inicio y el fin planificado son obligatorios.')
+
+			return
+		}
+
+		setBaseError(null)
+
 		try {
 			setTrackingLoading(true)
 
+			const payload: UpsertProjectTrackingDto = {
+				startDate: trackingForm.startDate,
+
+				plannedEndDate: trackingForm.plannedEndDate,
+
+				actualEndDate: trackingForm.actualEndDate || null,
+
+				implementationDate: trackingForm.implementationDate || null,
+			}
+
 			if (!tracking) {
-				const created = await projectTrackingAdapter.createTracking(project.id, trackingForm)
+				const created = await projectTrackingAdapter.createTracking(project.id, payload)
 
 				setTracking(created)
 
 				return
 			}
 
-			const updated = await projectTrackingAdapter.updateTracking(project.id, trackingForm)
+			const updated = await projectTrackingAdapter.updateTracking(project.id, payload)
 
 			setTracking(updated)
 		} catch (error) {
@@ -123,12 +146,30 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 	===================================================== */
 
 	const handleAddUpdate = async () => {
-		try {
-			if (!tracking) return
+		if (!tracking) return
 
+		if (!updateForm.changeEndDate) {
+			setUpdateError('La fecha fin con control de cambios es obligatoria.')
+
+			return
+		}
+
+		if (!updateForm.observations.trim()) {
+			setUpdateError('Las observaciones son obligatorias.')
+
+			return
+		}
+
+		setUpdateError(null)
+
+		try {
 			setTrackingLoading(true)
 
-			const created = await projectTrackingAdapter.addUpdate(project.id, updateForm)
+			const created = await projectTrackingAdapter.addUpdate(project.id, {
+				changeEndDate: updateForm.changeEndDate,
+
+				observations: updateForm.observations.trim(),
+			})
 
 			setTracking({
 				...tracking,
@@ -190,13 +231,15 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 										<input
 											type="date"
 											value={trackingForm.startDate}
-											onChange={(e) =>
+											onChange={(e) => {
+												setBaseError(null)
+
 												setTrackingForm((prev) => ({
 													...prev,
 
 													startDate: e.target.value,
 												}))
-											}
+											}}
 										/>
 									</div>
 
@@ -206,13 +249,15 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 										<input
 											type="date"
 											value={trackingForm.plannedEndDate}
-											onChange={(e) =>
+											onChange={(e) => {
+												setBaseError(null)
+
 												setTrackingForm((prev) => ({
 													...prev,
 
 													plannedEndDate: e.target.value,
 												}))
-											}
+											}}
 										/>
 									</div>
 
@@ -249,6 +294,8 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 									</div>
 								</div>
 
+								{baseError && <div className="project-tracking-section__error">{baseError}</div>}
+
 								<div className="project-tracking-section__actions">
 									<button onClick={handleSaveTracking}>
 										<span className="material-icons">save</span>
@@ -276,13 +323,15 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 										<input
 											type="date"
 											value={updateForm.changeEndDate}
-											onChange={(e) =>
+											onChange={(e) => {
+												setUpdateError(null)
+
 												setUpdateForm((prev) => ({
 													...prev,
 
 													changeEndDate: e.target.value,
 												}))
-											}
+											}}
 										/>
 									</div>
 
@@ -291,16 +340,20 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 										<textarea
 											value={updateForm.observations}
-											onChange={(e) =>
+											onChange={(e) => {
+												setUpdateError(null)
+
 												setUpdateForm((prev) => ({
 													...prev,
 
 													observations: e.target.value,
 												}))
-											}
+											}}
 										/>
 									</div>
 								</div>
+
+								{updateError && <div className="project-tracking-section__error">{updateError}</div>}
 
 								<div className="project-tracking-section__actions">
 									<button onClick={handleAddUpdate}>
