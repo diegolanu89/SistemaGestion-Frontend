@@ -99,13 +99,19 @@ export const usePermissionTab = () => {
 			return
 		}
 
-		await permissionBDT.assignProfileToUser(selectedUser.id, selectedProfileId)
+		try {
+			setError(null)
 
-		setShowAssignProfileModal(false)
+			await permissionBDT.assignProfileToUser(selectedUser.id, selectedProfileId)
 
-		setSelectedUser(null)
+			setShowAssignProfileModal(false)
 
-		await loadUsers()
+			setSelectedUser(null)
+
+			await loadUsers()
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : 'Error al asignar el perfil al usuario')
+		}
 	}
 
 	const openPermissions = async (profile: ProfileDto) => {
@@ -226,9 +232,15 @@ export const usePermissionTab = () => {
 			return
 		}
 
-		await permissionBDT.deleteProfile(profile.id)
+		try {
+			setError(null)
 
-		await loadProfiles()
+			await permissionBDT.deleteProfile(profile.id)
+
+			await loadProfiles()
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : 'Error al eliminar el perfil')
+		}
 	}
 
 	const filteredUsers = useMemo(() => {
