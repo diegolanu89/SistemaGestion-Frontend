@@ -1,17 +1,9 @@
 import { FC } from 'react'
 import { ProjectTrackingUpdateDto } from '../../models/ProjectTrackingDTO.m'
+import { formatDate } from '../../../base/utils/dateFormat'
 
 interface Props {
 	updates: ProjectTrackingUpdateDto[]
-}
-
-const formatDate = (value: string | null): string => {
-	if (!value) return '—'
-
-	const date = new Date(value)
-	if (Number.isNaN(date.getTime())) return value
-
-	return date.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 const formatDateTime = (value: string | null): string => {

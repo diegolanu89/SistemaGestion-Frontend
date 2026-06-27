@@ -65,7 +65,7 @@ export class ChangeRequestMock implements ChangeRequestInterface {
 
 			requestedBy: dto.requestedBy ?? null,
 
-			requestedDate: dto.requestedDate,
+			requestedDate: dto.requestedDate ?? '',
 
 			status: dto.status,
 
