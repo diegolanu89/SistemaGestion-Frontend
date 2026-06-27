@@ -125,7 +125,7 @@ export const useDashboardEvmController = () => {
 			const enriched: DashboardEvmRowDto[] = baseRows.map((row) => ({
 				...row,
 				changesCount: changesById.get(row.id) ?? 0,
-				hasTracking: row.projectTrackingId != null,
+				hasTracking: row.tracking?.actualEndDate != null || (row.tracking?.updatesCount ?? 0) > 0,
 			}))
 
 			logger.infoTag(LogTag.Adapter, '[DASHBOARD_EVM] Fetch success', {

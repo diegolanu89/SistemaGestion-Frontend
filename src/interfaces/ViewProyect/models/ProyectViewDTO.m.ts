@@ -8,6 +8,7 @@ export interface ProjectTrackingRef {
 	plannedEndDate: string | null
 	actualEndDate: string | null
 	implementationDate: string | null
+	updatesCount: number
 }
 
 export interface ProjectDto {
