@@ -100,7 +100,7 @@ export const ProyectCreateForm: FC = () => {
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.REGISTRATION_DATE.ICON}</span>
-						{CREATE.FIELDS.REGISTRATION_DATE.LABEL}
+						{CREATE.FIELDS.REGISTRATION_DATE.LABEL} *
 					</label>
 
 					<input
@@ -108,6 +108,7 @@ export const ProyectCreateForm: FC = () => {
 						type="date"
 						value={form.registrationDate ?? ''}
 						onChange={(e) => update('registrationDate')(e.target.value || null)}
+						required
 					/>
 				</div>
 
@@ -115,13 +116,14 @@ export const ProyectCreateForm: FC = () => {
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">business</span>
-						Cliente
+						Cliente *
 					</label>
 
 					<select
 						className="proyect-create-select"
 						value={form.clientId ?? ''}
 						onChange={(e) => update('clientId')(e.target.value ? Number(e.target.value) : null)}
+						required
 					>
 						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
 						{(refs.clients ?? []).map((c) => (
@@ -190,40 +192,37 @@ export const ProyectCreateForm: FC = () => {
 					</select>
 				</div>
 
-				{/* Fechas de seguimiento — solo visibles si se va a crear el proyecto en Clockify */}
-				{form.requiresTimesheetCreation && (
-					<>
-						<div className="proyect-create-field">
-							<label className="proyect-create-label">
-								<span className="material-icons">play_arrow</span>
-								Fecha inicio *
-							</label>
+				{/* Fecha inicio */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">play_arrow</span>
+						Fecha inicio *
+					</label>
 
-							<input
-								className="proyect-create-input"
-								type="date"
-								value={form.startDate ?? ''}
-								onChange={(e) => update('startDate')(e.target.value || null)}
-								required
-							/>
-						</div>
+					<input
+						className="proyect-create-input"
+						type="date"
+						value={form.startDate ?? ''}
+						onChange={(e) => update('startDate')(e.target.value || null)}
+						required
+					/>
+				</div>
 
-						<div className="proyect-create-field">
-							<label className="proyect-create-label">
-								<span className="material-icons">event_available</span>
-								Fin planificado *
-							</label>
+				{/* Fin planificado */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">event_available</span>
+						Fin planificado *
+					</label>
 
-							<input
-								className="proyect-create-input"
-								type="date"
-								value={form.plannedEndDate ?? ''}
-								onChange={(e) => update('plannedEndDate')(e.target.value || null)}
-								required
-							/>
-						</div>
-					</>
-				)}
+					<input
+						className="proyect-create-input"
+						type="date"
+						value={form.plannedEndDate ?? ''}
+						onChange={(e) => update('plannedEndDate')(e.target.value || null)}
+						required
+					/>
+				</div>
 
 				{/* Fin real (siempre opcional) */}
 				<div className="proyect-create-field">

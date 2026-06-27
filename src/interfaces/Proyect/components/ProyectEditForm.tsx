@@ -108,7 +108,7 @@ export const ProyectEditForm: FC = () => {
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.REGISTRATION_DATE.ICON}</span>
-						{CREATE.FIELDS.REGISTRATION_DATE.LABEL}
+						{CREATE.FIELDS.REGISTRATION_DATE.LABEL} *
 					</label>
 
 					<input
@@ -116,6 +116,7 @@ export const ProyectEditForm: FC = () => {
 						type="date"
 						value={form.RegistrationDate ?? ''}
 						onChange={(e) => update('RegistrationDate')(e.target.value || undefined)}
+						required
 					/>
 				</div>
 
@@ -123,13 +124,14 @@ export const ProyectEditForm: FC = () => {
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">business</span>
-						Cliente
+						Cliente *
 					</label>
 
 					<select
 						className="proyect-create-select"
 						value={form.ClientId ?? ''}
 						onChange={(e) => update('ClientId')(e.target.value ? Number(e.target.value) : undefined)}
+						required
 					>
 						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
 						{(refs.clients ?? []).map((c) => (
@@ -206,7 +208,7 @@ export const ProyectEditForm: FC = () => {
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">play_arrow</span>
-						Fecha inicio
+						Fecha inicio *
 					</label>
 
 					<input
@@ -214,6 +216,7 @@ export const ProyectEditForm: FC = () => {
 						type="date"
 						value={form.StartDate ?? ''}
 						onChange={(e) => update('StartDate')(e.target.value || undefined)}
+						required
 					/>
 				</div>
 
@@ -221,7 +224,7 @@ export const ProyectEditForm: FC = () => {
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">event_available</span>
-						Fin planificado
+						Fin planificado *
 					</label>
 
 					<input
@@ -229,6 +232,7 @@ export const ProyectEditForm: FC = () => {
 						type="date"
 						value={form.PlannedEndDate ?? ''}
 						onChange={(e) => update('PlannedEndDate')(e.target.value || undefined)}
+						required
 					/>
 				</div>
 
