@@ -1,14 +1,13 @@
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-import { REPORTS_PATHS } from '../routes/paths'
+import { IDLE_PATHS } from '../../Idle/routes/paths'
 
 export const DotationHeader: FC = () => {
 	const navigate = useNavigate()
 
 	return (
 		<div className="dotation-report__header">
-			<button type="button" className="dotation-report__back" onClick={() => navigate(REPORTS_PATHS.REPORTS)}>
+			<button type="button" className="dotation-report__back" onClick={() => navigate(IDLE_PATHS.HOME)}>
 				<span className="material-icons">arrow_back</span>
 			</button>
 
