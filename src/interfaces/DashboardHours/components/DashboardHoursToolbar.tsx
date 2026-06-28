@@ -12,6 +12,9 @@ export const DashboardHoursToolbar: FC = () => {
 
 		savedFilters,
 
+		activeSavedFilterId,
+		setActiveSavedFilterId,
+
 		loadSavedFilters,
 
 		saveCurrentFilter,
@@ -31,8 +34,6 @@ export const DashboardHoursToolbar: FC = () => {
 
 	const [savedSuccess, setSavedSuccess] = useState<boolean>(false)
 
-	const [selectedFilterId, setSelectedFilterId] = useState<string>('')
-
 	const [isManageModalOpen, setIsManageModalOpen] = useState<boolean>(false)
 
 	// =========================================================
@@ -40,7 +41,7 @@ export const DashboardHoursToolbar: FC = () => {
 	// =========================================================
 
 	useEffect(() => {
-		loadSavedFilters()
+		void loadSavedFilters()
 	}, [loadSavedFilters])
 
 	// =========================================================
@@ -73,8 +74,6 @@ export const DashboardHoursToolbar: FC = () => {
 				sourceType: filters.source_type ?? 'ALL',
 			})
 
-			await loadSavedFilters()
-
 			setFilterName('')
 
 			setSavedSuccess(true)
@@ -83,7 +82,9 @@ export const DashboardHoursToolbar: FC = () => {
 				setSavedSuccess(false)
 			}, 2500)
 		} catch (error: unknown) {
-			console.error(error)
+			// El componente que consuma este método puede reemplazar esto
+			// por Toast.error((error as Error).message)
+			alert((error as Error).message)
 		} finally {
 			setSaving(false)
 		}
@@ -94,26 +95,13 @@ export const DashboardHoursToolbar: FC = () => {
 	// =========================================================
 
 	const handleSelectFilter = (filterId: string) => {
-		setSelectedFilterId(filterId)
-
-		// ====================================
-		// 🔹 CLEAR FILTERS
-		// ====================================
-
+		setActiveSavedFilterId(filterId)
 		if (!filterId) {
 			clearFilters()
-
 			return
 		}
-
-		// ====================================
-		// 🔹 APPLY FILTER
-		// ====================================
-
 		const filter = savedFilters.find((f) => String(f.id) === filterId)
-
 		if (!filter) return
-
 		applySavedFilter(filter)
 	}
 
@@ -160,27 +148,15 @@ export const DashboardHoursToolbar: FC = () => {
 
 						<select
 							className="dashboard-hours-toolbar__saved-select"
-							value={selectedFilterId}
+							value={activeSavedFilterId}
 							disabled={savedFilters.length === 0}
 							onChange={(e) => handleSelectFilter(e.target.value)}
 						>
-							{/* ====================================== */}
-							{/* 🔹 EMPTY */}
-							{/* ====================================== */}
-
 							{savedFilters.length === 0 ? (
 								<option value="">No hay filtros guardados</option>
 							) : (
 								<>
-									{/* ====================================== */}
-									{/* 🔹 DEFAULT */}
-									{/* ====================================== */}
-
-									<option value="">{selectedFilterId ? 'Aplicar ningún filtro' : 'Aplicar filtro guardado'}</option>
-
-									{/* ====================================== */}
-									{/* 🔹 FILTERS */}
-									{/* ====================================== */}
+									<option value="">Aplicar ningún filtro</option>
 
 									{savedFilters.map((filter) => (
 										<option key={filter.id} value={String(filter.id)}>

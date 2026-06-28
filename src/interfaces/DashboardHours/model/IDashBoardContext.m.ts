@@ -44,6 +44,10 @@ export interface IDashboardHoursContext {
 
 	setSavedFilters: Dispatch<SetStateAction<DashboardFilterDto[]>>
 
+	activeSavedFilterId: string
+
+	setActiveSavedFilterId: Dispatch<SetStateAction<string>>
+
 	// =========================================================
 	// 🔹 FILTER SETTERS
 	// =========================================================

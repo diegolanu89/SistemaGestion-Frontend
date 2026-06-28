@@ -1,20 +1,40 @@
 import logger from '../../base/controllers/Logger.c'
 import { LogTag } from '../../base/model/LogTag.m'
 import { HttpClient } from '../../base/services/HttpClient.s'
+
 import { CreateDashboardFilterDto, DashboardFilterDto, UpdateDashboardFilterDto } from '../model/DashboardHoursDTO.m'
+
 import { IDashboardFilters } from '../model/IDashboardfilter.m'
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
-const normalizeError = (error: unknown): Error => (error instanceof Error ? error : new Error(String(error)))
+// ==========================================================
+// 🔹 ERROR NORMALIZATION
+// ==========================================================
+
+const normalizeError = (error: unknown): Error => {
+	if (error instanceof Error) {
+		return error
+	}
+
+	if (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message: unknown }).message === 'string') {
+		return new Error((error as { message: string }).message)
+	}
+
+	return new Error('Ocurrió un error inesperado.')
+}
+
+// ==========================================================
+// 🔹 ADAPTER
+// ==========================================================
 
 export class DashboardFiltersBDT implements IDashboardFilters {
-	// ==========================
+	// ==========================================================
 	// 🔹 GET ALL
-	// ==========================
+	// ==========================================================
 
 	async getAll(): Promise<DashboardFilterDto[]> {
-		logger.infoTag(LogTag.Adapter, '[DASHBOARD-FILTERS][BDT] getAll()')
+		logger.infoTag(LogTag.Adapter, '[DASHBOARD-FILTERS] GET')
 
 		try {
 			return await HttpClient.request<DashboardFilterDto[]>(`${BASE_URL}/app/dashboard-filters`)
@@ -27,17 +47,16 @@ export class DashboardFiltersBDT implements IDashboardFilters {
 		}
 	}
 
-	// ==========================
+	// ==========================================================
 	// 🔹 CREATE
-	// ==========================
+	// ==========================================================
 
 	async create(data: CreateDashboardFilterDto): Promise<DashboardFilterDto> {
-		logger.infoTag(LogTag.Adapter, `[DASHBOARD-FILTERS][BDT] create -> ${data.Name}`)
+		logger.infoTag(LogTag.Adapter, `[DASHBOARD-FILTERS] CREATE -> "${data.name}"`)
 
 		try {
 			return await HttpClient.request<DashboardFilterDto>(`${BASE_URL}/app/dashboard-filters`, {
 				method: 'POST',
-
 				body: JSON.stringify(data),
 			})
 		} catch (error: unknown) {
@@ -49,17 +68,16 @@ export class DashboardFiltersBDT implements IDashboardFilters {
 		}
 	}
 
-	// ==========================
+	// ==========================================================
 	// 🔹 UPDATE
-	// ==========================
+	// ==========================================================
 
 	async update(id: number, data: UpdateDashboardFilterDto): Promise<DashboardFilterDto> {
-		logger.infoTag(LogTag.Adapter, `[DASHBOARD-FILTERS][BDT] update -> id=${id}`)
+		logger.infoTag(LogTag.Adapter, `[DASHBOARD-FILTERS] UPDATE -> id=${id}, name="${data.name ?? '-'}"`)
 
 		try {
 			return await HttpClient.request<DashboardFilterDto>(`${BASE_URL}/app/dashboard-filters/${id}`, {
 				method: 'PUT',
-
 				body: JSON.stringify(data),
 			})
 		} catch (error: unknown) {
@@ -71,12 +89,12 @@ export class DashboardFiltersBDT implements IDashboardFilters {
 		}
 	}
 
-	// ==========================
+	// ==========================================================
 	// 🔹 DELETE
-	// ==========================
+	// ==========================================================
 
 	async delete(id: number): Promise<void> {
-		logger.infoTag(LogTag.Adapter, `[DASHBOARD-FILTERS][BDT] delete -> id=${id}`)
+		logger.infoTag(LogTag.Adapter, `[DASHBOARD-FILTERS] DELETE -> id=${id}`)
 
 		try {
 			await HttpClient.request(`${BASE_URL}/app/dashboard-filters/${id}`, {
