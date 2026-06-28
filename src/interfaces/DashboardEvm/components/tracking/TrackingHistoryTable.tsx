@@ -40,7 +40,7 @@ export const TrackingHistoryTable: FC<Props> = ({ updates }) => {
 			<tbody>
 				{updates.map((entry) => (
 					<tr key={entry.id}>
-						<td>{formatDate(entry.changeEndDate)}</td>
+						<td>{formatDate(entry.milestoneDate)}</td>
 						<td>{entry.observations ?? '—'}</td>
 						<td>{formatDateTime(entry.createdAt)}</td>
 					</tr>

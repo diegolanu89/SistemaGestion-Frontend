@@ -27,16 +27,15 @@ export const useProjectTracking = () => {
 		setTrackingError(null)
 		setTracking(null)
 
-		// Si el row dice que no hay tracking, no llamamos al back: dejamos null
-		// y el modal va a mostrar los placeholders con "—".
-		if (!row.hasTracking) {
+		// Si el row no tiene tracking asignado, no llamamos al back.
+		if (!row.projectTrackingId) {
 			setTrackingLoading(false)
 			return
 		}
 
 		try {
-			logger.infoTag(LogTag.Adapter, '[DASHBOARD_EVM] Tracking fetch', { projectId: row.id })
-			const data = await dashboardEvmService.getTracking(row.id)
+			logger.infoTag(LogTag.Adapter, '[DASHBOARD_EVM] Tracking fetch', { trackingId: row.projectTrackingId })
+			const data = await dashboardEvmService.getTracking(row.projectTrackingId)
 			setTracking(data)
 		} catch (e) {
 			logger.errorTag(LogTag.Adapter, '[DASHBOARD_EVM] Tracking error', e)

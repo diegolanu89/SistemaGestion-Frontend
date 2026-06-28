@@ -9,7 +9,7 @@ export interface ProjectTrackingUpdateDto {
 
 	projectTrackingId: number
 
-	changeEndDate?: string | null
+	milestoneDate?: string | null
 
 	observations?: string | null
 
@@ -24,8 +24,6 @@ export interface ProjectTrackingUpdateDto {
 
 export interface ProjectTrackingDto {
 	id: number
-
-	projectId: number
 
 	startDate?: string | null
 
@@ -47,9 +45,9 @@ export interface ProjectTrackingDto {
 ========================================================= */
 
 export interface UpsertProjectTrackingDto {
-	startDate: string
+	startDate?: string | null
 
-	plannedEndDate: string
+	plannedEndDate?: string | null
 
 	actualEndDate?: string | null
 
@@ -57,13 +55,13 @@ export interface UpsertProjectTrackingDto {
 }
 
 export interface CreateTrackingUpdateDto {
-	changeEndDate: string
+	milestoneDate: string
 
 	observations: string
 }
 
 export interface UpdateTrackingUpdateDto {
-	changeEndDate?: string
+	milestoneDate?: string
 
 	observations?: string
 }
@@ -83,15 +81,13 @@ export interface GetProjectTrackingResponseDto {
 ========================================================= */
 
 export interface ProjectTrackingInterface {
-	getTracking(projectId: number): Promise<ProjectTrackingDto | null>
+	getTracking(trackingId: number): Promise<ProjectTrackingDto | null>
 
-	createTracking(projectId: number, dto: UpsertProjectTrackingDto): Promise<ProjectTrackingDto>
+	updateTracking(trackingId: number, dto: UpsertProjectTrackingDto): Promise<ProjectTrackingDto>
 
-	updateTracking(projectId: number, dto: UpsertProjectTrackingDto): Promise<ProjectTrackingDto>
+	addUpdate(trackingId: number, dto: CreateTrackingUpdateDto): Promise<ProjectTrackingUpdateDto>
 
-	addUpdate(projectId: number, dto: CreateTrackingUpdateDto): Promise<ProjectTrackingUpdateDto>
+	editUpdate(trackingId: number, updateId: number, dto: UpdateTrackingUpdateDto): Promise<ProjectTrackingUpdateDto>
 
-	editUpdate(projectId: number, updateId: number, dto: UpdateTrackingUpdateDto): Promise<ProjectTrackingUpdateDto>
-
-	deleteUpdate(projectId: number, updateId: number): Promise<void>
+	deleteUpdate(trackingId: number, updateId: number): Promise<void>
 }

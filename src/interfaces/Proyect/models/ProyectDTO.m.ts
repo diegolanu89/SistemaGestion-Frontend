@@ -47,6 +47,14 @@ export interface ProjectIntakeLeaderRefDto {
 	Email: string
 }
 
+export interface ProjectIntakeTrackingRef {
+	id: number
+	startDate: string | null
+	plannedEndDate: string | null
+	actualEndDate: string | null
+	implementationDate: string | null
+}
+
 export interface ProjectIntakeRecordDto {
 	Id: number
 
@@ -62,10 +70,6 @@ export interface ProjectIntakeRecordDto {
 	CategoryCode?: string | null
 	ProjectStatusCode?: string | null
 
-	BusinessStatusDate?: string | null
-	EstimatedEndDate?: string | null
-	ActualEndDate?: string | null
-
 	CommercialStatus?: string | null
 	LeaderTimesheetUserId?: number | null
 	LeaderName?: string | null
@@ -73,6 +77,9 @@ export interface ProjectIntakeRecordDto {
 
 	RequiresTimesheetCreation: boolean
 	TimesheetRecordId?: number | null
+
+	ProjectTrackingId?: number | null
+	Tracking?: ProjectIntakeTrackingRef | null
 
 	IsActive: boolean
 
@@ -104,9 +111,10 @@ export interface CreateProjectIntakeDto {
 	CategoryCode?: string
 	ProjectStatusCode?: string
 
-	BusinessStatusDate?: string
-	EstimatedEndDate?: string
+	StartDate?: string
+	PlannedEndDate?: string
 	ActualEndDate?: string
+	ImplementationDate?: string
 
 	CommercialStatus?: string
 	LeaderTimesheetUserId?: number
@@ -125,9 +133,10 @@ export interface UpdateProjectIntakeDto {
 	CategoryCode?: string
 	ProjectStatusCode?: string
 
-	BusinessStatusDate?: string
-	EstimatedEndDate?: string
+	StartDate?: string
+	PlannedEndDate?: string
 	ActualEndDate?: string
+	ImplementationDate?: string
 
 	CommercialStatus?: string
 	LeaderTimesheetUserId?: number

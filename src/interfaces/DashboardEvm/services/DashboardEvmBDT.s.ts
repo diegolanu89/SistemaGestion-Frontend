@@ -27,8 +27,8 @@ export class DashboardEvmBDT implements DashboardEvmInterface {
 		return await HttpClient.request<ChangeRequestDto[]>(`${BASE_URL}/${projectId}/change-requests`)
 	}
 
-	async getTracking(projectId: number): Promise<ProjectTrackingDto | null> {
-		const response = await HttpClient.request<ProjectTrackingResponse>(`${TRACKING_BASE_URL}/${projectId}`)
+	async getTracking(trackingId: number): Promise<ProjectTrackingDto | null> {
+		const response = await HttpClient.request<ProjectTrackingResponse>(`${TRACKING_BASE_URL}/${trackingId}`)
 		return response.data
 	}
 }

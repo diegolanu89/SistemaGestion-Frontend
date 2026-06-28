@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useProyectViewContext } from '../hooks/useProyectViewContext.h'
 
 import { PROYECT_PATHS_VIEWS } from '../routes/paths'
+import { formatDate } from '../../base/utils/formatDate'
 
 export const ProyectGrid: FC = () => {
 	const { projects, loading, error } = useProyectViewContext()
@@ -76,11 +77,11 @@ export const ProyectGrid: FC = () => {
 								</p>
 
 								<p>
-									<strong>Inicio:</strong> {p.startDate ?? '-'}
+									<strong>Inicio:</strong> {formatDate(p.tracking?.startDate)}
 								</p>
 
 								<p>
-									<strong>Fin planificado:</strong> {p.endDatePlanned ?? '-'}
+									<strong>Fin planificado:</strong> {formatDate(p.tracking?.plannedEndDate)}
 								</p>
 							</div>
 

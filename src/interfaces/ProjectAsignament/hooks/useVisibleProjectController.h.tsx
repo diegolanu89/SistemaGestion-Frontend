@@ -39,7 +39,8 @@ export const useVisibleProjectsController = () => {
 
 				const detailedProjects = await Promise.all(projectIds.map((id) => proyectViewAdapter.getById(id)))
 
-				setAllProjects(detailedProjects)
+				const sorted = [...detailedProjects].sort((a, b) => (b.code ?? '').localeCompare(a.code ?? ''))
+				setAllProjects(sorted)
 
 				logger.infoTag(LogTag.View, `[VISIBLE_PROJECTS] loaded ${detailedProjects.length} project details`)
 			} catch (error: unknown) {

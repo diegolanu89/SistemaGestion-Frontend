@@ -100,7 +100,7 @@ export const ProyectCreateForm: FC = () => {
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">{CREATE.FIELDS.REGISTRATION_DATE.ICON}</span>
-						{CREATE.FIELDS.REGISTRATION_DATE.LABEL}
+						{CREATE.FIELDS.REGISTRATION_DATE.LABEL} *
 					</label>
 
 					<input
@@ -108,6 +108,7 @@ export const ProyectCreateForm: FC = () => {
 						type="date"
 						value={form.registrationDate ?? ''}
 						onChange={(e) => update('registrationDate')(e.target.value || null)}
+						required
 					/>
 				</div>
 
@@ -115,13 +116,14 @@ export const ProyectCreateForm: FC = () => {
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">business</span>
-						Cliente
+						Cliente *
 					</label>
 
 					<select
 						className="proyect-create-select"
 						value={form.clientId ?? ''}
 						onChange={(e) => update('clientId')(e.target.value ? Number(e.target.value) : null)}
+						required
 					>
 						<option value="">{CREATE.PLACEHOLDERS.SELECT}</option>
 						{(refs.clients ?? []).map((c) => (
@@ -190,43 +192,43 @@ export const ProyectCreateForm: FC = () => {
 					</select>
 				</div>
 
-				{/* Fecha ingreso/perdido/cerrado */}
+				{/* Fecha inicio */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
-						<span className="material-icons">today</span>
-						Fecha ingreso/perdido/cerrado{selectedType?.RequiresBusinessStatusDate ? ' *' : ''}
+						<span className="material-icons">play_arrow</span>
+						Fecha inicio *
 					</label>
 
 					<input
 						className="proyect-create-input"
 						type="date"
-						value={form.businessStatusDate ?? ''}
-						onChange={(e) => update('businessStatusDate')(e.target.value || null)}
-						required={selectedType?.RequiresBusinessStatusDate ?? false}
-					/>
-				</div>
-
-				{/* Fecha estimada de terminación */}
-				<div className="proyect-create-field">
-					<label className="proyect-create-label">
-						<span className="material-icons">event_available</span>
-						Fecha estimada de terminación
-					</label>
-
-					<input
-						className="proyect-create-input"
-						type="date"
-						value={form.estimatedEndDate ?? ''}
-						onChange={(e) => update('estimatedEndDate')(e.target.value || null)}
+						value={form.startDate ?? ''}
+						onChange={(e) => update('startDate')(e.target.value || null)}
 						required
 					/>
 				</div>
 
-				{/* Fecha de fin del proyecto */}
+				{/* Fin planificado */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">event_available</span>
+						Fin planificado *
+					</label>
+
+					<input
+						className="proyect-create-input"
+						type="date"
+						value={form.plannedEndDate ?? ''}
+						onChange={(e) => update('plannedEndDate')(e.target.value || null)}
+						required
+					/>
+				</div>
+
+				{/* Fin real (siempre opcional) */}
 				<div className="proyect-create-field">
 					<label className="proyect-create-label">
 						<span className="material-icons">event_busy</span>
-						Fecha de fin del proyecto{selectedType?.RequiresActualEndDate ? ' *' : ''}
+						Fin real
 					</label>
 
 					<input
@@ -234,7 +236,21 @@ export const ProyectCreateForm: FC = () => {
 						type="date"
 						value={form.actualEndDate ?? ''}
 						onChange={(e) => update('actualEndDate')(e.target.value || null)}
-						required={selectedType?.RequiresActualEndDate ?? false}
+					/>
+				</div>
+
+				{/* Fecha implementación (siempre opcional) */}
+				<div className="proyect-create-field">
+					<label className="proyect-create-label">
+						<span className="material-icons">rocket_launch</span>
+						Fecha implementación
+					</label>
+
+					<input
+						className="proyect-create-input"
+						type="date"
+						value={form.implementationDate ?? ''}
+						onChange={(e) => update('implementationDate')(e.target.value || null)}
 					/>
 				</div>
 

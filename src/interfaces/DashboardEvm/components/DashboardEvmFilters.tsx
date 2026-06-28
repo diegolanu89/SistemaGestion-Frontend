@@ -18,10 +18,7 @@ export const DashboardEvmFiltersBar: FC = () => {
 	}, [rows])
 
 	const hasActiveFilters = Boolean(
-		filters.client || filters.project || filters.status || filters.vacMin || filters.vacMax ||
-		filters.dateFrom || filters.dateTo ||
-		filters.endPlannedFrom || filters.endPlannedTo ||
-		filters.endActualFrom || filters.endActualTo,
+		filters.client || filters.project || filters.status || filters.vacMin || filters.vacMax,
 	)
 
 	const update = <K extends keyof typeof filters>(key: K, value: (typeof filters)[K]) => {
@@ -122,65 +119,6 @@ export const DashboardEvmFiltersBar: FC = () => {
 				<ClearFiltersButton active={hasActiveFilters} onClear={() => setFilters(DEFAULT_DASHBOARD_EVM_FILTERS)} />
 			</div>
 
-			{/* ========================= */}
-			{/* SUBSECCIONES DE FECHAS (inline) */}
-			{/* ========================= */}
-
-			<div className="dashboard-evm-filters__dates-row">
-				<div className="dashboard-evm-filters__subsection">
-					<div className="dashboard-evm-filters__subsection-header">Fecha de inicio</div>
-					<div className="dashboard-evm-filters__subsection-fields">
-						<div className="dashboard-evm-filters__field">
-							<label className="dashboard-evm-filters__label">Desde</label>
-							<input className="dashboard-evm-filters__input" type="date"
-								value={filters.dateFrom} max={filters.dateTo || undefined}
-								onChange={(e) => update('dateFrom', e.target.value)} />
-						</div>
-						<div className="dashboard-evm-filters__field">
-							<label className="dashboard-evm-filters__label">Hasta</label>
-							<input className="dashboard-evm-filters__input" type="date"
-								value={filters.dateTo} min={filters.dateFrom || undefined}
-								onChange={(e) => update('dateTo', e.target.value)} />
-						</div>
-					</div>
-				</div>
-
-				<div className="dashboard-evm-filters__subsection">
-					<div className="dashboard-evm-filters__subsection-header">Fin planificado</div>
-					<div className="dashboard-evm-filters__subsection-fields">
-						<div className="dashboard-evm-filters__field">
-							<label className="dashboard-evm-filters__label">Desde</label>
-							<input className="dashboard-evm-filters__input" type="date"
-								value={filters.endPlannedFrom} max={filters.endPlannedTo || undefined}
-								onChange={(e) => update('endPlannedFrom', e.target.value)} />
-						</div>
-						<div className="dashboard-evm-filters__field">
-							<label className="dashboard-evm-filters__label">Hasta</label>
-							<input className="dashboard-evm-filters__input" type="date"
-								value={filters.endPlannedTo} min={filters.endPlannedFrom || undefined}
-								onChange={(e) => update('endPlannedTo', e.target.value)} />
-						</div>
-					</div>
-				</div>
-
-				<div className="dashboard-evm-filters__subsection">
-					<div className="dashboard-evm-filters__subsection-header">Fin real</div>
-					<div className="dashboard-evm-filters__subsection-fields">
-						<div className="dashboard-evm-filters__field">
-							<label className="dashboard-evm-filters__label">Desde</label>
-							<input className="dashboard-evm-filters__input" type="date"
-								value={filters.endActualFrom} max={filters.endActualTo || undefined}
-								onChange={(e) => update('endActualFrom', e.target.value)} />
-						</div>
-						<div className="dashboard-evm-filters__field">
-							<label className="dashboard-evm-filters__label">Hasta</label>
-							<input className="dashboard-evm-filters__input" type="date"
-								value={filters.endActualTo} min={filters.endActualFrom || undefined}
-								onChange={(e) => update('endActualTo', e.target.value)} />
-						</div>
-					</div>
-				</div>
-			</div>
 		</section>
 	)
 }

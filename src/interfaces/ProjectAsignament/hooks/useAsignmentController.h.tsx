@@ -48,7 +48,8 @@ export const useProjectAssignmentController = () => {
 
 			logger.infoTag(LogTag.View, `[PROJECT_ASSIGNMENT] loaded ${response.data.length} projects`)
 
-			setProjects(response.data)
+			const sorted = [...response.data].sort((a, b) => (b.code ?? '').localeCompare(a.code ?? ''))
+			setProjects(sorted)
 		} catch (error: unknown) {
 			logger.errorTag(LogTag.View, error instanceof Error ? error.message : String(error))
 		} finally {
