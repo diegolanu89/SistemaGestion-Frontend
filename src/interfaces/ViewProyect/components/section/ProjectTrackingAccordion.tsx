@@ -29,7 +29,7 @@ const EMPTY_TRACKING_FORM: UpsertProjectTrackingDto = {
 }
 
 const EMPTY_UPDATE_FORM: CreateTrackingUpdateDto = {
-	changeEndDate: '',
+	milestoneDate: '',
 
 	observations: '',
 }
@@ -59,7 +59,7 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 	===================================================== */
 
 	useEffect(() => {
-		if (!open) return
+		if (!open || !project.projectTrackingId) return
 
 		const loadTracking = async () => {
 			try {
@@ -67,7 +67,7 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 				setTrackingError(null)
 
-				const response = await projectTrackingAdapter.getTracking(project.id)
+				const response = await projectTrackingAdapter.getTracking(project.projectTrackingId!)
 
 				setTracking(response)
 
@@ -92,14 +92,15 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 		}
 
 		void loadTracking()
-	}, [open, project.id])
+	}, [open, project.projectTrackingId])
 
 	/* =====================================================
 	🔹 SAVE BASE TRACKING
 	===================================================== */
 
 	const handleSaveTracking = async () => {
-//fecha inicio y planificado obligatorias
+		if (!project.projectTrackingId) return
+
 		if (!trackingForm.startDate || !trackingForm.plannedEndDate) {
 			setBaseError('La fecha de inicio y el fin planificado son obligatorios.')
 
@@ -121,15 +122,7 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 				implementationDate: trackingForm.implementationDate || null,
 			}
 
-			if (!tracking) {
-				const created = await projectTrackingAdapter.createTracking(project.id, payload)
-
-				setTracking(created)
-
-				return
-			}
-
-			const updated = await projectTrackingAdapter.updateTracking(project.id, payload)
+			const updated = await projectTrackingAdapter.updateTracking(project.projectTrackingId, payload)
 
 			setTracking(updated)
 		} catch (error) {
@@ -148,7 +141,7 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 	const handleAddUpdate = async () => {
 		if (!tracking) return
 
-		if (!updateForm.changeEndDate) {
+		if (!updateForm.milestoneDate) {
 			setUpdateError('La fecha fin con control de cambios es obligatoria.')
 
 			return
@@ -165,8 +158,8 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 		try {
 			setTrackingLoading(true)
 
-			const created = await projectTrackingAdapter.addUpdate(project.id, {
-				changeEndDate: updateForm.changeEndDate,
+			const created = await projectTrackingAdapter.addUpdate(project.projectTrackingId!, {
+				milestoneDate: updateForm.milestoneDate,
 
 				observations: updateForm.observations.trim(),
 			})
@@ -230,7 +223,7 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 										<input
 											type="date"
-											value={trackingForm.startDate}
+											value={trackingForm.startDate ?? ''}
 											onChange={(e) => {
 												setBaseError(null)
 
@@ -248,7 +241,7 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 										<input
 											type="date"
-											value={trackingForm.plannedEndDate}
+											value={trackingForm.plannedEndDate ?? ''}
 											onChange={(e) => {
 												setBaseError(null)
 
@@ -322,14 +315,14 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 
 										<input
 											type="date"
-											value={updateForm.changeEndDate}
+											value={updateForm.milestoneDate ?? ''}
 											onChange={(e) => {
 												setUpdateError(null)
 
 												setUpdateForm((prev) => ({
 													...prev,
 
-													changeEndDate: e.target.value,
+													milestoneDate: e.target.value,
 												}))
 											}}
 										/>
@@ -373,7 +366,7 @@ const ProjectTrackingAccordion: FC<Props> = ({ project, open, onToggle }) => {
 									tracking.updates.map((update: ProjectTrackingUpdateDto) => (
 										<div key={update.id} className="project-tracking-section__history-item">
 											<div className="project-tracking-section__history-top">
-												<strong>{update.changeEndDate ?? '-'}</strong>
+												<strong>{update.milestoneDate ?? '-'}</strong>
 
 												<small>{update.createdAt?.slice(0, 10)}</small>
 											</div>
