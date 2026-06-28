@@ -5,6 +5,7 @@ import { FC, useMemo, useState } from 'react'
 import { useDashboardHoursContext } from '../hooks/useEstimatedProjectContext.h'
 
 import { DashboardFilterDto, DashboardHoursProjectOptionDto } from '../model/DashboardHoursDTO.m'
+import InlineStatusMessage from '../../base/components/alert/InlineStatusMessage'
 
 interface Props {
 	open: boolean
@@ -15,12 +16,13 @@ interface Props {
 const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 	const {
 		savedFilters,
-
 		dashboard,
-
 		updateSavedFilter,
-
 		deleteSavedFilter,
+
+		activeSavedFilterId,
+		setActiveSavedFilterId,
+		clearFilters,
 	} = useDashboardHoursContext()
 
 	// =====================================================
@@ -34,6 +36,8 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 	const [loadingId, setLoadingId] = useState<number | null>(null)
 
 	const [search, setSearch] = useState<string>('')
+
+	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
 	// =====================================================
 	// 🔹 PROJECT MAP
@@ -72,8 +76,8 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 	// =====================================================
 
 	const handleStartEdit = (filter: DashboardFilterDto) => {
+		setErrorMessage(null)
 		setEditingFilterId(filter.id)
-
 		setEditingName(filter.name)
 	}
 
@@ -83,8 +87,8 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 
 	const handleCancelEdit = () => {
 		setEditingFilterId(null)
-
 		setEditingName('')
+		setErrorMessage(null)
 	}
 
 	// =====================================================
@@ -92,6 +96,8 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 	// =====================================================
 
 	const handleSaveEdit = async (filter: DashboardFilterDto) => {
+		setErrorMessage(null)
+
 		try {
 			setLoadingId(filter.id)
 
@@ -111,7 +117,7 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 
 			setEditingName('')
 		} catch (error: unknown) {
-			console.error(error)
+			setErrorMessage(error instanceof Error ? error.message : 'No fue posible actualizar el filtro.')
 		} finally {
 			setLoadingId(null)
 		}
@@ -122,12 +128,20 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 	// =====================================================
 
 	const handleDelete = async (id: number) => {
+		setErrorMessage(null)
+
 		try {
 			setLoadingId(id)
 
 			await deleteSavedFilter(id)
+
+			// Si era el filtro aplicado actualmente
+			if (String(activeSavedFilterId) === String(id)) {
+				setActiveSavedFilterId('')
+				clearFilters()
+			}
 		} catch (error: unknown) {
-			console.error(error)
+			setErrorMessage(error instanceof Error ? error.message : 'No fue posible eliminar el filtro.')
 		} finally {
 			setLoadingId(null)
 		}
@@ -141,7 +155,13 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 
 	return (
 		<div className="dashboard-filters-modal">
-			<div className="dashboard-filters-modal__overlay" onClick={onClose} />
+			<div
+				className="dashboard-filters-modal__overlay"
+				onClick={() => {
+					setErrorMessage(null)
+					onClose()
+				}}
+			/>
 
 			<div className="dashboard-filters-modal__content">
 				{/* ======================================== */}
@@ -155,7 +175,13 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 						<p>Gestioná filtros guardados del dashboard.</p>
 					</div>
 
-					<button className="dashboard-filters-modal__close" onClick={onClose}>
+					<button
+						className="dashboard-filters-modal__close"
+						onClick={() => {
+							setErrorMessage(null)
+							onClose()
+						}}
+					>
 						<span className="material-icons">close</span>
 					</button>
 				</div>
@@ -170,6 +196,8 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 					<input type="text" placeholder="Buscar filtros..." value={search} onChange={(e) => setSearch(e.target.value)} />
 				</div>
 
+				{errorMessage && <InlineStatusMessage type="error" message={errorMessage} />}
+
 				{/* ======================================== */}
 				{/* 🔹 TABLE */}
 				{/* ======================================== */}
@@ -180,8 +208,8 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 							<tr>
 								<th>Filtro</th>
 
+								<th>Origen</th>
 								<th>Proyecto</th>
-
 								<th className="dashboard-filters-modal__actions-column">Acciones</th>
 							</tr>
 						</thead>
@@ -213,10 +241,20 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 												) : (
 													<div className="dashboard-filters-modal__filter">
 														<strong className="dashboard-filters-modal__filter-name">{filter.name}</strong>
-
-														{filter.sourceType && <span className="dashboard-filters-modal__filter-type">{filter.sourceType}</span>}
 													</div>
 												)}
+											</td>
+
+											<td>
+												<span className="dashboard-filters-modal__filter-type">
+													{filter.sourceType === 'ALL'
+														? 'Todos'
+														: filter.sourceType === 'ETC'
+															? 'ETC'
+															: filter.sourceType === 'POTENTIAL'
+																? 'Potenciales'
+																: 'Horas Reales'}
+												</span>
 											</td>
 
 											{/* ================================= */}
@@ -226,12 +264,14 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 											<td>
 												<div className="dashboard-filters-modal__project">
 													<div className="dashboard-filters-modal__project-main">
-														<strong>{project?.name ?? 'Proyecto no encontrado'}</strong>
+														<strong>{project?.name ?? 'Todos los proyectos'}</strong>
 
 														{project?.project_type && <span className="dashboard-filters-modal__badge">{project.project_type}</span>}
 													</div>
 
-													<small className="dashboard-filters-modal__project-client">Proyecto ID: {filter.projectId ?? '-'}</small>
+													<small className="dashboard-filters-modal__project-client">
+														{filter.projectId ? `Proyecto ID: ${filter.projectId}` : 'Sin proyecto asociado'}
+													</small>
 												</div>
 											</td>
 
@@ -246,7 +286,7 @@ const DashboardHoursFiltersModal: FC<Props> = ({ open, onClose }) => {
 															<button
 																className="dashboard-filters-modal__icon-btn success"
 																onClick={() => handleSaveEdit(filter)}
-																disabled={loadingId === filter.id}
+																disabled={loadingId === filter.id || !editingName.trim()}
 															>
 																<span className="material-icons">check</span>
 															</button>

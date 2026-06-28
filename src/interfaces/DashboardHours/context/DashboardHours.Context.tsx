@@ -40,6 +40,8 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 
 	const [dashboard, setDashboard] = useState<DashboardHoursResponseDto | null>(null)
 
+	const [activeSavedFilterId, setActiveSavedFilterId] = useState<string>('')
+
 	const [savedFilters, setSavedFilters] = useState<DashboardFilterDto[]>([])
 
 	const [filters, setFilters] = useState<DashboardHoursFiltersDto>({
@@ -93,6 +95,8 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 	// =========================================================
 
 	const clearFilters = useCallback(() => {
+		setActiveSavedFilterId('')
+
 		setFilters({
 			leader_id: null,
 
@@ -109,6 +113,8 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 	// =========================================================
 
 	const applySavedFilter = useCallback((filter: DashboardFilterDto) => {
+		setActiveSavedFilterId(String(filter.id))
+
 		let parsedMonthKeys: string[] = []
 
 		if (Array.isArray(filter.monthKeys)) {
@@ -157,12 +163,9 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 	// =========================================================
 
 	const loadSavedFilters = useCallback(async () => {
-		try {
-			const response = await DashboardFiltersAdapter.getAll()
-			setSavedFilters(response)
-		} catch (error: unknown) {
-			console.error(error)
-		}
+		const response = await DashboardFiltersAdapter.getAll()
+
+		setSavedFilters(response)
 	}, [])
 
 	// =========================================================
@@ -171,15 +174,9 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 
 	const saveCurrentFilter = useCallback(
 		async (data: CreateDashboardFilterDto) => {
-			try {
-				await DashboardFiltersAdapter.create(data)
+			await DashboardFiltersAdapter.create(data)
 
-				await loadSavedFilters()
-			} catch (error: unknown) {
-				console.error(error)
-
-				throw error
-			}
+			await loadSavedFilters()
 		},
 		[loadSavedFilters]
 	)
@@ -190,15 +187,9 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 
 	const updateSavedFilter = useCallback(
 		async (id: number, data: UpdateDashboardFilterDto) => {
-			try {
-				await DashboardFiltersAdapter.update(id, data)
+			await DashboardFiltersAdapter.update(id, data)
 
-				await loadSavedFilters()
-			} catch (error: unknown) {
-				console.error(error)
-
-				throw error
-			}
+			await loadSavedFilters()
 		},
 		[loadSavedFilters]
 	)
@@ -208,15 +199,9 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 	// =========================================================
 
 	const deleteSavedFilter = useCallback(async (id: number) => {
-		try {
-			await DashboardFiltersAdapter.delete(id)
+		await DashboardFiltersAdapter.delete(id)
 
-			setSavedFilters((prev) => prev.filter((filter) => filter.id !== id))
-		} catch (error: unknown) {
-			console.error(error)
-
-			throw error
-		}
+		setSavedFilters((prev) => prev.filter((filter) => filter.id !== id))
 	}, [])
 
 	// =========================================================
@@ -265,6 +250,10 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 
 			setSavedFilters,
 
+			activeSavedFilterId,
+
+			setActiveSavedFilterId,
+
 			// ======================
 			// 🔹 FILTER SETTERS
 			// ======================
@@ -309,6 +298,8 @@ export const DashboardHoursProvider = ({ children }: Props) => {
 			filters,
 
 			savedFilters,
+
+			activeSavedFilterId,
 
 			setLeaderId,
 
